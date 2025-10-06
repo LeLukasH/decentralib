@@ -20,47 +20,6 @@ A Dockerized Django + PostgreSQL web application for a decentralized library sys
 
 ---
 
-## 🚀 Getting Started
-
-### 1️⃣ Prerequisites
-
-Make sure you have these installed:
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Windows / Mac / Linux)
-- [Python 3.10+](https://www.python.org/downloads/) (optional for local dev)
-- Git
-
----
-
-### 2️⃣ Clone the repository
-
-```bash
-git clone https://github.com/<your-org-or-username>/decentralib.git
-cd decentralib/src/backend
-```
-
----
-
-### 3️⃣ Build and Start Containers
-
-Run the following command:
-
-```bash
-docker-compose up --build
-```
-
-This will:
-- Build the Django image
-- Start the PostgreSQL container
-- Start the Django web container
-
-Django will be available at: http://localhost:8000
-
-### 4️⃣ Apply Migrations
-
-```bash
-docker-compose exec web python manage.py migrate
-```
-
 ## Development
 
 ### Create Admin User
