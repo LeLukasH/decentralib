@@ -1,0 +1,275 @@
+/* GLOBAL */
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f1f3f7;
+    color: #2b3340;
+}
+
+/* NAVIGACIA */
+.navigacne-tlacidla {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 25px 0;
+    background: white;
+    border-bottom: 2px solid #d9dce2;
+}
+
+.navigacne-tlacidlo {
+    width: 200px;
+    text-align: center;
+    padding: 15px 5px;
+    text-decoration: none;
+    background: #2f70e9;
+    color: white;
+    font-size: 18px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.navigacne-tlacidlo:hover {
+    background: #1f5fd1;
+    transform: translateY(-2px);
+}
+
+
+.obsah {
+    display: flex;
+    width: 100%;
+    padding: 25px;
+    box-sizing: border-box;
+    gap: 25px;
+}
+
+/* FILTER */
+.filter {
+    flex: 2;
+    max-width: 300px;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #d9dce2;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.filter h3 {
+    margin: 0 0 15px 0;
+    color: #2f70e9;
+}
+
+.filter-skupina {
+    width: 220px;
+    position: relative;
+    font-family: sans-serif;
+    margin-bottom: 16px;
+}
+
+.filter-label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.dropdown-header {
+    border: 1px solid #ccc;
+    padding: 10px;
+    cursor: pointer;
+    background: white;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    border-radius: 6px;
+}
+
+.arrow {
+    transition: transform 0.2s;
+}
+
+.dropdown-header.open .arrow {
+    transform: rotate(180deg);
+}
+
+.dropdown-body {
+    display: none;
+    border: 1px solid #ccc;
+    border-top: none;
+    background: white;
+    padding: 6px 8px; 
+}
+
+.option {
+    display: flex; 
+    font-weight: normal;  
+    margin: 0;           
+    padding: 2px 0;   
+}
+
+#vyhladavanie{
+    display: flex; 
+    gap: 10px; 
+    margin-bottom: 20px;
+}
+
+.vyhladavanie-item{
+    flex: 1; 
+    padding: 10px; 
+    border-radius: 
+    4px; border: 1px solid #ccc;
+}
+
+/*  LIST KNÍH  */
+.list-knih-sekcia {
+    flex: 9;
+    padding-left: 10px;
+}
+
+.list-knih-sekcia h3 {
+    margin-top: 0;
+    color: #2b3340;
+    font-size: 22px;
+}
+
+/* SEARCH RESULTS */
+.vysledky-vyhladavania {
+    font-size: 17px;
+    margin-bottom: 20px;
+    color: #444c59;
+}
+
+/* BOOK GRID */
+.zoznam-knih {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 25px;
+}
+
+/* BOOK CARD */
+.karta-knihy {
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #d9dce2;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.10);
+    transition: 0.25s;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.karta-knihy h4 {
+    margin: 0;
+    text-align: center;
+    font-size: 18px;
+    color: black;
+    font-weight: 600;
+}
+
+.karta-content {
+    display: flex;
+    gap: 15px;
+}
+
+.karta-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.karta-info p {
+    margin: 4px 0;
+    color: black;
+    font-size: 18px;
+}
+
+.dostupne,
+.pozicane {
+    margin: 2px 2px;
+    padding: 2px 2px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.dostupne {
+    color: #1e8543;
+}
+
+.pozicane {
+    color: #c62828;
+}
+
+.btn-detail {
+    margin-top: 2px;
+    padding: 8px 13px;
+    border: 1px solid black;
+    text-decoration: none;
+    background: #D3D3D3;
+    color: black;
+    border-radius: 8px;
+    font-weight: 600;
+    text-align: center;
+    transition: 0.2s;
+}
+
+.btn-detail:hover {
+    background: grey;
+    color: black;
+}
+
+#vzdialenost{
+    width: 50px;
+    height: 25px;    
+}
+
+#vymaz-filtre{
+    padding: 10px 15px; 
+    background-color: #333; 
+    color: white; 
+    border: none; 
+    border-radius: 4px; 
+    cursor: pointer; 
+    margin-bottom: 20px;
+}
+
+#vypis {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* bublinky */
+.filter-badge {
+    background-color: #e6f3ff;      
+    color: #0b5cad;                 
+    border: 1px solid #bcdcff;      
+    padding: 5px 10px;
+    border-radius: 20px;            
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;                      
+    transition: 0.2s ease;
+}
+
+.filter-badge:hover {
+    background-color: #d6ebff;
+    border-color: #a7d2ff;
+}
+
+.filter-badge .close-x {
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-block;
+    line-height: 1;
+    color: #0b5cad;
+    transition: 0.2s ease;
+}
+
+.filter-badge .close-x:hover {
+    color: #003f87;
+}

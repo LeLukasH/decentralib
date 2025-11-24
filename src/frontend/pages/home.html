@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decentralizovaná knižnica</title>
+    <link rel="stylesheet" href="../assets/css/index.css">
+    <script type="module" src="../assets/js/home.js"></script>
+</head>
+
+<body>
+
+    <div class="navigacne-tlacidla">
+        <a href="moje_knihy.html" class="navigacne-tlacidlo">Moje knihy</a>
+        
+        <a href="pozicane.html" class="navigacne-tlacidlo">Mám požičané</a>
+        
+        <a href="spravy.html" class="navigacne-tlacidlo">Správy</a>
+    </div>
+
+    <div class="obsah">
+        
+        <div class="filter">
+            <h3>Filter</h3>
+            
+            <div class="filter-skupina">
+                <label for="dostupnost" class="filter-label">Dostupnosť</label>
+                <div>
+                    <input type="checkbox" id="len-dostupne">
+                    <label for="len-dostupne">Len dostupné</label>
+                </div>
+            </div>
+
+            <div class="filter-skupina" data-filter="zaner">
+                <label class="filter-label">Žáner</label>
+
+                <div class="dropdown-header">
+                    <span class="arrow">&#9660;</span>
+                </div>
+
+                <div class="dropdown-body" id="dropdown-zaner"> </div>
+            </div>
+
+
+           <div class="filter-skupina" data-filter="jazyk">
+                <label class="filter-label">Jazyk</label>
+
+                <div class="dropdown-header">
+                    <span class="arrow">&#9660;</span>
+                </div>
+
+                <div class="dropdown-body" id="dropdown-jazyk"> </div>
+            </div>
+
+            <div class="filter-skupina" data-filter="mesto">
+                <label class="filter-label">Mesto</label>
+
+                <div class="dropdown-header">
+                    <span class="arrow">&#9660;</span>
+                </div>
+
+                <div class="dropdown-body" id="dropdown-mesto"> </div>
+            </div>
+
+            <div class="filter-skupina">
+                <label for="vzdialenost" class="filter-label">Vzdialenosť</label>
+                do <input type="number" id="vzdialenost"> km
+            </div>
+
+            <div class="filter-skupina">
+                <label for="hodnotenie" class="filter-label"> Minimálne hodnotenie</label>
+                <input type="range" id="hodnotenie" min="0" max="5" value="0" style="width: 100%;">
+                <div style="display: flex; justify-content: space-between;">
+                    <span>0</span>
+                    <span>1</span>
+                    <span>2</span>
+                    <span>3</span>
+                    <span>4</span>
+                    <span>5</span>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="list-knih-sekcia">
+            <h3>Vyhľadávanie</h3>
+
+            <div id="vyhladavanie">
+                <input type="text" placeholder="Názov" class="vyhladavanie-item">
+                <input type="text" placeholder="Autor" class="vyhladavanie-item">
+            </div>
+
+            <div class="vysledky-vyhladavania">
+                <h3 id="vysledky-nadpis">Všetky tituly</h3> 
+                <pre id="vypis"></pre>
+            </div>
+
+            <button id="vymaz-filtre" style="display:none;">Vymazať všetky filtre</button>
+
+            <div class="zoznam-knih" id="zoznam-knih">
+            </div>
+            
+        </div>
+        
+    </div>
+
+</body>
+</html>
