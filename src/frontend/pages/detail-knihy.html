@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Detail</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 20px auto;
+            transition: background 0.3s;
+        }
+        .unavailable-bg {
+            background: #ffdddd;
+        }
+        #content img {
+            border-radius: 8px;
+        }
+        #unavailMsg {
+            color: red;
+            font-weight: bold;
+            font-size: 22px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Book Detail</h1>
+<div id="content">Loading...</div>
+
+<script type="module">
+    // Adjust path according to your folder structure
+    import { BOOKS, USERS } from '../assets/js/config.js';
+
+    const content = document.getElementById("content");
+
+    // Get book ID from URL
+    const params = new URLSearchParams(window.location.search);
+    const bookId = Number(params.get('id'));
+
+    const book = BOOKS.find(b => b.book_id === bookId);
+
+    if (!book) {
+        content.innerHTML = "<h2>Book not found</h2>";
+        throw new Error("Book not found");
+    }
+
+    const owner = USERS.find(u => u.user_id === book.owner_id);
+    const isAvailable = book.is_available === "yes";
+
+    if (!isAvailable) {
+        document.body.classList.add("unavailable-bg");
+    }
+
+    content.innerHTML = `
+        <h2>${book.title}</h2>
+        <img src="${book.image_url}" width="200"><br><br>
+        <b>Author:</b> ${book.autor}<br>
+        <b>Owner:</b> ${owner ? owner.first_name + " " + owner.last_name : "Unknown"}<br>
+        <b>Status:</b> ${isAvailable ? "Available" : "<span style='color:red'>Unavailable</span>"}<br><br>
+
+        ${isAvailable ? `
+            From: <input type="date" id="od"><br>
+            To: <input type="date" id="do"><br><br>
+        ` : `<div id="unavailMsg">This book is unavailable</div>`}
+
+        <button id="actionBtn">${isAvailable ? "Borrow Book" : "Send Notification"}</button>
+    `;
+
+    const actionBtn = document.getElementById("actionBtn");
+
+    if (isAvailable) {
+        actionBtn.onclick = () => {
+            const od = document.getElementById("od").value;
+            const to = document.getElementById("do").value;
+
+            if (!od || !to) {
+                alert("Choose dates before borrowing.");
+                return;
+            }
+            if (new Date(od) >= new Date(to)) {
+                alert("'From' must be earlier than 'To'");
+                return;
+            }
+
+            window.open(
+                `borrow.html?book_id=${book.book_id}&od=${od}&do=${to}`,
+                "_blank"
+            );
+        };
+    } else {
+        actionBtn.onclick = () => {
+            window.open(
+                `notification.html?book_id=${book.book_id}`,
+                "_blank"
+            );
+        };
+    }
+
+</script>
+
+</body>
+</html>

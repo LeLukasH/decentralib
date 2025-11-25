@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Borrow Book</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 20px auto;
+        }
+        img {
+            border-radius: 8px;
+        }
+        .info {
+            margin: 10px 0;
+        }
+        .highlight {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Borrow Book</h1>
+<div id="content">Loading...</div>
+
+<script type="module">
+    import { BOOKS, USERS } from '../assets/js/config.js';
+
+    const content = document.getElementById("content");
+
+    // Get URL parameters
+    const params = new URLSearchParams(window.location.search);
+    const bookId = Number(params.get('book_id'));
+    const od = params.get('od');
+    const to = params.get('do');
+
+    // Find book
+    const book = BOOKS.find(b => b.book_id === bookId);
+
+    if (!book) {
+        content.innerHTML = "<h2>Book not found</h2>";
+        throw new Error("Book not found");
+    }
+
+    // Find owner
+    const owner = USERS.find(u => u.user_id === book.owner_id);
+
+    // Calculate days between dates
+    const daysBetween = od && to ? Math.ceil((new Date(to) - new Date(od)) / (1000 * 60 * 60 * 24)) : null;
+
+    content.innerHTML = `
+        <h2>${book.title}</h2>
+        <img src="${book.image_url}" width="200"><br><br>
+        <div class="info"><span class="highlight">Book ID:</span> ${book.book_id}</div>
+        <div class="info"><span class="highlight">Owner ID:</span> ${book.owner_id}</div>
+        <div class="info"><span class="highlight">Owner Name:</span> ${owner ? owner.first_name + ' ' + owner.last_name : 'Unknown'}</div>
+        ${od && to ? `<div class="info"><span class="highlight">From:</span> ${od}</div>
+                      <div class="info"><span class="highlight">To:</span> ${to}</div>
+                      <div class="info"><span class="highlight">Days Between:</span> ${daysBetween}</div>` : ''}
+    `;
+</script>
+
+</body>
+</html>

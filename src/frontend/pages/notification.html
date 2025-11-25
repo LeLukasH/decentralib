@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sending Notification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 20px auto;
+        }
+        .info-box {
+            background: #f2f2f2;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        img { border-radius: 8px; }
+        .notif {
+            color: #cc0000;
+            font-size: 26px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Sending Notification</h2>
+
+<div id="bookBox" class="info-box">Loading...</div>
+<div id="userBox" class="info-box">Loading...</div>
+<div class="notif">Sending notification...</div>
+
+<script type="module">
+    import { BOOKS, USERS } from '../assets/js/config.js';
+
+    const params = new URLSearchParams(window.location.search);
+    const bookId = Number(params.get("book_id"));
+
+    const book = BOOKS.find(b => b.book_id === bookId);
+    if (!book) throw new Error("Book not found");
+
+    const owner = USERS.find(u => u.user_id === book.owner_id);
+
+    document.getElementById("bookBox").innerHTML = `
+        <h3>Book</h3>
+        <img src="${book.image_url}" width="150"><br>
+        <b>${book.title}</b><br>
+        Author: ${book.autor}<br>
+        Type: ${book.type}<br>
+        Book ID: ${book.book_id}<br>
+        Status: ${book.is_available}
+    `;
+
+    document.getElementById("userBox").innerHTML = `
+        <h3>Owner</h3>
+        <img src="${owner.profile_pic}" width="120"><br>
+        ${owner.first_name} ${owner.last_name}<br>
+        Email: ${owner.email}<br>
+        Location: ${owner.location}<br>
+        User ID: ${owner.user_id}<br>
+        Reputation: ${owner.reputation}
+    `;
+</script>
+
+</body>
+</html>
