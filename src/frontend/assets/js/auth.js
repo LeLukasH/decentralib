@@ -1,20 +1,20 @@
 import { USERS } from "./config.js";
 
 function showMessage(message, type = 'error') {
-    const container = document.querySelector('.login-message');
+    const container = document.querySelector('.auth-message');
     if (container) container.remove();
 
     const div = document.createElement('div');
-    div.className = `login-message ${type}`;
+    div.className = `auth-message ${type}`;
     div.textContent = message;
 
     // Insert after the title (h2) instead of first child
-    const title = document.querySelector('.login-container h2');
+    const title = document.querySelector('.auth-container h2');
     if (title && title.parentNode) {
         title.insertAdjacentElement('afterend', div);
     } else {
         // fallback to top if title not found
-        const formContainer = document.querySelector('.login-container');
+        const formContainer = document.querySelector('.auth-container');
         formContainer.insertBefore(div, formContainer.firstChild);
     }
 } 
@@ -31,7 +31,7 @@ export function login() {
     }
 
     localStorage.setItem("currentUser", JSON.stringify(user));
-    showMessage("Prihlásenie úspešné! Presmerovanie…", 'success');
+    showMessage("Prihlásenie úspešné!", 'success');
 
     setTimeout(() => {
         window.location.href = "../home.html";
@@ -58,3 +58,16 @@ export function sendReset() {
 window.login = login;
 window.register = register;
 window.sendReset = sendReset;
+
+// Trigger Enter key for login, register, or reset depending on page
+const formInputs = document.querySelectorAll('.login-container input');
+formInputs.forEach(input => {
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const pageTitle = document.querySelector('.login-container h2')?.textContent.toLowerCase();
+            if (pageTitle.includes('prihlásenie')) login();
+            else if (pageTitle.includes('registrácia')) register();
+            else if (pageTitle.includes('obnoviť')) sendReset();
+        }
+    });
+});
