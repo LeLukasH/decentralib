@@ -1,42 +1,22 @@
-import {  USERS, BOOKS, BOOK_GENRES, BOOK_LANGS, CITIES} from "./config.js";
+import { USERS, BOOKS, BOOK_GENRES, BOOK_LANGS} from "./config.js";
+import { setupBookDetailModal } from "./book_detail_modal.js"; 
 
+// --- GLOBÁLNE PREMENNÉ ---
+let AVAILABLE_CITIES = []; 
+let selectedCityFilter = ""; 
+let searchCommitted = { nazov: "", autor: "" }; 
 
-function renderBooks() {
-    const container = document.getElementById("zoznam-knih");
-    container.innerHTML = "";
+// --- PRE STRÁNKOVANIE ---
+const BOOKS_PER_PAGE = 18;
+let currentPage = 1;
+// -------------------------
 
-    BOOKS.forEach(book => {
-        const card = document.createElement("div");
-        card.className = "karta-knihy";
-        const dostupne = isBookAvailable(book);
-
-        card.innerHTML = `
-            <h4>${book.title}</h4>
-            <div class="karta-content">
-                <img src="${book.image_url}" alt="" width="130" height="200">
-                <div class="karta-info">
-                    <p>${book.autor}</p>
-                    <p style="font-size: 16px;">
-                        ${getOwnerNick(book)}
-                        <span style='font-size:25px; color:yellow'>&#9733;</span>
-                        ${getOwnerReputation(book)}
-                    </p>
-                    <p>${getOwnerLocation(book)}</p>
-                    <div class="${dostupne ? "dostupne" : "pozicane"}">
-                        ${dostupne ? "Dostupné" : "Požičané"}
-                    </div>
-                    <a href="detail-knihy.html?id=${book.book_id}" class="btn-detail">
-                        Zobraziť detail
-                    </a>
-                </div>
-            </div>
-        `;
-
-        container.appendChild(card);
-    });
-}           
+// ===================================================
+// POMOCNÉ FUNKCIE (PRE KNIHY A VLASTNÍKOV)
+// ===================================================
 
 function getOwner(book) {
+    // Vráti objekt používateľa alebo null
     return USERS.find(u => u.user_id === book.owner_id) || null;
 }
 
@@ -59,6 +39,199 @@ function isBookAvailable(book) {
     return book.is_available === "yes";
 }
 
+// ===================================================
+// VYKRESLOVANIE (RENDERBOOKS A RENDERPAGINATION)
+// ===================================================
+
+/**
+ * Vykreslí navigačné prvky pre stránkovanie.
+ * @param {number} totalBooks - Celkový počet kníh po aplikovaní filtrov.
+ */
+function renderPagination(totalBooks) {
+    const totalPages = Math.ceil(totalBooks / BOOKS_PER_PAGE);
+    let paginationContainer = document.getElementById("pagination-container");
+
+    if (!paginationContainer) {
+        // Ak kontajner ešte neexistuje, vytvoríme ho
+        paginationContainer = document.createElement('div');
+        paginationContainer.id = 'pagination-container';
+        paginationContainer.className = 'pagination-controls';
+        
+        const listSekcia = document.querySelector('.list-knih-sekcia');
+        if (listSekcia) listSekcia.appendChild(paginationContainer);
+        else document.body.appendChild(paginationContainer);
+    }
+
+    paginationContainer.innerHTML = ''; 
+
+    if (totalPages <= 1) return;
+
+    // Tlačidlo Späť (Šípka <<)
+    const prevButton = createPaginationButton("«", currentPage > 1, () => {
+        currentPage--;
+        renderBooks();
+    });
+    prevButton.classList.add('nav-arrow'); // Pre špeciálny štýl šípky
+    paginationContainer.appendChild(prevButton);
+
+    // Vytvorenie číselných strán (max 5 viditeľných)
+    const maxPagesToShow = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+    let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+    
+    // Zabezpečí, aby sa zobrazilo 5 stránok, ak je to možné
+    if (endPage - startPage < maxPagesToShow - 1) {
+        startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+        const pageButton = createPaginationButton(i, true, () => {
+            currentPage = i;
+            renderBooks();
+        });
+        if (i === currentPage) {
+            pageButton.classList.add('active');
+        }
+        paginationContainer.appendChild(pageButton);
+    }
+
+    // Tlačidlo Ďalej (Šípka >>)
+    const nextButton = createPaginationButton("»", currentPage < totalPages, () => {
+        currentPage++;
+        renderBooks();
+    });
+    nextButton.classList.add('nav-arrow'); // Pre špeciálny štýl šípky
+    paginationContainer.appendChild(nextButton);
+    
+    // Posunieme scroll na vrch pre lepšiu UX
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/**
+ * Pomocná funkcia na vytvorenie tlačidla.
+ */
+function createPaginationButton(text, isEnabled, onClick) {
+    const button = document.createElement('button');
+    button.textContent = text;
+    button.disabled = !isEnabled;
+    button.onclick = onClick;
+    button.className = 'pagination-button';
+    return button;
+}
+
+function renderBooks() {
+    const container = document.getElementById("zoznam-knih");
+    container.innerHTML = "";
+    
+    // 1. Získanie aktívnych filtrov
+    const filters = getFilters(); 
+
+    // 2. FILTROVANIE DÁT PODĽA FILTROV
+    const filteredBooks = BOOKS.filter(book => {
+        const owner = getOwner(book);
+        let match = true;
+        
+        // Ak vlastník neexistuje, knihu ignorujeme
+        if (!owner) return false;
+
+        // Filter: Dostupnosť
+        if (filters.lenDostupne && book.is_available !== 'yes') {
+             match = false;
+        }
+
+        // Filter: Žáner
+        if (filters.zaner && filters.zaner.length > 0 && !filters.zaner.includes(book.type)) {
+            match = false;
+        }
+        
+        // Filter: Jazyk
+        if (filters.jazyk && filters.jazyk.length > 0 && !filters.jazyk.includes(book.language)) {
+            match = false;
+        }
+
+        // Filter: Mesto
+        if (filters.mesto && owner.location !== filters.mesto) {
+             match = false;
+        }
+
+        // Filter: Hodnotenie
+        const minRating = parseFloat(filters.hodnotenie);
+        if (minRating > 0 && parseFloat(owner.reputation) < minRating) {
+            match = false;
+        }
+        
+        // Filter: Názov (Vyhľadávanie)
+        if (filters.nazov && !book.title.toLowerCase().includes(filters.nazov.toLowerCase())) {
+             match = false;
+        }
+        
+        // Filter: Autor (Vyhľadávanie)
+        if (filters.autor && !book.autor.toLowerCase().includes(filters.autor.toLowerCase())) {
+             match = false;
+        }
+        
+        return match;
+    });
+
+    const totalBooks = filteredBooks.length;
+    
+    // Korekcia stránky po filtrovaní (ak sme na neexistujúcej stránke)
+    const totalPages = Math.ceil(totalBooks / BOOKS_PER_PAGE);
+    if (currentPage > totalPages && totalPages > 0) {
+        currentPage = totalPages;
+        // Rekurzívne zavolanie, aby sa aplikovala opravená stránka
+        renderBooks(); 
+        return;
+    }
+    
+    // 3. Aplikovanie stránkovania
+    const startIndex = (currentPage - 1) * BOOKS_PER_PAGE;
+    const endIndex = startIndex + BOOKS_PER_PAGE;
+    const booksToRender = filteredBooks.slice(startIndex, endIndex);
+
+    
+    // 4. Vykreslenie kariet
+    if (booksToRender.length === 0 && totalBooks > 0) {
+        // Ak sa na aktuálnej stránke nič nenašlo (ale celkovo existujú knihy, napr. sme preklikli na prázdnu stranu)
+        container.innerHTML = `<p class="no-results">Na aktuálnej stránke sa nenašli žiadne výsledky.</p>`;
+    } else if (totalBooks === 0) {
+        container.innerHTML = `<p class="no-results">Žiadne knihy nespĺňajú kritériá filtrovania.</p>`;
+    } else {
+        booksToRender.forEach(book => {
+            const card = document.createElement("div");
+            card.className = "karta-knihy";
+            const dostupne = isBookAvailable(book);
+            const owner = getOwner(book);
+
+            card.innerHTML = `
+                <h4>${book.title}</h4>
+                <div class="karta-content">
+                    <img src="${book.image_url}" alt="" width="130" height="200">
+                    <div class="karta-info">
+                        <p>${book.autor}</p>
+                        <p style="font-size: 16px;">
+                            ${getOwnerNick(book)}
+                            <span style='font-size:25px; color:yellow'>&#9733;</span>
+                            ${getOwnerReputation(book)}
+                        </p>
+                        <p>${getOwnerLocation(book)}</p>
+                        <div class="${dostupne ? "dostupne" : "pozicane"}">
+                            ${dostupne ? "Dostupné" : "Požičané"}
+                        </div>
+                        <button class="btn-detail" onclick="window.showBookDetail(${book.book_id})">
+                            Zobraziť detail
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            container.appendChild(card);
+        });
+    }
+
+    // 5. Vykreslenie stránkovania
+    renderPagination(totalBooks);
+}          
 
 function generateFilterOptions() {
     const genreContainer = document.getElementById("dropdown-zaner");
@@ -84,47 +257,36 @@ function generateFilterOptions() {
         `;
     });
     languageContainer.innerHTML = languages;
-
-    const cityContainer = document.getElementById("dropdown-mesto");
-    cityContainer.innerHTML = "";
-    var cities = "";
-    CITIES.forEach(c => {
-        cities += `
-            <div class="option">
-                <input type="checkbox" value="${c}"> ${c}
-            </div>
-        `;
-    });
-    cityContainer.innerHTML = cities;
 }
 
 
-let searchCommitted = { nazov: "", autor: "" }; // uchová hodnoty po stlačení enteru 
+// ===================================================
+// LOGIKA FILTROV A ZOBRAZENIE ZNAČIEK
+// ===================================================
 
 function getFilters() {
     const result = {};
 
-    const groups = document.querySelectorAll(".filter-skupina[data-filter]");
+    const groups = document.querySelectorAll(".filter-skupina[data-filter='zaner'], .filter-skupina[data-filter='jazyk']");
     groups.forEach(group => {
         const name = group.dataset.filter;
         const checked = group.querySelectorAll('input[type="checkbox"]:checked');
         const values = Array.from(checked).map(ch => ch.value);
-        result[name] = values;
+        if (values.length > 0) result[name] = values;
     });
     
     const lenDostupne = document.getElementById("len-dostupne").checked;
     if (lenDostupne) result["lenDostupne"] = true;
-
-    const vzd = document.getElementById("vzdialenost").value;
-    if (vzd.trim() !== "") result["vzdialenost"] = vzd;
-
+    
     const rating = document.getElementById("hodnotenie").value;
     if (rating !== "0") result["hodnotenie"] = rating;
+    
+    // Filter Mesto
+    if (selectedCityFilter !== "") result["mesto"] = selectedCityFilter;
 
     if (searchCommitted.nazov !== "") result["nazov"] = searchCommitted.nazov;
     if (searchCommitted.autor !== "") result["autor"] = searchCommitted.autor;
 
-    console.log(result);
     return result;
 }
 
@@ -135,6 +297,9 @@ function renderActiveFilters() {
     container.innerHTML = "";
 
     let activeCount = 0;
+
+    // Po zmene filtrov resetujeme stránku na 1
+    currentPage = 1; 
 
     for (const key in filters) {
         const value = filters[key];
@@ -147,16 +312,17 @@ function renderActiveFilters() {
     }
 
     function createBadge(key, value) {
-        console.log(key, value);
         activeCount++;
         const badge = document.createElement("span");
         badge.className = "filter-badge";
 
         let text = value;
 
-        if (key === "vzdialenost") text = `do ${value} km`;
         if (key === "hodnotenie") text = `hodnotenie: ${value}+`;
         if (key === "lenDostupne") text = "len dostupné";
+        if (key === "mesto") text = `Mesto: ${value}`; 
+        if (key === "nazov") text = `Názov: ${value}`; 
+        if (key === "autor") text = `Autor: ${value}`; 
 
         badge.textContent = text + " ";
 
@@ -172,16 +338,15 @@ function renderActiveFilters() {
     nadpis.textContent = activeCount === 0 ? "Všetky tituly" : "Výsledky pre:";
 
     const btn = document.getElementById("vymaz-filtre");
-    btn.style.display = activeCount >= 2 ? "block" : "none";
+    btn.style.display = activeCount >= 1 ? "block" : "none";
+    
+    // Spustíme renderovanie kníh s novými filtrami a stránkovaním
+    renderBooks(); 
 }
 
 function uncheckByKey(key, value) {
     if (key === "lenDostupne") {
         document.getElementById("len-dostupne").checked = false;
-    }
-
-    if (key === "vzdialenost") {
-        document.getElementById("vzdialenost").value = "";
     }
 
     if (key === "hodnotenie") {
@@ -198,26 +363,101 @@ function uncheckByKey(key, value) {
         document.querySelector('input[placeholder="Autor"]').value = "";
     }
 
+    // ZRUŠENIE FILTRA MESTA
+    if (key === "mesto") { 
+        selectedCityFilter = "";
+        document.getElementById("autocomplete-mesto").value = "";
+        document.getElementById("autocomplete-mesto-results").style.display = "none";
+    }
+
+    // Zrušenie checkboxov (žáner, jazyk)
     const checkbox = document.querySelector(`input[type="checkbox"][value="${value}"]`);
     if (checkbox) checkbox.checked = false;
 
-    renderActiveFilters();
+    renderActiveFilters(); // Vola renderBooks
 }
 
 function deleteFilters() {
     document.querySelectorAll('input[type="checkbox"]:checked').forEach(ch => ch.checked = false);
 
-    document.getElementById("vzdialenost").value = "";
     document.getElementById("hodnotenie").value = 0;
-
+    
+    // Vymazanie Autocomplete Mesta
+    selectedCityFilter = "";
+    const cityInput = document.getElementById("autocomplete-mesto");
+    if (cityInput) cityInput.value = "";
+    document.getElementById("autocomplete-mesto-results").style.display = "none";
+    
     searchCommitted.nazov = "";
     searchCommitted.autor = "";
 
     document.querySelector('input[placeholder="Názov"]').value = "";
     document.querySelector('input[placeholder="Autor"]').value = "";
 
-    renderActiveFilters();
+    renderActiveFilters(); // Vola renderBooks
 }
+
+// ===================================================
+// LOGIKA MESTO AUTCOMPLETE
+// ===================================================
+
+function getAvailableCities() {
+    const availableOwnerIds = new Set(
+        BOOKS.filter(book => book.is_available === "yes")
+             .map(book => book.owner_id)
+    );
+
+    const cities = USERS.filter(user => availableOwnerIds.has(user.user_id))
+                        .map(user => user.location);
+
+    AVAILABLE_CITIES = [...new Set(cities)].sort();
+}
+
+function handleCityAutocomplete(event) {
+    const input = event.target;
+    const value = input.value.trim().toLowerCase();
+    const resultsContainer = document.getElementById("autocomplete-mesto-results");
+    
+    resultsContainer.innerHTML = "";
+    
+    if (value.length < 3) {
+        resultsContainer.style.display = "none";
+        // Ak sa input vyprázdni, filter zrušíme
+        if (selectedCityFilter !== "" && value.length === 0) {
+            selectedCityFilter = ""; 
+            renderActiveFilters(); 
+        }
+        return; 
+    }
+
+    const filteredCities = AVAILABLE_CITIES.filter(city => 
+        city.toLowerCase().includes(value)
+    );
+    
+    if (filteredCities.length > 0) {
+        filteredCities.forEach(city => {
+            const option = document.createElement("div");
+            option.className = "autocomplete-option";
+            option.textContent = city;
+            
+            option.onclick = () => {
+                input.value = city;
+                selectedCityFilter = city; 
+                resultsContainer.style.display = "none";
+                renderActiveFilters(); // Vola renderBooks
+            };
+            resultsContainer.appendChild(option);
+        });
+        resultsContainer.style.display = "block";
+    } else {
+        resultsContainer.style.display = "none";
+    }
+}
+
+
+// ===================================================
+// EVENT LISTENERS A INICIALIZÁCIA
+// ===================================================
 
 function toggleFilter(header) {
     const body = header.nextElementSibling;
@@ -226,8 +466,9 @@ function toggleFilter(header) {
 }
 
 document.addEventListener("input", function(e) {
+    // Spustí prekreslenie pri zmene checkboxov, number inputoch (hodnotenie)
     if (e.target.type === "checkbox" || e.target.type === "number" || e.target.id === "hodnotenie") {
-        renderActiveFilters();
+        renderActiveFilters(); // Vola renderBooks
     }
 });
 
@@ -239,7 +480,7 @@ document.addEventListener("keydown", function(e) {
         if (e.target.placeholder === "Autor") {
             searchCommitted.autor = e.target.value.trim();
         }
-        renderActiveFilters();
+        renderActiveFilters(); // Vola renderBooks
     }
 });
 
@@ -249,6 +490,24 @@ document.querySelectorAll(".dropdown-header").forEach(header => {
 
 document.getElementById("vymaz-filtre").addEventListener("click", deleteFilters);
 
-generateFilterOptions();
-renderBooks();
-renderActiveFilters();
+// --- LISTENERY PRE MESTO AUTCOMPLETE ---
+document.getElementById("autocomplete-mesto").addEventListener("input", handleCityAutocomplete);
+
+// Skryť výsledky mesta, ak používateľ klikne mimo nich
+document.addEventListener('click', function(e) {
+    const cityContainer = document.querySelector(".filter-skupina[data-filter='mesto']");
+    if (cityContainer && !cityContainer.contains(e.target)) {
+        const results = document.getElementById("autocomplete-mesto-results");
+        if (results) results.style.display = "none";
+    }
+});
+
+
+// ===================================================
+// ŠTARTOVACÍ KÓD
+// ===================================================
+getAvailableCities(); 
+generateFilterOptions(); 
+renderActiveFilters(); // Spustí prvé renderovanie kníh, filtrov a stránkovania
+
+setupBookDetailModal(USERS, BOOKS);

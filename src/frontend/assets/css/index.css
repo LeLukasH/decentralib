@@ -52,6 +52,14 @@ body {
     border-radius: 8px;
     border: 1px solid #d9dce2;
     box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    width: 250px;
+    padding: 15px;
+    box-sizing: border-box;
+
+    position: sticky; 
+    top: 20px; /* Vzdialenosť od vrchu obrazovky, nechceme ho hneď nalepiť na okraj */
+    height: calc(100vh - 40px); /* Zabezpečí, že sa zmestí na výšku obrazovky, ak je filter veľmi dlhý */
+    overflow-y: auto; /* Ak je filter dlhší ako obrazovka, umožní scroll len vo filtri */
 }
 
 .filter h3 {
@@ -60,10 +68,11 @@ body {
 }
 
 .filter-skupina {
-    width: 220px;
+    width: 250px;
     position: relative;
     font-family: sans-serif;
     margin-bottom: 16px;
+    width: 100%;
 }
 
 .filter-label {
@@ -272,4 +281,95 @@ body {
 
 .filter-badge .close-x:hover {
     color: #003f87;
+}
+
+/* Kontajner musí byť relative, aby sa výsledky umiestnili absolute */
+.filter-skupina[data-filter="mesto"] {
+    position: relative;
+    /* Pôvodná šírka bola 220px v .filter-skupina - necháme to tak */
+}
+
+/* Štýly pre Input */
+.autocomplete-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box; /* Zabezpečí, že padding a border sú vo vnútri šírky */
+}
+
+/* Kontajner pre výsledky (Dropdown) */
+.autocomplete-results {
+    position: absolute;
+    top: 100%; /* Umiestni sa presne pod input */
+    left: 0;
+    z-index: 10;
+    width: 100%;
+    max-height: 200px; /* Obmedzená výška pre scroll */
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #d9dce2;
+    border-top: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 0 0 6px 6px;
+    display: none; /* Defaultne skryté */
+}
+
+/* Štýly pre jednotlivé možnosti mesta */
+.autocomplete-option {
+    padding: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #2b3340;
+}
+
+.autocomplete-option:hover {
+    background-color: #f1f3f7; /* Svetlé pozadie pri hover */
+}
+
+/* Vycentrovanie a väčšie medzery */
+.pagination-controls {
+    display: flex;
+    justify-content: center; /* KĽÚČOVÉ: Vycentruje ovládanie */
+    align-items: center;
+    margin: 40px 0; /* Väčšie medzery */
+    padding: 10px;
+}
+
+/* Väčšie tlačidlá */
+.pagination-button {
+    padding: 10px 18px; /* Väčší padding */
+    margin: 0 7px; /* Väčšie medzery medzi tlačidlami */
+    border: 1px solid #d9dce2;
+    background-color: white;
+    color: #2b3340;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px; /* Väčší font */
+    font-weight: 500;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.pagination-button.active {
+    background-color: #2f70e9;
+    color: white;
+    border-color: #2f70e9;
+    font-weight: bold;
+}
+
+/* Štýl pre šípky, aby sa text "Späť/Ďalej" nahradil */
+.pagination-button.nav-arrow {
+    font-weight: bold;
+    font-size: 20px;
+    padding: 8px 15px;
+}
+
+.pagination-button:disabled {
+    cursor: not-allowed;
+    color: #aaaaaa !important; /* Šedá farba pre text */
+    background-color: #f5f5f5; /* Svetlošedé pozadie, aby to vyzeralo neaktívne */
+    border-color: #d9d9d9;
+    
+    /* Odstránime efekty pri hover, ak je disabled */
+    pointer-events: none; 
 }

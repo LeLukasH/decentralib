@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Decentralizovaná knižnica</title>
     <link rel="stylesheet" href="../assets/css/index.css">
+    <link rel="stylesheet" href="../assets/css/book_detail_modal.css"> 
+    
     <script type="module" src="../assets/js/home.js"></script>
+    <script type="module" src="../assets/js/book_detail_modal.js"></script>
 </head>
 
 <body>
@@ -42,7 +45,7 @@
             </div>
 
 
-           <div class="filter-skupina" data-filter="jazyk">
+            <div class="filter-skupina" data-filter="jazyk">
                 <label class="filter-label">Jazyk</label>
 
                 <div class="dropdown-header">
@@ -53,18 +56,12 @@
             </div>
 
             <div class="filter-skupina" data-filter="mesto">
-                <label class="filter-label">Mesto</label>
+                <label class="filter-label" for="autocomplete-mesto">Mesto</label>
+                
+                <input type="text" id="autocomplete-mesto" placeholder="Zadajte názov mesta" class="autocomplete-input">
 
-                <div class="dropdown-header">
-                    <span class="arrow">&#9660;</span>
-                </div>
-
-                <div class="dropdown-body" id="dropdown-mesto"> </div>
-            </div>
-
-            <div class="filter-skupina">
-                <label for="vzdialenost" class="filter-label">Vzdialenosť</label>
-                do <input type="number" id="vzdialenost"> km
+                <div class="autocomplete-results" id="autocomplete-mesto-results">
+                    </div>
             </div>
 
             <div class="filter-skupina">
@@ -104,5 +101,56 @@
         
     </div>
 
+    <div id="bookDetailModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            
+            <h2 id="modal-title" class="modal-title">Názov knihy</h2>
+            
+            <div class="modal-body">
+                <div class="book-cover">
+                    <img id="modal-image" src="" alt="Obal knihy" width="130" height="200"> 
+                </div>
+                
+                <div class="book-info">
+                    <p id="modal-author" class="info-item author">Autor</p>
+                    <div class="info-item owner-rating">
+                        <span id="modal-owner">Vlastník</span>
+                        <span class="rating-star">&#9733;</span>
+                        <span id="modal-rating" class="rating-value">4,7</span>
+                    </div>
+                    <p id="modal-count" class="info-item">Počet hodnotení: 4</p>
+                    <p id="modal-location" class="info-item">Lokalita</p>
+                    
+                    <div class="borrow-form">
+                        <label for="date-from">Požičanie od:</label>
+                        <input type="date" id="date-from">
+                        <label for="date-to">do:</label>
+                        <input type="date" id="date-to">
+                    </div>
+                    
+                    <button id="request-borrow" class="request-button">Požiadať o požičanie</button>
+                </div>
+            </div>
+
+            <div class="book-specs">
+                <p><strong>Jazyk:</strong> <span id="modal-language">Jazyk</span></p>
+                <p><strong>Žáner:</strong> <span id="modal-genre">Žáner</span></p>
+            </div>
+
+            <div class="book-description">
+                <h3 class="description-title">Popis</h3>
+                <div class="description-roll-up">
+                    <p id="modal-description-full" class="description-text">
+                        Popis knihy...
+                    </p>
+                    <button id="toggle-description-button" class="toggle-button">
+                        Čítať celý popis (...)
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </body>
 </html>
