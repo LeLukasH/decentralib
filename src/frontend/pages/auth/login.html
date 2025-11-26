@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prihlásenie – Decentralizovaná knižnica</title>
+    <link rel="stylesheet" href="../../assets/css/index.css" />
+    <link rel="stylesheet" href="../../assets/css/login.css" />
+</head>
+<body>
+    <div class="login-container">
+        <h2>Prihlásenie</h2>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Zadajte email" />
+        </div>
+        <div class="form-group">
+            <label for="password">Heslo</label>
+            <input type="password" id="password" placeholder="Zadajte heslo" />
+        </div>
+        <button class="login-button" onclick="login()">Prihlásiť sa</button>
+        <div class="register-link">
+            Nemáte účet? <a href="register.html">Zaregistrujte sa</a><br>
+            Zabudli ste heslo? <a href="forgot-password.html">Obnoviť heslo</a>
+        </div>
+    </div>
+</body>
+<script type="module" src="../../assets/js/auth.js"></script>
+</html>
