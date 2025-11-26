@@ -7,6 +7,25 @@ body {
     color: #2b3340;
 }
 
+footer{
+	clear:both;
+    padding:  15px; 
+    background: #2f70e9;
+    color: white;
+}
+
+header{
+    display: flex;
+    justify-content: space-between;
+    padding-left: 15px;
+    background: #2f70e9;
+    color: white;
+}
+
+header div{
+    display: flex;
+}
+
 /* NAVIGACIA */
 .navigacne-tlacidla {
     display: flex;
@@ -372,4 +391,17 @@ body {
     
     /* Odstránime efekty pri hover, ak je disabled */
     pointer-events: none; 
+}
+
+.logo{
+    padding: 10px;
+    width: 50px;
+    height: 50px;
+}
+
+.pouzivatel-hlavicka-obr{
+    padding: 10px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
 }
