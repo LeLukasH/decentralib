@@ -1,16 +1,22 @@
 class MyHeader extends HTMLElement {
 	connectedCallback() {
+		const currentUser = JSON.parse(localStorage.getItem('currentUser')) || { first_name: '', last_name: '', nick: 'Hosť', profile_pic: 'https://picsum.photos/seed/user1/200' };
+		
+		const displayName = `${currentUser.first_name || ''} ${currentUser.last_name || ''}`.trim();
+		const nickDisplay = currentUser.nick ? `(${currentUser.nick})` : '';
+		const fullDisplay = displayName ? `${displayName} ${nickDisplay}`.trim() : currentUser.nick;
+
 		this.innerHTML = `
-		<header>
-			<div>		
-				<img src="../assets/img/DecLibWhite.png" alt="Logo" title="Decentralizovaná knižnica" class = "logo">
-				<h1>Decentralizovaná knižnica</h1>
-			</div>
-			<div>
-				<h2>marty</h2>
-				<img src = "https://picsum.photos/seed/user1/200" class="pouzivatel-hlavicka-obr">
-			</div>
-		</header>`
+			<header>
+				<div>
+					<img src="../assets/img/DecLibWhite.png" alt="Logo" title="Decentralizovaná knižnica" class="logo">
+					<h1>Decentralizovaná knižnica</h1>
+				</div>
+				<div>
+					<h2>${fullDisplay}</h2>
+					<img src="${currentUser.profile_pic}" class="pouzivatel-hlavicka-obr">
+				</div>
+			</header>`;
 	}
 }
 
