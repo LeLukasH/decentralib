@@ -13,7 +13,13 @@ class MyHeader extends HTMLElement {
 					<h1>Decentralizovaná knižnica</h1>
 				</div>
 				<div>
-					<h2>${fullDisplay}</h2>
+					<div class="pouzivatel-dropdown">
+						<button onclick="showDropdown()" onfocusout="hideDropdown()" class="pouzivatel_tlacidlo"><h2>${fullDisplay}</h2></button>
+						<div id="pouzivatel_moznosti" class="pouzivatel_obsah">
+							<a href="#">Spravuj účet</a>
+    						<a href="#">Odhlás ma</a>
+						</div>
+					</div>
 					<img src="${currentUser.profile_pic}" class="pouzivatel-hlavicka-obr">
 				</div>
 			</header>`;
@@ -28,6 +34,20 @@ class MyFooter extends HTMLElement {
 			<strong>Posledne aktualizované:</strong> 26.11.2025<br>
 		</footer>`
 	}
+}
+
+/* Zobraz moznosti pod tlacidlom s menom*/
+function showDropdown() {
+  document.getElementById("pouzivatel_moznosti").classList.toggle("show");
+}
+
+// schovaj moznosti pod menom
+function hideDropdown(){
+  console.log("klikol mimo tlačidla");
+  var dropdown = document.getElementById("pouzivatel_moznosti");
+  if(dropdown.classList.contains('show')){
+	dropdown.classList.remove('show');
+  }
 }
 
 customElements.define('my-header', MyHeader)

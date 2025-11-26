@@ -405,3 +405,40 @@ header div{
     height: 50px;
     border-radius: 50%;
 }
+
+.pouzivatel-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.pouzivatel_tlacidlo {
+  background-color: #2f70e9;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.pouzivatel_tlacidlo:hover, .pouzivatel_tlacidlo:focus {
+  background-color: #1f5fd1;
+}
+
+.pouzivatel_obsah {
+  display: none;
+  position: absolute;
+  background-color: #f1f3f7;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  width:100%;
+}
+
+.pouzivatel_obsah a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.pouzivatel_obsah a:hover {background-color: #ddd;}
+
+.show {display:block;}
