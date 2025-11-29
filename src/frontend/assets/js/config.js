@@ -20,7 +20,7 @@ function getUniqueSortedValues(data, key) {
 
 export const USERS = [
   {
-    user_id: 1,
+    id: 1,
     first_name: "Martin",
     last_name: "Kovac",
     nick: "marty",
@@ -31,7 +31,7 @@ export const USERS = [
     reputation: 4.8
   },
   {
-    user_id: 2,
+    id: 2,
     first_name: "Eva",
     last_name: "Novakova",
     nick: "eva_n",
@@ -42,7 +42,7 @@ export const USERS = [
     reputation: 4.5
   },
   {
-    user_id: 3,
+    id: 3,
     first_name: "Peter",
     last_name: "Hrasko",
     nick: "petko",
@@ -60,7 +60,7 @@ export const USERS = [
 
 export const BOOKS = [
   {
-    book_id: 1,
+    id: 1,
     title: "The Silent Forest",
     autor: "Mark Holloway",
     description: "Mystery novel set deep in the wilderness. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?",
@@ -71,7 +71,7 @@ export const BOOKS = [
     is_available: "yes"
   },
   {
-    book_id: 2,
+    id: 2,
     title: "Beyond the Horizon",
     autor: "Elena Brooks",
     description: "Inspiring story about chasing dreams.",
@@ -82,7 +82,7 @@ export const BOOKS = [
     is_available: "no"
   },
   {
-    book_id: 3,
+    id: 3,
     title: "Mesto v Tme",
     autor: "Jozef Benko",
     description: "Slovenský triler z mestského prostredia.",
@@ -93,7 +93,7 @@ export const BOOKS = [
     is_available: "yes"
   },
   {
-    book_id: 4,
+    id: 4,
     title: "The Last Empire",
     autor: "Richard Flannery",
     description: "Epic fantasy about a crumbling kingdom.",
@@ -104,7 +104,7 @@ export const BOOKS = [
     is_available: "yes"
   },
   {
-    book_id: 5,
+    id: 5,
     title: "Ocean of Memories",
     autor: "Hanna Rivera",
     description: "Romantic story intertwined with past secrets.",
@@ -115,7 +115,7 @@ export const BOOKS = [
     is_available: "yes"
   },
   {
-    book_id: 6,
+    id: 6,
     title: "Tajomstvo Hradu",
     autor: "Marek Ruman",
     description: "Dobrodružný príbeh zo stredoveku.",
@@ -126,7 +126,7 @@ export const BOOKS = [
     is_available: "no"
   },
   {
-    book_id: 7,
+    id: 7,
     title: "Digital Future",
     autor: "Alan Pierce",
     description: "Exploration of technology's impact on society.",
@@ -137,7 +137,7 @@ export const BOOKS = [
     is_available: "yes"
   },
   {
-    book_id: 8,
+    id: 8,
     title: "Cold Night",
     autor: "Sarah Holden",
     description: "Crime novel set in a frozen Scandinavian town.",
@@ -148,7 +148,7 @@ export const BOOKS = [
     is_available: "no"
   },
   {
-    book_id: 9,
+    id: 9,
     title: "Zabudnuté Hory",
     autor: "Tomas Hlavac",
     description: "Príbehy zo slovenských hôr.",
@@ -159,7 +159,7 @@ export const BOOKS = [
     is_available: "yes"
   },
   {
-    book_id: 10,
+    id: 10,
     title: "Quantum Echoes",
     autor: "Liam Hart",
     description: "Sci-fi román o paralelných svetoch.",
@@ -170,7 +170,7 @@ export const BOOKS = [
     is_available: "yes"
   },
   {
-    book_id: 11,
+    id: 11,
     title: "City of Ashes",
     autor: "Emily Rhodes",
     description: "Urban fantasy with dark undertones.",
@@ -181,7 +181,7 @@ export const BOOKS = [
     is_available: "no"
   },
   {
-    book_id: 12,
+    id: 12,
     title: "Pod Slnkom",
     autor: "Juraj Novak",
     description: "Slovenská romantická novela.",
@@ -192,7 +192,7 @@ export const BOOKS = [
     is_available: "yes"
   },
   {
-    book_id: 13,
+    id: 13,
     title: "The Painted Sky",
     autor: "Isabelle Grant",
     description: "Emotional story about family and identity.",
@@ -203,7 +203,7 @@ export const BOOKS = [
     is_available: "yes"
   },
   {
-    book_id: 14,
+    id: 14,
     title: "Frozen Lies",
     autor: "Nathan Cole",
     description: "Detective story set in Canada.",
@@ -214,7 +214,7 @@ export const BOOKS = [
     is_available: "no"
   },
   {
-    book_id: 15,
+    id: 15,
     title: "Shadow Walker",
     autor: "Kara Miles",
     description: "Dark fantasy with strong character development.",
@@ -225,7 +225,7 @@ export const BOOKS = [
     is_available: "yes"
   },
   {
-    book_id: 16,
+    id: 16,
     title: "Nebesá", 
     autor: "Silvia Grmanová",
     description: "Slovenská filozofická próza.",
@@ -236,7 +236,7 @@ export const BOOKS = [
     is_available: "yes"
   },
   {
-    book_id: 17,
+    id: 17,
     title: "Iron Stars",
     autor: "Michael Turner",
     description: "Military sci-fi epic.",
@@ -247,7 +247,7 @@ export const BOOKS = [
     is_available: "yes"
   },
   {
-    book_id: 18,
+    id: 18,
     title: "Dolina Ticha",
     autor: "Roman Varga",
     description: "Príbeh o živote na vidieku.",
@@ -258,7 +258,7 @@ export const BOOKS = [
     is_available: "yes"
   },
   {
-    book_id: 19,
+    id: 19,
     title: "Edge of Reality",
     autor: "Sophie Lang",
     description: "Psychological thriller with surreal elements.",
@@ -269,7 +269,7 @@ export const BOOKS = [
     is_available: "no"
   },
   {
-    book_id: 20,
+    id: 20,
     title: "The Forgotten Stars",
     autor: "Daniel Price",
     description: "Sci-fi novel about lost civilizations.",
@@ -280,7 +280,7 @@ export const BOOKS = [
     is_available: "yes"
   },
   {
-    book_id: 21,
+    id: 21,
     title: "Vietor v Korunách",
     autor: "Simona Králová",
     description: "Prírodopisná esej o stromoch.",
@@ -291,7 +291,7 @@ export const BOOKS = [
     is_available: "yes"
   },
   {
-    book_id: 22,
+    id: 22,
     title: "Broken Path",
     autor: "Harvey Quinn",
     description: "Dark drama about relationships and healing.",
@@ -302,7 +302,7 @@ export const BOOKS = [
     is_available: "no"
   },
   {
-    book_id: 23,
+    id: 23,
     title: "Crystal Kingdom",
     autor: "Lara Bright",
     description: "Magical adventure in an icy realm.",
@@ -313,7 +313,7 @@ export const BOOKS = [
     is_available: "yes"
   },
   {
-    book_id: 24,
+    id: 24,
     title: "Svetlá Noci",
     autor: "Adam Šulek",
     description: "Mestská poézia plná emócií.",
@@ -324,7 +324,7 @@ export const BOOKS = [
     is_available: "yes"
   },
   {
-    book_id: 25,
+    id: 25,
     title: "Whispers of the Past",
     autor: "Clara Jensen",
     description: "Historical mystery with strong atmosphere.",
@@ -335,7 +335,7 @@ export const BOOKS = [
     is_available: "no"
   },
   {
-    book_id: 26,
+    id: 26,
     title: "Nad Ránom",
     autor: "Peter Ferianc",
     description: "Slovenský psychologický román.",
@@ -346,7 +346,7 @@ export const BOOKS = [
     is_available: "yes"
   },
   {
-    book_id: 27,
+    id: 27,
     title: "Rising Dust",
     autor: "Henry Miller",
     description: "Post-apocalyptic survival story.",
@@ -357,7 +357,7 @@ export const BOOKS = [
     is_available: "yes"
   },
   {
-    book_id: 28,
+    id: 28,
     title: "Morský Vlna",
     autor: "Katarína Pospíšilová",
     description: "Poetické príbehy inšpirované morom.",
@@ -368,7 +368,7 @@ export const BOOKS = [
     is_available: "yes"
   },
   {
-    book_id: 29,
+    id: 29,
     title: "The Ivory Tower",
     autor: "William Hayes",
     description: "Political thriller with unexpected twists.",
@@ -379,7 +379,7 @@ export const BOOKS = [
     is_available: "no"
   },
   {
-    book_id: 30,
+    id: 30,
     title: "Vlci Severu",
     autor: "Ivan Holub",
     description: "Dobrodružná cesta naprieč severskou divočinou.",

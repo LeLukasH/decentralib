@@ -2,13 +2,14 @@
 // IMPORTS
 // ---------------------------------------------------
 import { auth, db } from "./firebase.js";
-import { 
-    signInWithEmailAndPassword,
-    createUserWithEmailAndPassword,
-    sendPasswordResetEmail,
-    signOut
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  signOut
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { doc, setDoc, getDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
 
 
 // ---------------------------------------------------
@@ -116,13 +117,21 @@ export async function register() {
     }
 
     try {
+        // Vytvorenie účtu v Firebase Auth
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
+        // Automaticky priradíme id podľa počtu existujúcich používateľov
+        const usersSnapshot = await getDocs(collection(db, "users"));
+        const newId = usersSnapshot.size + 1; // jednoduché číslo id, môžeš prispôsobiť
+
+        // Uloženie do Firestore
         await setDoc(doc(db, "users", user.uid), {
+            id: newId,
             first_name,
             last_name,
             email,
+            password,
             location: null,
             profile_pic: null,
             reputation: null
@@ -143,7 +152,7 @@ export async function register() {
 // ---------------------------------------------------
 // PASSWORD RESET
 // ---------------------------------------------------
-export async function sendReset() {
+export async function resetPassword() {
     clearMessages();
 
     const email = document.getElementById("email")?.value || "";
@@ -176,7 +185,7 @@ export async function sendReset() {
 // ---------------------------------------------------
 window.login = login;
 window.register = register;
-window.sendReset = sendReset;
+window.resetPassword = resetPassword;
 
 
 // ---------------------------------------------------
