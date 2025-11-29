@@ -52,7 +52,7 @@ export async function login() {
         const user = userCredential.user;
 
         // Načítanie Firestore dokumentu
-        const userDocRef = doc(db, "users", user.uid);
+        const userDocRef = doc(db, "users", user.email);
         const userDocSnap = await getDoc(userDocRef);
 
         if (!userDocSnap.exists()) {
@@ -63,11 +63,7 @@ export async function login() {
         const userData = userDocSnap.data();
 
         // Uloženie do localStorage
-        localStorage.setItem("currentUser", JSON.stringify({
-            uid: user.uid,
-            email: user.email,
-            ...userData  // všetky polia z Firestore (first_name, last_name, profile_pic, atď.)
-        }));
+        localStorage.setItem("currentUser", JSON.stringify(userData));
 
         showMessage("Prihlásenie úspešné!", "success");
         setTimeout(() => { window.location.href = "../home.html"; }, 500);
@@ -126,7 +122,7 @@ export async function register() {
         const newId = usersSnapshot.size + 1; // jednoduché číslo id, môžeš prispôsobiť
 
         // Uloženie do Firestore
-        await setDoc(doc(db, "users", user.uid), {
+        await setDoc(doc(db, "users", user.email), {
             id: newId,
             first_name,
             last_name,
