@@ -1,5 +1,6 @@
-import { USERS, BOOKS, BOOK_GENRES, BOOK_LANGS} from "./config.js";
-import { setupBookDetailModal } from "./book_detail_modal.js"; 
+import { setupBookDetailModal } from "./book_detail_modal.js";
+import { USERS } from "./api/users.js";
+import { BOOKS, BOOK_GENRES, BOOK_LANGS } from "./api/books.js";
 
 // --- GLOBÁLNE PREMENNÉ ---
 let AVAILABLE_CITIES = []; 
@@ -17,7 +18,7 @@ let currentPage = 1;
 
 function getOwner(book) {
     // Vráti objekt používateľa alebo null
-    return USERS.find(u => u.user_id === book.owner_id) || null;
+    return USERS.find(u => u.id === book.owner_id) || null;
 }
 
 function getOwnerNick(book) {
@@ -218,7 +219,7 @@ function renderBooks() {
                         <div class="${dostupne ? "dostupne" : "pozicane"}">
                             ${dostupne ? "Dostupné" : "Požičané"}
                         </div>
-                        <button class="btn-detail" onclick="window.showBookDetail(${book.book_id})">
+                        <button class="btn-detail" onclick="window.showBookDetail(${book.id})">
                             Zobraziť detail
                         </button>
                     </div>
@@ -407,7 +408,7 @@ function getAvailableCities() {
              .map(book => book.owner_id)
     );
 
-    const cities = USERS.filter(user => availableOwnerIds.has(user.user_id))
+    const cities = USERS.filter(user => availableOwnerIds.has(user.id))
                         .map(user => user.location);
 
     AVAILABLE_CITIES = [...new Set(cities)].sort();

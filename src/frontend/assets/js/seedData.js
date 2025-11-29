@@ -1,7 +1,7 @@
 // seedBooks.js
 import { db } from './firebase.js';
 import { doc, setDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-import { BOOKS, USERS } from './config.js'; // tvoje pole BOOKS
+import { BOOKS_DATA, USERS_DATA } from './config.js'; // tvoje pole BOOKS
 
 async function seedCollection(collectionName, data) {
     try {
@@ -19,8 +19,8 @@ async function seedCollection(collectionName, data) {
 // Seeder funkcia
 // -------------------------------
 async function seedAll() {
-    await seedCollection('users', USERS);
-    await seedCollection('books', BOOKS);
+    await seedCollection('users', USERS_DATA);
+    await seedCollection('books', BOOKS_DATA);
 }
 
 seedAll();

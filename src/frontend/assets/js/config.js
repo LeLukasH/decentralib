@@ -1,24 +1,8 @@
 // ===================================================
-// DYNAMICKÉ GENERÁTOROVÉ FUNKCIE
-// ===================================================
-
-/**
- * Získa unikátne hodnoty z daného poľa objektov pre špecifický kľúč.
- * @param {Array<Object>} data Pole kníh alebo používateľov.
- * @param {string} key Kľúč, ktorého hodnoty chceme získať.
- * @returns {Array<string>} Pole unikátnych, zoradených hodnôt.
- */
-function getUniqueSortedValues(data, key) {
-    // Použijeme Set pre získanie unikátnych hodnôt a potom zoradíme
-    // Filter zabezpečí, že hodnoty nie sú undefined alebo null
-    return [...new Set(data.map(item => item[key]).filter(value => value))].sort();
-}
-
-// ===================================================
 // DÁTOVÝ MODEL: POUŽÍVATELIA
 // ===================================================
 
-export const USERS = [
+export const USERS_DATA = [
   {
     id: 1,
     first_name: "Martin",
@@ -58,7 +42,7 @@ export const USERS = [
 // DÁTOVÝ MODEL: KNIHY
 // ===================================================
 
-export const BOOKS = [
+export const BOOKS_DATA = [
   {
     id: 1,
     title: "The Silent Forest",
@@ -390,10 +374,3 @@ export const BOOKS = [
     is_available: "yes"
   }
 ];
-
-// ===================================================
-// EXPORTNÉ POLIA PRE FILTRE (DYNAMICKY VYGENEROVANÉ)
-// ===================================================
-
-export const BOOK_GENRES = getUniqueSortedValues(BOOKS, 'type');
-export const BOOK_LANGS = getUniqueSortedValues(BOOKS, 'language');

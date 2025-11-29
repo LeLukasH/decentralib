@@ -5,7 +5,7 @@ export function setupBookDetailModal(USERS, BOOKS) {
 
     // --- Pomocné funkcie pre VLASTNÍKA (prevzaté z home.js) ---
     function getOwner(book) {
-        return USERS.find(u => u.user_id === book.owner_id) || null;
+        return USERS.find(u => u.id === book.owner_id) || null;
     }
 
     function getOwnerNick(book) {
@@ -55,7 +55,7 @@ export function setupBookDetailModal(USERS, BOOKS) {
      * @param {number} bookId - ID knihy.
      */
     window.showBookDetail = function(bookId) {
-        const book = BOOKS.find(b => b.book_id === bookId);
+        const book = BOOKS.find(b => b.id === bookId);
         if (!book) {
             console.error("Kniha s ID " + bookId + " nebola nájdená.");
             return;
