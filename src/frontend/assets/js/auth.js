@@ -88,8 +88,8 @@ export async function logout() {
     // Vymazanie localStorage
     localStorage.removeItem('currentUser');
 
-    // Presmerovanie na login stránku
-    window.location.href = 'auth/login.html';
+    // Refresh page, aby sa header znova vyrenderoval
+    window.location.reload();
 }
 
 
@@ -186,11 +186,11 @@ const formInputs = document.querySelectorAll('.login-container input');
 formInputs.forEach(input => {
     input.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
-            const pageTitle = document.querySelector('.login-container h2')?.textContent.toLowerCase();
+            const path = window.location.pathname.toLowerCase();
 
-            if (pageTitle.includes('prihlásenie')) login();
-            else if (pageTitle.includes('registrácia')) register();
-            else if (pageTitle.includes('obnoviť')) sendReset();
+            if (path.includes('login.html')) login();
+            else if (path.includes('register.html')) register();
+            else if (path.includes('forgot-password.html')) sendReset();
         }
     });
 });
