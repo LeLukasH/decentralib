@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decentralizovaná knižnica</title>
+    <link rel="stylesheet" href="../assets/css/index.css">
+    <link rel="stylesheet" href="../assets/css/book_detail_modal.css"> 
+    
+    <script type="module" src="../assets/js/moje_knihy.js"></script>
+    <script type="module" src="../assets/js/book_detail_modal.js"></script>
+    <script type="module" src="../assets/js/header_footer.js"></script>
+</head>
+
+<body>
+
+    <div>
+	    <my-header></my-header>
+    </div>
+    <div class="navigacne-tlacidla">
+        <a href="moje_knihy.html" class="navigacne-tlacidlo">Moje knihy</a>
+        
+        <a href="pozicane.html" class="navigacne-tlacidlo">Mám požičané</a>
+        
+        <a href="spravy.html" class="navigacne-tlacidlo">Správy</a>
+
+                <a href="pridat.html" class="navigacne-tlacidlo">pridať knihu</a>
+
+    </div>
+
+    <div class="obsah">
+        
+        <div class="filter">
+            <h3>Filter</h3>
+            
+            <div class="filter-skupina">
+                <label for="dostupnost" class="filter-label">Dostupnosť</label>
+                <div>
+                    <input type="checkbox" id="len-dostupne">
+                    <label for="len-dostupne">Len dostupné</label>
+                </div>
+
+                <div>
+                    <input type="checkbox" id="len-nedostupne">
+                    <label for="len-nedostupne">Len nedostupne</label>
+                </div>
+
+                <div>
+                    <input type="checkbox" id="len-zamknute">
+                    <label for="len-zamknute">Len zamknute</label>
+                </div>
+              
+            </div>
+
+            <span style="display: none;">
+            <div class="filter-skupina" data-filter="zaner">
+                <label class="filter-label">Žáner</label>
+
+                <div class="dropdown-header">
+                    <span class="arrow">&#9660;</span>
+                </div>
+
+                <div class="dropdown-body" id="dropdown-zaner"> </div>
+            </div>
+
+
+            <div class="filter-skupina" data-filter="jazyk">
+                <label class="filter-label">Jazyk</label>
+
+                <div class="dropdown-header">
+                    <span class="arrow">&#9660;</span>
+                </div>
+
+                <div class="dropdown-body" id="dropdown-jazyk"> </div>
+            </div>
+
+            <div class="filter-skupina" data-filter="mesto">
+                <label class="filter-label" for="autocomplete-mesto">Mesto</label>
+                
+                <input type="text" id="autocomplete-mesto" placeholder="Zadajte názov mesta" class="autocomplete-input">
+
+                <div class="autocomplete-results" id="autocomplete-mesto-results">
+                    </div>
+            </div>
+
+            <div class="filter-skupina">
+                <label for="hodnotenie" class="filter-label"> Minimálne hodnotenie</label>
+                <input type="range" id="hodnotenie" min="0" max="5" value="0" style="width: 100%;">
+                <div style="display: flex; justify-content: space-between;">
+                    <span>0</span>
+                    <span>1</span>
+                    <span>2</span>
+                    <span>3</span>
+                    <span>4</span>
+                    <span>5</span>
+                </div>
+            </div>
+            
+</span>
+
+
+        </div>
+        
+        <div class="list-knih-sekcia">
+            <h3>Vyhľadávanie</h3>
+
+            <div id="vyhladavanie">
+                <input type="text" placeholder="Názov" class="vyhladavanie-item">
+                <input type="text" placeholder="Autor" class="vyhladavanie-item">
+            </div>
+
+            <div class="vysledky-vyhladavania">
+                <h3 id="vysledky-nadpis">Všetky tituly</h3> 
+                <pre id="vypis"></pre>
+            </div>
+
+            <button id="vymaz-filtre" style="display:none;">Vymazať všetky filtre</button>
+
+            <div class="zoznam-knih" id="zoznam-knih">
+            </div>
+            
+        </div>
+        
+    </div>
+
+    <div id="bookDetailModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            
+            <h2 id="modal-title" class="modal-title">Názov knihy</h2>
+            
+            <div class="modal-body">
+                <div class="book-cover">
+                    <img id="modal-image" src="" alt="Obal knihy" width="130" height="200"> 
+                </div>
+                
+                <div class="book-info">
+                    <p id="modal-author" class="info-item author">Autor</p>
+                    <div class="info-item owner-rating">
+                        <span id="modal-owner">Vlastník</span>
+                        <span class="rating-star">&#9733;</span>
+                        <span id="modal-rating" class="rating-value">4,7</span>
+                    </div>
+                    <p id="modal-count" class="info-item">Počet hodnotení: 4</p>
+                    <p id="modal-location" class="info-item">Lokalita</p>
+                    
+                    <div class="borrow-form">
+                        <label for="date-from">Požičanie od:</label>
+                        <input type="date" id="date-from">
+                        <label for="date-to">do:</label>
+                        <input type="date" id="date-to">
+                    </div>
+                    
+                    <button id="request-borrow" class="request-button">Požiadať o požičanie</button>
+                </div>
+            </div>
+
+            <div class="book-specs">
+                <p><strong>Jazyk:</strong> <span id="modal-language">Jazyk</span></p>
+                <p><strong>Žáner:</strong> <span id="modal-genre">Žáner</span></p>
+            </div>
+
+            <div class="book-description">
+                <h3 class="description-title">Popis</h3>
+                <div class="description-roll-up">
+                    <p id="modal-description-full" class="description-text">
+                        Popis knihy...
+                    </p>
+                    <button id="toggle-description-button" class="toggle-button">
+                        Čítať celý popis (...)
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <my-footer></my-footer>
+</body>
+</html>
