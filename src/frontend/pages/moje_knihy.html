@@ -6,6 +6,9 @@
     <title>Decentralizovaná knižnica</title>
     <link rel="stylesheet" href="../assets/css/index.css">
     <link rel="stylesheet" href="../assets/css/book_detail_modal.css"> 
+
+
+
     
     <script type="module" src="../assets/js/moje_knihy.js"></script>
     <script type="module" src="../assets/js/book_detail_modal.js"></script>
@@ -17,97 +20,42 @@
     <div>
 	    <my-header></my-header>
     </div>
-    <div class="navigacne-tlacidla">
-        <a href="moje_knihy.html" class="navigacne-tlacidlo">Moje knihy</a>
-        
-        <a href="pozicane.html" class="navigacne-tlacidlo">Mám požičané</a>
-        
-        <a href="spravy.html" class="navigacne-tlacidlo">Správy</a>
 
-                <a href="pridat.html" class="navigacne-tlacidlo">pridať knihu</a>
-
-    </div>
 
     <div class="obsah">
         
-        <div class="filter">
+    
+        
+        <div class="list-knih-sekcia">
+
             <h3>Filter</h3>
             
             <div class="filter-skupina">
                 <label for="dostupnost" class="filter-label">Dostupnosť</label>
-                <div>
+                
                     <input type="checkbox" id="len-dostupne">
                     <label for="len-dostupne">Len dostupné</label>
-                </div>
 
-                <div>
                     <input type="checkbox" id="len-nedostupne">
                     <label for="len-nedostupne">Len nedostupne</label>
-                </div>
 
-                <div>
                     <input type="checkbox" id="len-zamknute">
                     <label for="len-zamknute">Len zamknute</label>
-                </div>
-              
             </div>
 
-            <span style="display: none;">
-            <div class="filter-skupina" data-filter="zaner">
-                <label class="filter-label">Žáner</label>
-
-                <div class="dropdown-header">
-                    <span class="arrow">&#9660;</span>
-                </div>
-
-                <div class="dropdown-body" id="dropdown-zaner"> </div>
-            </div>
-
-
-            <div class="filter-skupina" data-filter="jazyk">
-                <label class="filter-label">Jazyk</label>
-
-                <div class="dropdown-header">
-                    <span class="arrow">&#9660;</span>
-                </div>
-
-                <div class="dropdown-body" id="dropdown-jazyk"> </div>
-            </div>
-
-            <div class="filter-skupina" data-filter="mesto">
-                <label class="filter-label" for="autocomplete-mesto">Mesto</label>
-                
-                <input type="text" id="autocomplete-mesto" placeholder="Zadajte názov mesta" class="autocomplete-input">
-
-                <div class="autocomplete-results" id="autocomplete-mesto-results">
-                    </div>
-            </div>
-
-            <div class="filter-skupina">
-                <label for="hodnotenie" class="filter-label"> Minimálne hodnotenie</label>
-                <input type="range" id="hodnotenie" min="0" max="5" value="0" style="width: 100%;">
-                <div style="display: flex; justify-content: space-between;">
-                    <span>0</span>
-                    <span>1</span>
-                    <span>2</span>
-                    <span>3</span>
-                    <span>4</span>
-                    <span>5</span>
-                </div>
-            </div>
-            
-</span>
-
-
-        </div>
-        
-        <div class="list-knih-sekcia">
             <h3>Vyhľadávanie</h3>
 
             <div id="vyhladavanie">
-                <input type="text" placeholder="Názov" class="vyhladavanie-item">
-                <input type="text" placeholder="Autor" class="vyhladavanie-item">
+                <input type="text" placeholder="Názov" class="vyhladavanie-item" style="max-width: 300px; width: 90%;">
+                <input type="text" placeholder="Autor" class="vyhladavanie-item" style="max-width: 300px; width: 90%; ">
+
+                 <button type="button" id="searchBtn">🔍 Hľadaj</button>
+
+        <a href="pridaj_knihu.html" class="navigacne-tlacidlo">Pridaj knihu </a>
+
+
             </div>
+           
 
             <div class="vysledky-vyhladavania">
                 <h3 id="vysledky-nadpis">Všetky tituly</h3> 
