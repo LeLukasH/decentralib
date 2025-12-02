@@ -193,7 +193,7 @@ function renderBooks() {
         }
 
         // Filter: Dostupnosť
-        if (filters.lenDostupne && book.is_available !== 'availible') {
+        if (filters.lenDostupne && book.is_available !== 'available') {
              match = false;
         }
 
@@ -210,27 +210,6 @@ function renderBooks() {
 
 
 
-        // Filter: Mesto
-        if (filters.mesto && owner.location !== filters.mesto) {
-             match = false;
-        }
-
-        // Filter: Hodnotenie
-        const minRating = parseFloat(filters.hodnotenie);
-        if (minRating > 0 && parseFloat(owner.reputation) < minRating) {
-            match = false;
-        }
-        
-        // Filter: Názov (Vyhľadávanie)
-        if (filters.nazov && !book.title.toLowerCase().includes(filters.nazov.toLowerCase())) {
-             match = false;
-        }
-        
-        // Filter: Autor (Vyhľadávanie)
-        if (filters.autor && !book.autor.toLowerCase().includes(filters.autor.toLowerCase())) {
-             match = false;
-        }
-        
         return match;
     });
 
@@ -250,7 +229,19 @@ function renderBooks() {
     const endIndex = startIndex + BOOKS_PER_PAGE;
     const booksToRender = filteredBooks.slice(startIndex, endIndex);
 
-    
+    function iconForStateL(state) {
+        // ikona namiesto textu 
+    switch (state) {
+        case "locked":      return "🔒";
+        case "available":   return "📗";
+        case "booked":      return "📕";
+        case "unavailable": return "🚫";
+        default:            return "❓";
+    }
+}
+
+
+
     // 4. Vykreslenie kariet
     if (booksToRender.length === 0 && totalBooks > 0) {
         // Ak sa na aktuálnej stránke nič nenašlo (ale celkovo existujú knihy, napr. sme preklikli na prázdnu stranu)
@@ -287,16 +278,20 @@ function renderBooks() {
 
                        <!-- TODO: funguje to, prerobit nech ukazuje ikonu  --> 
                         <div class="${lok  ? "locked" : "availible"}">
-                            ${lok}
+                                ${iconForStateL(lok)}
+
                         </div>
                         
         <button 
+         id="btn-forbook-${book.id}"
             class="updateButton" 
             onclick="window.ChangeA(${book.id});  "                       
             style="visibility: ${lok !== 'booked' ? 'visible' : 'hidden'}"                         
  >                   
-                        <!-- TODO: funguje to, prerobit nech ukazuje ikonu zamku  --> 
-                  ${lok === 'locked' ? 'LOCK' : 'UNLOCK'}            
+                        <!-- ikona zamka   --> 
+                  ${lok === 'locked'               
+? '🔓' : '🔒'}
+
                          </button>
 
  
@@ -317,29 +312,9 @@ function renderBooks() {
 }          
 
 function generateFilterOptions() {
-    const genreContainer = document.getElementById("dropdown-zaner");
-    genreContainer.innerHTML = "";
-    var genres = "";
-    BOOK_GENRES.forEach(g => {
-        genres += `
-            <div class="option">
-                <input type="checkbox" value="${g}"> ${g}
-            </div>
-        `;
-    });
-    genreContainer.innerHTML = genres;
+    return;
+    //TODO delete
 
-    const languageContainer = document.getElementById("dropdown-jazyk");
-    languageContainer.innerHTML = "";
-    var languages = "";
-    BOOK_LANGS.forEach(l => {
-        languages += `
-            <div class="option">
-                <input type="checkbox" value="${l}"> ${l}
-            </div>
-        `;
-    });
-    languageContainer.innerHTML = languages;
 }
 
 
@@ -349,15 +324,7 @@ function generateFilterOptions() {
 
 function getFilters() {
     const result = {};
-
-    const groups = document.querySelectorAll(".filter-skupina[data-filter='zaner'], .filter-skupina[data-filter='jazyk']");
-    groups.forEach(group => {
-        const name = group.dataset.filter;
-        const checked = group.querySelectorAll('input[type="checkbox"]:checked');
-        const values = Array.from(checked).map(ch => ch.value);
-        if (values.length > 0) result[name] = values;
-    });
-    
+   
     const lenDostupne = document.getElementById("len-dostupne").checked;
     if (lenDostupne) result["lenDostupne"] = true;
 
@@ -368,14 +335,7 @@ function getFilters() {
     if (lenZamknute) result["lenZamknute"] = true;
     
     
-    const rating = document.getElementById("hodnotenie").value;
-    if (rating !== "0") result["hodnotenie"] = rating;
-    
-    // Filter Mesto
-    if (selectedCityFilter !== "") result["mesto"] = selectedCityFilter;
 
-    if (searchCommitted.nazov !== "") result["nazov"] = searchCommitted.nazov;
-    if (searchCommitted.autor !== "") result["autor"] = searchCommitted.autor;
 
     return result;
 }
@@ -416,10 +376,6 @@ function renderActiveFilters() {
         //if (key === "lenDostupne") text = "len dostupné";
         if (key === "lenZamknute") text = "len skryte";
 
-
-        if (key === "mesto") text = `Mesto: ${value}`; 
-        if (key === "nazov") text = `Názov: ${value}`; 
-        if (key === "autor") text = `Autor: ${value}`; 
 
         badge.textContent = text + " ";
 
@@ -467,12 +423,7 @@ function uncheckByKey(key, value) {
         document.querySelector('input[placeholder="Autor"]').value = "";
     }
 
-    // ZRUŠENIE FILTRA MESTA
-    if (key === "mesto") { 
-        selectedCityFilter = "";
-        document.getElementById("autocomplete-mesto").value = "";
-        document.getElementById("autocomplete-mesto-results").style.display = "none";
-    }
+ 
 
     // Zrušenie checkboxov (žáner, jazyk)
     const checkbox = document.querySelector(`input[type="checkbox"][value="${value}"]`);
@@ -487,11 +438,7 @@ function deleteFilters() {
     document.getElementById("hodnotenie").value = 0;
     
     // Vymazanie Autocomplete Mesta
-    selectedCityFilter = "";
-    const cityInput = document.getElementById("autocomplete-mesto");
-    if (cityInput) cityInput.value = "";
-    document.getElementById("autocomplete-mesto-results").style.display = "none";
-    
+
     searchCommitted.nazov = "";
     searchCommitted.autor = "";
 
@@ -506,6 +453,8 @@ function deleteFilters() {
 // ===================================================
 
 function getAvailableCities() {
+    return;
+    //TODO delete
     const availableOwnerIds = new Set(
         BOOKS.filter(book => book.is_available === "yes")
              .map(book => book.owner_id)
@@ -518,44 +467,8 @@ function getAvailableCities() {
 }
 
 function handleCityAutocomplete(event) {
-    const input = event.target;
-    const value = input.value.trim().toLowerCase();
-    const resultsContainer = document.getElementById("autocomplete-mesto-results");
+    //todo delete
     
-    resultsContainer.innerHTML = "";
-    
-    if (value.length < 3) {
-        resultsContainer.style.display = "none";
-        // Ak sa input vyprázdni, filter zrušíme
-        if (selectedCityFilter !== "" && value.length === 0) {
-            selectedCityFilter = ""; 
-            renderActiveFilters(); 
-        }
-        return; 
-    }
-
-    const filteredCities = AVAILABLE_CITIES.filter(city => 
-        city.toLowerCase().includes(value)
-    );
-    
-    if (filteredCities.length > 0) {
-        filteredCities.forEach(city => {
-            const option = document.createElement("div");
-            option.className = "autocomplete-option";
-            option.textContent = city;
-            
-            option.onclick = () => {
-                input.value = city;
-                selectedCityFilter = city; 
-                resultsContainer.style.display = "none";
-                renderActiveFilters(); // Vola renderBooks
-            };
-            resultsContainer.appendChild(option);
-        });
-        resultsContainer.style.display = "block";
-    } else {
-        resultsContainer.style.display = "none";
-    }
 }
 
 
@@ -595,7 +508,7 @@ document.querySelectorAll(".dropdown-header").forEach(header => {
 document.getElementById("vymaz-filtre").addEventListener("click", deleteFilters);
 
 // --- LISTENERY PRE MESTO AUTCOMPLETE ---
-document.getElementById("autocomplete-mesto").addEventListener("input", handleCityAutocomplete);
+//document.getElementById("autocomplete-mesto").addEventListener("input", handleCityAutocomplete);
 
 // Skryť výsledky mesta, ak používateľ klikne mimo nich
 document.addEventListener('click', function(e) {
@@ -649,11 +562,39 @@ window.ChangeA = function(bookId) {
         return;
     }
 
+    // zmena  ikony buttonu,
+    //  a zamknutie buttonu nech nespamuju databazu
+    let btn = null;
+    try {
+        // Try to get the button
+        btn = document.getElementById(`btn-forbook-${bookId}`);
+        
+        // If button not found, skip UI update but continue with DB update
+        if (!btn) throw new Error("Button not found");
 
-    // Log the current availability status (optional, just for debugging)
+        // --- INSTANT UI UPDATE ---
+        if (book.is_available === "locked") {
+            btn.textContent = "🔒";   // change to unlocked icon
+            book.is_available = "available";
+        } else {
+            btn.textContent = "🔓";   // change to locked icon
+            book.is_available = "locked";
+        }
+
+        // Prevent multiple clicks
+        btn.disabled = true;
+
+    } catch (uiError) {
+        console.warn("UI update failed in ChangeA:", uiError);
+        // but DO NOT stop — continue with database update
+    }
+
+
+
+
     console.log(`Current availability of "${book.title}": ${book.is_available}`);
 
-    // Call the toggleBookAvailability function to change availability
+    // toto meni v databaze
     toggleBookAvailability(bookId);
 
         console.log(`changed yyyy availability of "${book.title}": ${book.is_available}`);
@@ -661,29 +602,27 @@ window.ChangeA = function(bookId) {
 };
 
 
-// Function to toggle the availability status of a book
-
-
-
-// more generated pass querry to firebase 
-
+// vlozime string aktualny stav, vrati stav aky ma byt po kliknuti
 function xyz(x){
-    // toto prepisat na menenie, zatial len nech to meni yes na availible  no na booked
         let s = String(x)
 
     switch (s){
+
+    case "locked":
+        return "available";
+    case "available":
+        return "locked";
+// oprava grammaticka
     case "yes":
         return "available";
     case "no":
         return "booked";
     case "unavailable":
         return "booked";
-    case "locked":
-        return "available";
-    case "available":
-        return "locked";
     case "availible":
         return  "available";
+
+
     default:
         return s;
         }
@@ -693,6 +632,9 @@ function xyz(x){
 import { db } from "./firebase.js";  // Import db from firebase.js
 import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
+
+// console log zmazat na konci
+// toto menit data v firebase
 async function toggleBookAvailability(id) {
   // Reference to the Firestore document for the specific book
   id = String(id)
@@ -709,7 +651,6 @@ async function toggleBookAvailability(id) {
 
       // Toggle the availability (if "available" change to "unavailable" and vice versa)
       //const newStatus = currentStatus === "available" ? "unavailable" : "available";
-// this will be done by other function
      const newStatus = xyz(currentStatus)  ;
 
       // Update the status in Firestore
@@ -717,9 +658,7 @@ async function toggleBookAvailability(id) {
 
       console.log(`Book ${id} availability updated to ${newStatus}`);
 
-      // Optionally reload the list of books (if you have a function to do that)
-      //loadBooks();  // This can be a function you define to reload the book list UI
-      // no need to reload
+
       
     } else {
       console.error(`No book found with ID ${id}`);
