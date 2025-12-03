@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Decentralizovaná knižnica</title>
     <link rel="stylesheet" href="../assets/css/index.css">
-    <link rel="stylesheet" href="../assets/css/book_detail_modal.css"> 
     
-    <script type="module" src="../assets/js/home.js"></script>
-    <script type="module" src="../assets/js/book_detail_modal.js"></script>
     <script type="module" src="../assets/js/header_footer.js"></script>
 </head>
 
@@ -19,30 +16,39 @@
     <div class="spravy">
         <div class="chat">
             <h2 class="spravy-blok">Chat</h2>
-            <div class = "spravy-kontajner"></div>
+            <div class ="spravy-kontajner">Nemáte dostupný chat so žiadnym používateľom.</div>
         </div>
         <div class="notifikacie">
             <h2 class="spravy-blok">Notifikácie</h2>
             <div class="spravy-blok">
                 <h3>Filter</h3>
                 
-                <div class="filter-skupina">
+                <div class="filter-skupina" id="spravy-filter">
                     
-                        <input type="checkbox" id="prijate-ziadosti">
-                        <label for="prijate-ziadosti">Prijaté žiadosti</label>
+                        <div>
+                            <input type="checkbox" id="prijate-ziadosti">
+                            <label for="prijate-ziadosti">Prijaté žiadosti</label>
+                        </div>
 
-                        <input type="checkbox" id="odoslane-ziadosti">
-                        <label for="odoslane-ziadosti">Odoslané žiadosti</label>
+                        <div>
+                            <input type="checkbox" id="odoslane-ziadosti">
+                            <label for="odoslane-ziadosti">Odoslané žiadosti</label>
+                        </div>
 
-                        <input type="checkbox" id="koniec-vypozicky">
-                        <label for="koniec-vypozicky">Koniec výpožičky</label>
+                        <div>
+                            <input type="checkbox" id="koniec-vypozicky">
+                            <label for="koniec-vypozicky">Koniec výpožičky</label>
+                        </div>
 
-                        <input type="checkbox" id="potvrdenie-vypozicky">
-                        <label for="potvrdenie-vypozicky">Potvrdenie výpožičky</label>
+                        <div>
+                            <input type="checkbox" id="potvrdenie-vypozicky">
+                            <label for="potvrdenie-vypozicky">Potvrdenie výpožičky</label>
+                        </div>
                 </div>
             </div>
-            <div class = "spravy-kontajner">test</div>
+            <div class ="spravy-kontajner">Nemáte žiadne správy. </div>
         </div>
     </div>
-    <my-footer></my-footer>
+    <my-footer class="spravy-footer"></my-footer>
 </body>
+</html>
