@@ -167,6 +167,9 @@ header div{
     margin-bottom: 20px;
     color: #444c59;
 }
+#vysledky-nadpis{
+    font-size: 19px;
+}
 
 /* BOOK GRID */
 .zoznam-knih {
