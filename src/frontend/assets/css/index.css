@@ -24,6 +24,11 @@ header{
     color: white;
 }
 
+header .hlavne-menu {
+    display: flex;
+    gap: 20px;
+}
+
 header div{
     display: flex;
 }
@@ -426,6 +431,60 @@ header div{
     gap: 8px;       
 }
 
+.hamburger {
+    display: none; /* Na desktope neviditeľný */
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+@media(max-width: 1500px){
+    /* skry meno – ostane len ikonka */
+    .pouzivatel_tlacidlo h2 {
+        display: none;
+    }
+}
+
+@media(max-width: 1300px) {
+    /* logo + názov vedľa seba ale menšie */
+    header h1 {
+        font-size: 18px;
+        align-self: center;
+    }
+}
+
+@media (max-width: 1000px) {
+
+    /* skry menu */
+    header .hlavne-menu {
+        display: none;
+        position: absolute;
+        top: 60px;
+        right: 10px;
+        background: #222;
+        padding: 15px;
+        border-radius: 8px;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .hlavne-menu.open {
+        display: flex;
+    }
+
+    /* hamburger sa zobrazí */
+    .hamburger {
+        display: block;
+        color: white;
+    }
+
+    /* logo + názov vedľa seba ale menšie */
+    header h1 {
+        font-size: 18px;
+    }
+}
+
 .pouzivatel_tlacidlo:hover, .pouzivatel_tlacidlo:focus {
     background-color: #1f5fd1;
 }
@@ -433,6 +492,7 @@ header div{
 .pouzivatel_obsah {
     display: none;
     position: absolute;
+    right: 0;
     background-color: #f1f3f7;
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);

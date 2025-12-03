@@ -20,6 +20,17 @@ class MyHeader extends HTMLElement {
                     <img src="../assets/img/DecLibWhite.png" alt="Logo" title="Decentralizovaná knižnica" class="logo">
                     <h1>Decentralizovaná knižnica</h1>
                 </div>
+                <nav class="hlavne-menu">
+                    <a href="home.html" class="navigacne-tlacidlo">Domov</a>
+                    <a href="moje_knihy.html" class="navigacne-tlacidlo">Moje knihy</a>
+                    <a href="pozicane.html" class="navigacne-tlacidlo">Mám požičané</a>
+                    <a href="spravy.html" class="navigacne-tlacidlo">Správy</a>
+                </nav>
+
+                <button class="hamburger">
+                    ☰
+                </button>
+
                 <div>
                     ${
                         currentUser
@@ -63,6 +74,27 @@ class MyHeader extends HTMLElement {
                 dropdownContent.classList.remove('show');
             });
         }
+
+        const hamburger = this.querySelector('.hamburger');
+        const menu = this.querySelector('.hlavne-menu');
+
+        hamburger.addEventListener('click', () => {
+        menu.classList.toggle('open');
+        });
+
+        // Zisti aktuálne meno súboru (napr. "spravy.html")
+        const currentPage = window.location.pathname.split('/').pop();
+
+        // Nájdeme všetky navigačné odkazy
+        const links = this.querySelectorAll('.hlavne-menu a');
+
+        // Prejdi všetky odkazy a skry ten, ktorý zodpovedá aktuálnej stránke
+        links.forEach(link => {
+            const linkPage = link.getAttribute('href');
+            if (linkPage === currentPage) {
+                link.style.display = 'none';  // skry aktuálne tlačidlo
+            }
+        });
     }
 }
 
