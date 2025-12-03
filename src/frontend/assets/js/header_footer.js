@@ -20,7 +20,7 @@ class MyHeader extends HTMLElement {
                     <img src="../assets/img/DecLibWhite.png" alt="Logo" title="Decentralizovaná knižnica" class="logo">
                     <h1>Decentralizovaná knižnica</h1>
                 </div>
-                <div">
+                <div>
                     ${
                         currentUser
                         ? `<div class="pouzivatel-dropdown">

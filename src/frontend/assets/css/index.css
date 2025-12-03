@@ -462,3 +462,55 @@ header div{
     border: none;
     cursor: pointer;
 }
+
+.spravy{
+    display: flex;
+}
+
+.spravy-blok{
+    background-color: white;
+    padding: 10px;
+    margin: 1px;
+}
+
+.chat{
+    padding: 10px;
+    padding-right: 5px;
+    flex: 0 0 20%;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* celá výška okna */
+}
+.notifikacie{
+    padding: 10px;
+    padding-left: 5px;
+    flex: 1;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* celá výška okna */
+}
+
+/* Pri malých obrazovkách zobraz pod sebou */
+@media (max-width: 600px) {
+    .spravy {
+        flex-direction: column;
+    }
+
+    .chat,
+    .notifikacie {
+        flex: 0 0 100%;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+
+.spravy-kontajner{
+    flex: 1;              /* vyplní všetok zvyšný priestor */
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 10px;
+}

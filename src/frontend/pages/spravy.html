@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decentralizovaná knižnica</title>
+    <link rel="stylesheet" href="../assets/css/index.css">
+    <link rel="stylesheet" href="../assets/css/book_detail_modal.css"> 
+    
+    <script type="module" src="../assets/js/home.js"></script>
+    <script type="module" src="../assets/js/book_detail_modal.js"></script>
+    <script type="module" src="../assets/js/header_footer.js"></script>
+</head>
+
+<body>
+    <div>
+	    <my-header></my-header>
+    </div>
+    <div class="spravy">
+        <div class="chat">
+            <h2 class="spravy-blok">Chat</h2>
+            <div class = "spravy-kontajner"></div>
+        </div>
+        <div class="notifikacie">
+            <h2 class="spravy-blok">Notifikácie</h2>
+            <div class="spravy-blok">
+                <h3>Filter</h3>
+                
+                <div class="filter-skupina">
+                    
+                        <input type="checkbox" id="prijate-ziadosti">
+                        <label for="prijate-ziadosti">Prijaté žiadosti</label>
+
+                        <input type="checkbox" id="odoslane-ziadosti">
+                        <label for="odoslane-ziadosti">Odoslané žiadosti</label>
+
+                        <input type="checkbox" id="koniec-vypozicky">
+                        <label for="koniec-vypozicky">Koniec výpožičky</label>
+
+                        <input type="checkbox" id="potvrdenie-vypozicky">
+                        <label for="potvrdenie-vypozicky">Potvrdenie výpožičky</label>
+                </div>
+            </div>
+            <div class = "spravy-kontajner">test</div>
+        </div>
+    </div>
+    <my-footer></my-footer>
+</body>
