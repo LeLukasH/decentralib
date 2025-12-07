@@ -88,7 +88,7 @@ class MyHeader extends HTMLElement {
         // Nájdeme všetky navigačné odkazy
         const links = this.querySelectorAll('.hlavne-menu a');
 
-        // Prejdi všetky odkazy a skry ten, ktorý zodpovedá aktuálnej stránke
+        // Prejdi všetky odkazy a prefarby ten, ktorý zodpovedá aktuálnej stránke
         links.forEach(link => {
             const linkPage = link.getAttribute('href');
             if (linkPage === currentPage) {

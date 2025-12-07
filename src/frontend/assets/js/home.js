@@ -503,6 +503,21 @@ document.addEventListener('click', function(e) {
     }
 });
 
+// ==================================================
+// RESPONZÍVNY FILTER
+// ==================================================
+
+const filter_button = document.getElementById('home-filter');
+const filter_orgin = document.querySelector('.filter');
+
+filter_button.addEventListener('click', () => {
+    filter_orgin.classList.toggle('open');
+    if (filter_button.textContent === 'Zobraz filter') {
+        filter_button.textContent = 'Skry filter';
+    } else {
+        filter_button.textContent = 'Zobraz filter';
+    }
+});
 
 // ===================================================
 // ŠTARTOVACÍ KÓD

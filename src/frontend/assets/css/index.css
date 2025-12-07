@@ -73,6 +73,7 @@ header div{
 .filter {
     flex: 2;
     max-width: 300px;
+    min-width: 250px;
     background: #ffffff;
     padding: 20px;
     border-radius: 8px;
@@ -105,6 +106,55 @@ header div{
     display: block;
     margin-bottom: 6px;
     font-weight: 600;
+}
+
+#home-filter{
+    display: none; /* Na desktope neviditeľný */
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+@media (max-width: 800px) {
+
+    /* skry menu */
+    .filter {
+        display: none;
+        position: absolute;
+        top: 260px;
+        left: 30px;
+        padding: 15px;
+        border-radius: 8px;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 1;
+    }
+
+    .filter.open {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* zobrazí sa tlačidlo Zobraz filter */
+    #home-filter {
+        display:block;
+        width: 150px;
+        text-align: center;
+        padding: 15px 5px;
+        margin-bottom: 10px;
+        text-decoration: none;
+        background: #2f70e9;
+        color: white;
+        font-size: 18px;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+
+    #home-filter:hover{
+        background: #1f5fd1;
+        transform: translateY(-2px);
+    }
 }
 
 .dropdown-header {
