@@ -44,7 +44,7 @@ header div{
 }
 
 .navigacne-tlacidlo {
-    width: 200px;
+    width: 150px;
     text-align: center;
     padding: 15px 5px;
     text-decoration: none;
@@ -724,4 +724,11 @@ button.danger {
     font-weight: 600;
     text-align: center;
     transition: 0.2s; 
+}
+
+.Nadpis{
+    padding-left: 20px;
+    padding-bottom: 0px;
+    margin: 5px;
+    margin-top: 10px;
 }
