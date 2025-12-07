@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Decentralizovaná knižnica</title>
     <link rel="stylesheet" href="../assets/css/index.css">
-    <link rel="stylesheet" href="../assets/css/book_detail_modal.css"> 
+    <link rel="stylesheet" href="../assets/css/new_book_modal.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 
 
-    
     <script type="module" src="../assets/js/moje_knihy.js"></script>
     <script type="module" src="../assets/js/book_detail_modal.js"></script>
+    <script type="module" src="../assets/js/delete_book_modal.js"></script>
     <script type="module" src="../assets/js/header_footer.js"></script>
 </head>
 
@@ -24,38 +25,44 @@
 
     <div class="obsah">
         
-    
-        
         <div class="list-knih-sekcia">
+            <h2>Moje knihy</h2> 
 
-            <h3>Filter</h3>
+            <div class="hlavny-panel">
+                <div class="vyhladavanie-filter">
+
+                    <div id="vyhladavanie">
+                        <input type="text" placeholder="Názov" class="vyhladavanie-item" id="nazov" >
+                        <input type="text" placeholder="Autor" class="vyhladavanie-item" id="autor" >
+
+                        <button id="hladaj">Hľadaj</button>
+                    </div>
+
+                    <div class="filter-skupina">
+                    
+                        <input type="checkbox" id="len-dostupne">
+                        <label for="len-dostupne">Len dostupné &#9989</label>
+
+                        <input type="checkbox" id="len-pozicane">
+                        <label for="len-pozicane">Len požičané &#10060</label>
+
+                        <input type="checkbox" id="len-zamknute">
+                        <label for="len-zamknute">Len zamknuté &#128274</label>
+                    </div>
+                </div>
             
-            <div class="filter-skupina">
-                <label for="dostupnost" class="filter-label">Dostupnosť</label>
-                
-                    <input type="checkbox" id="len-dostupne">
-                    <label for="len-dostupne">Len dostupné</label>
+                <button class="button-pridaj-knihu" id="button-pridaj-knihu" onclick="openNewBookModal()">
+                    Pridaj knihu
+                </button>
 
-                    <input type="checkbox" id="len-nedostupne">
-                    <label for="len-nedostupne">Len nedostupne</label>
-
-                    <input type="checkbox" id="len-zamknute">
-                    <label for="len-zamknute">Len zamknute</label>
+            </div>    
+            
+            <div style="margin-bottom: 10px;">
+                &#9989  Kniha je dostupná na požičanie<br>
+                &#10060  Kniha je momentálne požičaná<br>
+                &#128274  Knihu dočasne nepožičiavaš
             </div>
-
-            <h3>Vyhľadávanie</h3>
-
-            <div id="vyhladavanie">
-                <input type="text" placeholder="Názov" class="vyhladavanie-item" style="max-width: 300px; width: 90%;">
-                <input type="text" placeholder="Autor" class="vyhladavanie-item" style="max-width: 300px; width: 90%; ">
-
-                 <button type="button" id="searchBtn">🔍 Hľadaj</button>
-
-        <a href="pridaj_knihu.html" class="navigacne-tlacidlo">Pridaj knihu </a>
-
-
-            </div>
-           
+            
 
             <div class="vysledky-vyhladavania">
                 <h3 id="vysledky-nadpis">Všetky tituly</h3> 
@@ -64,64 +71,143 @@
 
             <button id="vymaz-filtre" style="display:none;">Vymazať všetky filtre</button>
 
-            <div class="zoznam-knih" id="zoznam-knih">
+            
+            <div class="moje-knihy">
+                <div class="zoznam-knih" id="zoznam-knih">
+                </div>
             </div>
             
         </div>
         
     </div>
 
-    <div id="bookDetailModal" class="modal">
+    <!-- Modal - Vymaž knihu -->
+    <div id="deleteModal" class="modal">
         <div class="modal-content">
-            <span class="close-button">&times;</span>
-            
-            <h2 id="modal-title" class="modal-title">Názov knihy</h2>
-            
-            <div class="modal-body">
-                <div class="book-cover">
-                    <img id="modal-image" src="" alt="Obal knihy" width="130" height="200"> 
-                </div>
-                
-                <div class="book-info">
-                    <p id="modal-author" class="info-item author">Autor</p>
-                    <div class="info-item owner-rating">
-                        <span id="modal-owner">Vlastník</span>
-                        <span class="rating-star">&#9733;</span>
-                        <span id="modal-rating" class="rating-value">4,7</span>
-                    </div>
-                    <p id="modal-count" class="info-item">Počet hodnotení: 4</p>
-                    <p id="modal-location" class="info-item">Lokalita</p>
-                    
-                    <div class="borrow-form">
-                        <label for="date-from">Požičanie od:</label>
-                        <input type="date" id="date-from">
-                        <label for="date-to">do:</label>
-                        <input type="date" id="date-to">
-                    </div>
-                    
-                    <button id="request-borrow" class="request-button">Požiadať o požičanie</button>
-                </div>
+            <p id="deleteText"></p>
+            <div class="modal-buttons">
+                <button id="cancelDelete">Zrušiť</button>
+                <button id="confirmDelete" class="danger">Odstrániť</button>
             </div>
-
-            <div class="book-specs">
-                <p><strong>Jazyk:</strong> <span id="modal-language">Jazyk</span></p>
-                <p><strong>Žáner:</strong> <span id="modal-genre">Žáner</span></p>
-            </div>
-
-            <div class="book-description">
-                <h3 class="description-title">Popis</h3>
-                <div class="description-roll-up">
-                    <p id="modal-description-full" class="description-text">
-                        Popis knihy...
-                    </p>
-                    <button id="toggle-description-button" class="toggle-button">
-                        Čítať celý popis (...)
-                    </button>
-                </div>
-            </div>
-
         </div>
     </div>
+
+    <!-- Modal - Nová kniha -->
+    <div id="newBookModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeNewBookModal()">&times;</span>
+
+            <h2 class="modal-title">Nová kniha</h2>
+
+            <div class="modal-grid">
+
+                <div class="left-panel">
+                    <img id="newBookImage" src="../assets/img/img_placeholder.png" width="50px" class="book-preview">
+
+                    <button class="btn-change-image" onclick="changeNewBookImage()">
+                        <i class="fa fa-upload"></i> Zmeň obrázok
+                    </button>
+                </div>
+
+                <div class="right-panel">
+
+                    <div class="form-row">
+                        <label>Názov:</label>
+                        <input id="newBookName" type="text">
+                    </div>
+
+                    <div class="form-row">
+                        <label>Autor:</label>
+                        <input id="newBookAuthor" type="text">
+                    </div>
+
+                    <div class="form-row">
+                        <label>Jazyk:</label>
+                        <input id="newBookLang" type="text">
+                    </div>
+
+                    <div class="form-row">
+                        <label>Žáner:</label>
+                        <input id="newBookGenre" type="text">
+                    </div>
+
+                    <div class="form-row">
+                        <label>Popis:</label>
+                        <textarea id="newBookDescription"></textarea>
+                    </div>
+
+                    <button class="btn-save" onclick="saveNewBook()">Uložiť</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal - Detail knihy -->
+    <div id="editBookModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeEditBookModal()">&times;</span>
+
+            <h2>Upraviť knihu</h2>
+
+            <div class="modal-grid">
+                <div class="left-panel">
+                    <img id="editBookImage" class="book-preview">
+                    <button class="btn-change-image" onclick="editChangeImage()"><i class="fa fa-upload"></i> Zmeň obrázok</button>
+                </div>
+
+                <div class="right-panel">
+
+                    <div class="form-row">
+                        <label>Názov:</label>
+                        <div class="editable_row">
+                            <input id="editBookName" type="text">
+                            <i class="fa fa-pencil edit-icon" onclick="enableEdit('editBookName')"></i>
+                        </div>
+                    </div>
+                   
+                    <div class="form-row">
+                        <label>Autor:</label>
+                        <div class="editable_row">
+                            <input id="editBookAuthor" type="text">
+                            <i class="fa fa-pencil edit-icon" onclick="enableEdit('editBookAuthor')"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <label>Jazyk:</label>
+                        <div class="editable_row">
+                            <input id="editBookLang" type="text">
+                            <i class="fa fa-pencil edit-icon" onclick="enableEdit('editBookLang')"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <label>Žáner:</label>
+                        <div class="editable_row">
+                            <input id="editBookGenre" type="text">
+                            <i class="fa fa-pencil edit-icon" onclick="enableEdit('editBookGenre')"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <label>Popis:</label>
+                        <div class="editable_row">
+                            <textarea id="editBookDescription"></textarea>
+                            <i class="fa fa-pencil edit-icon" onclick="enableEdit('editBookDescription')"></i>
+                        </div>
+                    </div>
+
+                    <button class="btn-save" onclick="saveEditedBook()">Uložiť zmeny</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     <my-footer></my-footer>
+
 </body>
+
 </html>

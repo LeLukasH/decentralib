@@ -10,34 +10,17 @@ let searchCommitted = { nazov: "", autor: "" };
 // --- PRE STRÁNKOVANIE ---
 const BOOKS_PER_PAGE = 18;
 let currentPage = 1;
+
+// --- AKTUÁLNY POUŽÍVATEĽ
+let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+console.log(currentUser);
+
+// --- PREMENNÉ PRE VYMAZANIE A ZMENU KNIHY
+let bookToDelete = null;
+let editBookImageFile = null;
+let editingBookId = null;
+
 // -------------------------
-
-
-
-// zmena textu buttonu, na zaklade aktualneho textu
-// nasledne sa to bude dat prerobit na obrazok alebo ikonu
-// toto nejde dobre pretoze
-// ta druha funkcia je asynchronna
- function zmenButtonText(button) {
-        // Get the current text of the button
-        console.log();
-        const currentText = button.textContent;
-        console.log(`Current text: ${currentText}`);
-        // Check the current text and change it to the opposite
-        if (currentText === 'UNLOCK') {
-            button.textContent = 'LOCK'; 
-        } 
-        if (currentText === 'LOCK') {
-            button.textContent = 'UNLOCK'; 
-        } 
-        
-        else {
-            //pass;  // Change text from Green to Red
-        }
-    }
-
-
-
 
 // ===================================================
 // POMOCNÉ FUNKCIE (PRE KNIHY A VLASTNÍKOV)
@@ -48,43 +31,9 @@ function getOwner(book) {
     return USERS.find(u => u.id === book.owner_id) || null;
 }
 
-function getOwnerNick(book) {
-    const owner = getOwner(book);
-    return owner ? owner.nick : "neznámy";
-}
-
-function getOwnerReputation(book) {
-    const owner = getOwner(book);
-    return owner ? owner.reputation : "—";
-}
-
-function getOwnerLocation(book) {
-    const owner = getOwner(book);
-    return owner ? owner.location : "—";
-}
-
-function isBookAvailable(book) {
-    return book.is_available === "yes";
-// totot asi bolo treba prepisat
-   // return book.is_available ;
-
-}
-
-function isBooklok(book) {
-    //return book.is_available === "yes";
-// totot asi bolo treba prepisat
- 
-   return String(book.is_available );
-
-}
-
 // ===================================================
 // VYKRESLOVANIE (RENDERBOOKS A RENDERPAGINATION)
 // ===================================================
-
-
-
-
 
 /**
  * Vykreslí navigačné prvky pre stránkovanie.
@@ -162,16 +111,53 @@ function createPaginationButton(text, isEnabled, onClick) {
     return button;
 }
 
+function getIcon(state){
+    switch (state) {
+        case "locked": 
+            return "&#128274";
+        case "available":       
+            return "&#9989";
+        case "booked":     
+            return "&#10060";
+        default:
+            return "";
+    }
+}
+
+function getContent(book){
+    switch (book.is_available) {
+        case "locked":      
+            return `<button class="button-state" onclick="unlock(${book.id})">Odomknúť &#128275</button>`;
+        case "available":       
+            return `<button class="button-state" onclick="lock(${book.id})">Zamknúť &#128274</button>`;
+        case "booked":     
+            return `<br>Doba výpožičky: <br>
+                    (tu bude dátum od do)`;
+        default:            
+            return "";
+    }
+}
+
+function unlock(bookId){
+    const book = BOOKS.find(b => b.id === bookId);
+    if (!book) return;
+
+    book.is_available = "available"; //zápis do databázy
+    renderBooks();
+}
+
+function lock(bookId){
+    const book = BOOKS.find(b => b.id === bookId);
+    if (!book) return;
+
+    book.is_available = "locked"; //zápis do databázy
+    renderBooks();
+}
+
+window.lock = lock;
+window.unlock = unlock;
+
 function renderBooks() {
-
- 
-
-
-     let userJSON = JSON.parse(localStorage.getItem('currentUser'));
-
-     let idForFilter = userJSON.id;
-
-
     const container = document.getElementById("zoznam-knih");
     container.innerHTML = "";
     
@@ -186,10 +172,8 @@ function renderBooks() {
         // Ak vlastník neexistuje, knihu ignorujeme
         if (!owner) return false;
 
-
-        // nech ukazuje iba vlastne knihy
-        if (  book.owner_id !== idForFilter) {
-             match = false;
+        if(currentUser.id !== book.owner_id){
+            match = false;
         }
 
         // Filter: Dostupnosť
@@ -197,19 +181,24 @@ function renderBooks() {
              match = false;
         }
 
-// moj filter pre nedostupne
-        if (filters.lenNedostupne && book.is_available !== 'booked') {
+        if (filters.lenPozicane && book.is_available !== 'booked') {
              match = false;
-             //match = true;
         }
-// moj filter pre zamknute
+
         if (filters.lenZamknute && book.is_available !== 'locked') {
              match = false;
-             //match = true;
         }
-
-
-
+        
+        // Filter: Názov (Vyhľadávanie)
+        if (filters.nazov && !book.title.toLowerCase().includes(filters.nazov.toLowerCase())) {
+             match = false;
+        }
+        
+        // Filter: Autor (Vyhľadávanie)
+        if (filters.autor && !book.autor.toLowerCase().includes(filters.autor.toLowerCase())) {
+             match = false;
+        }
+        
         return match;
     });
 
@@ -229,19 +218,7 @@ function renderBooks() {
     const endIndex = startIndex + BOOKS_PER_PAGE;
     const booksToRender = filteredBooks.slice(startIndex, endIndex);
 
-    function iconForStateL(state) {
-        // ikona namiesto textu 
-    switch (state) {
-        case "locked":      return "🔒";
-        case "available":   return "📗";
-        case "booked":      return "📕";
-        case "unavailable": return "🚫";
-        default:            return "❓";
-    }
-}
-
-
-
+    
     // 4. Vykreslenie kariet
     if (booksToRender.length === 0 && totalBooks > 0) {
         // Ak sa na aktuálnej stránke nič nenašlo (ale celkovo existujú knihy, napr. sme preklikli na prázdnu stranu)
@@ -252,70 +229,36 @@ function renderBooks() {
         booksToRender.forEach(book => {
             const card = document.createElement("div");
             card.className = "karta-knihy";
-            const dostupne = isBookAvailable(book);
-
-// for 3 different 
-            const lok = isBooklok(book);
-
-
-            const owner = getOwner(book);
+            let icon = getIcon(book.is_available);
+            let content = getContent(book);
 
             card.innerHTML = `
-                <h4>${book.title}</h4>
+                <h4 class="nazov-knihy">${book.title}</h4>
+                <button class="delete-button" onclick="deleteBook(${book.id})">
+                    <i class="fa fa-trash-o" style="font-size:20px; color:red"></i>
+                </button>
+
                 <div class="karta-content">
-                    <img src="${book.image_url}" alt="" width="130" height="200">
+                    <img src="${book.image_url}" alt="" width="150" height="200">
                     <div class="karta-info">
                         <p>${book.autor}</p>
-                         <!-- 
-                        <p style="font-size: 16px;">
-                            ${getOwnerNick(book)}
-                            <span style='font-size:25px; color:yellow'>&#9733;</span>
-                            ${getOwnerReputation(book)}
+                        <p> <span style="font-size:30px;">${icon}</span> <br>${content}</p>
+                        <p>
+                        <button class="btn-detail" onclick="openEditBookModal(${book.id})">
+                            Zobraziť detail
+                        </button>
                         </p>
-                        <p>${getOwnerLocation(book)}</p>
-
--->
-
-                       <!-- TODO: funguje to, prerobit nech ukazuje ikonu  --> 
-                        <div class="${lok  ? "locked" : "availible"}">
-                                ${iconForStateL(lok)}
-
-                        </div>
-                        
-        <button 
-         id="btn-forbook-${book.id}"
-            class="updateButton" 
-            onclick="window.ChangeA(${book.id});  "                       
-            style="visibility: ${lok !== 'booked' ? 'visible' : 'hidden'}"                         
- >                   
-                        <!-- ikona zamka   --> 
-                  ${lok === 'locked'               
-? '🔓' : '🔒'}
-
-                         </button>
-
- 
-
                     </div>
                 </div>
             `;
 
             container.appendChild(card);
         });
-
-            console.log(`books rendered`);
-
     }
 
     // 5. Vykreslenie stránkovania
     renderPagination(totalBooks);
 }          
-
-function generateFilterOptions() {
-    return;
-    //TODO delete
-
-}
 
 
 // ===================================================
@@ -324,18 +267,18 @@ function generateFilterOptions() {
 
 function getFilters() {
     const result = {};
-   
+    
     const lenDostupne = document.getElementById("len-dostupne").checked;
     if (lenDostupne) result["lenDostupne"] = true;
 
-    const lenNedostupne = document.getElementById("len-nedostupne").checked;
-    if (lenNedostupne) result["lenNedostupne"] = true;
+    const lenPozicane = document.getElementById("len-pozicane").checked;
+    if (lenPozicane) result["lenPozicane"] = true;
 
     const lenZamknute = document.getElementById("len-zamknute").checked;
     if (lenZamknute) result["lenZamknute"] = true;
-    
-    
 
+    if (searchCommitted.nazov !== "") result["nazov"] = searchCommitted.nazov;
+    if (searchCommitted.autor !== "") result["autor"] = searchCommitted.autor;
 
     return result;
 }
@@ -368,14 +311,11 @@ function renderActiveFilters() {
 
         let text = value;
 
-        if (key === "hodnotenie") text = `hodnotenie: ${value}+`;
         if (key === "lenDostupne") text = "len dostupné";
-
-        // new 
-        if (key === "lenNedostupne") text = "len nedostupné";
-        //if (key === "lenDostupne") text = "len dostupné";
-        if (key === "lenZamknute") text = "len skryte";
-
+        if (key === "lenPozicane") text = "len požičané";
+        if (key === "lenZamknute") text = "len zamknuté"; 
+        if (key === "nazov") text = `Názov: ${value}`; 
+        if (key === "autor") text = `Autor: ${value}`; 
 
         badge.textContent = text + " ";
 
@@ -401,16 +341,11 @@ function uncheckByKey(key, value) {
     if (key === "lenDostupne") {
         document.getElementById("len-dostupne").checked = false;
     }
-        if (key === "lenNedostupne") {
-        document.getElementById("len-nedostupne").checked = false;
+    if (key === "lenPozicane") {
+        document.getElementById("len-pozicane").checked = false;
     }
-
-            if (key === "lenZamknute") {
+    if (key === "lenZamknute") {
         document.getElementById("len-zamknute").checked = false;
-    }
-
-    if (key === "hodnotenie") {
-        document.getElementById("hodnotenie").value = 0;
     }
 
     if (key === "nazov") {
@@ -423,22 +358,12 @@ function uncheckByKey(key, value) {
         document.querySelector('input[placeholder="Autor"]').value = "";
     }
 
- 
-
-    // Zrušenie checkboxov (žáner, jazyk)
-    const checkbox = document.querySelector(`input[type="checkbox"][value="${value}"]`);
-    if (checkbox) checkbox.checked = false;
-
     renderActiveFilters(); // Vola renderBooks
 }
 
 function deleteFilters() {
     document.querySelectorAll('input[type="checkbox"]:checked').forEach(ch => ch.checked = false);
-
-    document.getElementById("hodnotenie").value = 0;
     
-    // Vymazanie Autocomplete Mesta
-
     searchCommitted.nazov = "";
     searchCommitted.autor = "";
 
@@ -448,43 +373,229 @@ function deleteFilters() {
     renderActiveFilters(); // Vola renderBooks
 }
 
-// ===================================================
-// LOGIKA MESTO AUTCOMPLETE
-// ===================================================
 
-function getAvailableCities() {
-    return;
-    //TODO delete
-    const availableOwnerIds = new Set(
-        BOOKS.filter(book => book.is_available === "yes")
-             .map(book => book.owner_id)
-    );
+// NOVÁ KNIHA
+function changeNewBookImage() {
+    // const input = document.createElement("input");
+    // input.type = "file";
+    // input.accept = "image/*";
 
-    const cities = USERS.filter(user => availableOwnerIds.has(user.id))
-                        .map(user => user.location);
+    // input.onchange = () => {
+    //     const file = input.files[0];
+    //     if (!file) return;
 
-    AVAILABLE_CITIES = [...new Set(cities)].sort();
+    //     const reader = new FileReader();
+    //     reader.onload = e => {
+    //         document.getElementById("newBookImage").src = e.target.result;
+    //     };
+
+    //     reader.readAsDataURL(file);
+    // };
+
+    // input.click();
 }
 
-function handleCityAutocomplete(event) {
-    //todo delete
-    
+window.changeNewBookImage = changeNewBookImage;
+
+function getNewBookId(){
+    // doplniť zistenie ďalšieho id pre knihu
+    return 40;
+}
+
+function createBookObject() {
+    return {
+        id: getNewBookId(),
+        title: document.getElementById("newBookName").value.trim(),
+        autor: document.getElementById("newBookAuthor").value.trim(),
+        language: document.getElementById("newBookLang").value.trim(),
+        type: document.getElementById("newBookGenre").value.trim(),
+        description: document.getElementById("newBookDescription").value.trim(),
+        image_url: document.getElementById("newBookImage").src,
+        owner_id: currentUser.id,
+        is_available: "available"
+    };
+}
+
+function openNewBookModal(){
+    document.getElementById("newBookModal").style.display = "flex";
+}
+
+function closeNewBookModal() {
+    document.getElementById("newBookModal").style.display = "none";
+}
+
+window.closeNewBookModal = closeNewBookModal;
+window.openNewBookModal = openNewBookModal;
+
+function saveNewBook() {
+    const newBook = createBookObject();
+
+    for (const key in newBook) {
+        if (!newBook[key]) {
+            alert("Vyplň všetky polia.");
+            return;
+        }
+    }
+
+    // Uloženie do poľa
+    BOOKS.push(newBook);
+
+    // uložiť do databázy
+
+    closeNewBookModal();
+    clearNewBookInputs();
+    renderBooks();
+
+    alert("Kniha bola pridaná.");
+}
+
+window.saveNewBook = saveNewBook;
+
+function clearNewBookInputs() {
+    document.getElementById("newBookName").value = "";
+    document.getElementById("newBookAuthor").value = "";
+    document.getElementById("newBookLang").value = "";
+    document.getElementById("newBookGenre").value = "";
+    document.getElementById("newBookDescription").value = "";
+    document.getElementById("newBookImage").src = "../assets/img/img_placeholder.png";
 }
 
 
-// ===================================================
-// EVENT LISTENERS A INICIALIZÁCIA
-// ===================================================
+// DETAIL KNIHY
+function openEditBookModal(bookId) {
+    const book = BOOKS.find(b => b.id === bookId);
+    if (!book) return;
 
-function toggleFilter(header) {
-    const body = header.nextElementSibling;
-    header.classList.toggle("open");
-    body.style.display = body.style.display === "block" ? "none" : "block";
+    editingBookId = bookId;
+
+    document.getElementById("editBookImage").src = book.image_url;
+    document.getElementById("editBookName").value = book.title;
+    document.getElementById("editBookAuthor").value = book.autor;
+    document.getElementById("editBookLang").value = book.language;
+    document.getElementById("editBookGenre").value = book.type;
+    document.getElementById("editBookDescription").value = book.description;
+
+    // zablokujeme vstupy
+    disableAllEditInputs();
+
+    document.getElementById("editBookModal").style.display = "flex";
 }
 
+window.openEditBookModal = openEditBookModal;
+
+function closeEditBookModal() {
+    document.getElementById("editBookModal").style.display = "none";
+    editBookImageFile = null;
+}
+
+window.closeEditBookModal = closeEditBookModal;
+
+function disableAllEditInputs() {
+    ["editBookName", "editBookAuthor", "editBookLang", "editBookGenre", "editBookDescription"].forEach(id => {
+        document.getElementById(id).disabled = true;
+    });
+}
+
+function enableEdit(id) {
+    const element = document.getElementById(id);
+    element.disabled = false;
+    element.focus();
+}
+window.enableEdit = enableEdit;
+
+function editChangeImage(){
+    // TO DO
+    // zmeniť hodnotu editBookImageFile
+}
+window.editChangeImage = editChangeImage;
+
+async function saveEditedBook() {
+    const book = BOOKS.find(b => b.id === editingBookId);
+    if (!book) return;
+
+    // kontrola práznych políčok
+    const fields = {
+        title: document.getElementById("editBookName").value.trim(),
+        autor: document.getElementById("editBookAuthor").value.trim(),
+        language: document.getElementById("editBookLang").value.trim(),
+        type: document.getElementById("editBookGenre").value.trim(),
+        description: document.getElementById("editBookDescription").value.trim()
+    };
+
+    for (const key in fields) {
+        if (!fields[key]) {
+            alert("Vyplň všetky polia.");
+            return;
+        }
+    }
+
+    book.title = fields.title;
+    book.autor = fields.autor;
+    book.language = fields.language;
+    book.type = fields.type;
+    book.description = fields.description;
+
+
+    // ak je nový obrázok 
+    if (editBookImageFile) {
+
+       /// book.image_url = nový obrázok;
+    }
+
+    // Uloženie do databázy
+
+    closeEditBookModal();
+    renderBooks();
+
+    alert("Kniha bola aktualizovaná.");
+}
+
+window.saveEditedBook = saveEditedBook;
+
+
+// VYMAZANIE KNIHY
+function deleteBook(id) {
+    const book = BOOKS.find(b => b.id === id);
+    bookToDelete = id;
+
+    document.getElementById("deleteText").textContent =`Naozaj chcete odstrániť knihu "${book.title}"?`;
+    document.getElementById("deleteModal").style.display = "block";
+}
+
+window.deleteBook = deleteBook;
+
+// tlačidlo Zrušiť
+document.getElementById("cancelDelete").onclick = function () {
+    document.getElementById("deleteModal").style.display = "none";
+    bookToDelete = null;
+};
+
+// tlačidlo Odstrániť
+document.getElementById("confirmDelete").onclick = function () {
+    if (bookToDelete !== null) {
+        console.log("Zmazať knihu s ID:", bookToDelete); 
+
+        const index = BOOKS.findIndex(book => book.id === bookToDelete);
+
+        if (index !== -1) {
+            BOOKS.splice(index, 1);   
+        }
+        //vymazať knihu s ID bookToDelete z databázy
+
+        renderBooks();
+        bookToDelete = null;
+    }
+
+    document.getElementById("deleteModal").style.display = "none";
+    alert("Kniha bola vymazaná.");
+};
+
+
+
+/* INPUTY */
 document.addEventListener("input", function(e) {
     // Spustí prekreslenie pri zmene checkboxov, number inputoch (hodnotenie)
-    if (e.target.type === "checkbox" || e.target.type === "number" || e.target.id === "hodnotenie") {
+    if (e.target.type === "checkbox") { 
         renderActiveFilters(); // Vola renderBooks
     }
 });
@@ -501,172 +612,33 @@ document.addEventListener("keydown", function(e) {
     }
 });
 
-document.querySelectorAll(".dropdown-header").forEach(header => {
-    header.addEventListener("click", () => toggleFilter(header));
-});
-
 document.getElementById("vymaz-filtre").addEventListener("click", deleteFilters);
 
-// --- LISTENERY PRE MESTO AUTCOMPLETE ---
-//document.getElementById("autocomplete-mesto").addEventListener("input", handleCityAutocomplete);
-
-// Skryť výsledky mesta, ak používateľ klikne mimo nich
-document.addEventListener('click', function(e) {
-    const cityContainer = document.querySelector(".filter-skupina[data-filter='mesto']");
-    if (cityContainer && !cityContainer.contains(e.target)) {
-        const results = document.getElementById("autocomplete-mesto-results");
-        if (results) results.style.display = "none";
-    }
+document.getElementById("hladaj").addEventListener("click", function(){
+    searchCommitted.nazov = document.getElementById("nazov")?.value || "";
+    searchCommitted.autor = document.getElementById("autor")?.value || "";
+    renderActiveFilters();
 });
 
+
+/* IBA 1 AKTÍVNY CHECKBOX*/
+const dostupne = document.getElementById("len-dostupne");
+const pozicane = document.getElementById("len-pozicane");
+const zamknute = document.getElementById("len-zamknute");
+
+[dostupne, pozicane, zamknute].forEach(ch => {
+    ch.addEventListener("change", () => {
+        if (ch.checked) {
+            [dostupne, pozicane, zamknute]
+                .filter(other => other !== ch)
+                .forEach(other => other.checked = false);
+        }
+        renderActiveFilters(); // aby sa hneď aplikovali zmeny
+    });
+});
 
 // ===================================================
 // ŠTARTOVACÍ KÓD
 // ===================================================
-getAvailableCities(); 
-generateFilterOptions(); 
+
 renderActiveFilters(); // Spustí prvé renderovanie kníh, filtrov a stránkovania
-
-setupBookDetailModal(USERS, BOOKS);
-
-
-
-
-
-
-
-// ten button nech mani availibility 
-//  toto asi musi byt na konci
-// na uaciatku generovane
-
- 
-
-    // funkcia nech meni avalibility 
-
-// zaklad generovany
-
-// toto robi to menenie 
-window.ChangeA = function(bookId) {
-    // Find the book by its ID (you may want to adjust this depending on where BOOKS are stored)
-    const book = BOOKS.find(b => b.id === bookId);
-
-    if (!book) {
-        console.error("Kniha s ID " + bookId + " nebola nájdená.");
-        return;
-    }
-
-
-    // toto je uz osetrene graficky, ale pre istotu
-    if (book.owner_id !== JSON.parse(localStorage.getItem('currentUser')).id){
-        console.error("menime knihu cudzieho pouzivatela, toto nema byt mozne ani dostupne");
-        return;
-    }
-
-    // zmena  ikony buttonu,
-    //  a zamknutie buttonu nech nespamuju databazu
-    let btn = null;
-    try {
-        // Try to get the button
-        btn = document.getElementById(`btn-forbook-${bookId}`);
-        
-        // If button not found, skip UI update but continue with DB update
-        if (!btn) throw new Error("Button not found");
-
-        // --- INSTANT UI UPDATE ---
-        if (book.is_available === "locked") {
-            btn.textContent = "🔒";   // change to unlocked icon
-            book.is_available = "available";
-        } else {
-            btn.textContent = "🔓";   // change to locked icon
-            book.is_available = "locked";
-        }
-
-        // Prevent multiple clicks
-        btn.disabled = true;
-
-    } catch (uiError) {
-        console.warn("UI update failed in ChangeA:", uiError);
-        // but DO NOT stop — continue with database update
-    }
-
-
-
-
-    console.log(`Current availability of "${book.title}": ${book.is_available}`);
-
-    // toto meni v databaze
-    toggleBookAvailability(bookId);
-
-        console.log(`changed yyyy availability of "${book.title}": ${book.is_available}`);
-  renderBooks();
-};
-
-
-// vlozime string aktualny stav, vrati stav aky ma byt po kliknuti
-function xyz(x){
-        let s = String(x)
-
-    switch (s){
-
-    case "locked":
-        return "available";
-    case "available":
-        return "locked";
-// oprava grammaticka
-    case "yes":
-        return "available";
-    case "no":
-        return "booked";
-    case "unavailable":
-        return "booked";
-    case "availible":
-        return  "available";
-
-
-    default:
-        return s;
-        }
-}
-
-
-import { db } from "./firebase.js";  // Import db from firebase.js
-import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-
-
-// console log zmazat na konci
-// toto menit data v firebase
-async function toggleBookAvailability(id) {
-  // Reference to the Firestore document for the specific book
-  id = String(id)
-  const bookRef = doc(db, "books", id);
-
-  try {
-    // Get the current document snapshot from Firestore
-    const docSnapshot = await getDoc(bookRef);
-
-    if (docSnapshot.exists()) {
-      // Get the current status of the book
-      const currentStatus = docSnapshot.data().is_available;
-      console.log(`Book of id =  ${id} availability  is currently  ${currentStatus}`);
-
-      // Toggle the availability (if "available" change to "unavailable" and vice versa)
-      //const newStatus = currentStatus === "available" ? "unavailable" : "available";
-     const newStatus = xyz(currentStatus)  ;
-
-      // Update the status in Firestore
-      await updateDoc(bookRef, { is_available: newStatus });
-
-      console.log(`Book ${id} availability updated to ${newStatus}`);
-
-
-      
-    } else {
-      console.error(`No book found with ID ${id}`);
-    }
-  } catch (error) {
-    console.error("Error updating book availability:", error);
-  }
-
-
-  renderBooks() ;
-}
