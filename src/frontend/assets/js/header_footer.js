@@ -92,7 +92,7 @@ class MyHeader extends HTMLElement {
         links.forEach(link => {
             const linkPage = link.getAttribute('href');
             if (linkPage === currentPage) {
-                link.style.display = 'none';  // skry aktuálne tlačidlo
+                link.style.color = '#003f87';  // zmeň farbu tlačidla
             }
         });
     }

@@ -44,7 +44,7 @@ header div{
 }
 
 .navigacne-tlacidlo {
-    width: 200px;
+    width: 150px;
     text-align: center;
     padding: 15px 5px;
     text-decoration: none;
@@ -583,4 +583,10 @@ header div{
     bottom: 0;
     left:0;
     right:0;
+}
+.Nadpis{
+    padding-left: 20px;
+    padding-bottom: 0px;
+    margin: 5px;
+    margin-top: 10px;
 }
