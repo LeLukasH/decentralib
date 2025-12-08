@@ -36,8 +36,8 @@ function getOwnerLocation(book) {
     return owner ? owner.location : "—";
 }
 
-function isBookAvailable(book) {
-    return book.is_available === "yes";
+function getBookStatus(book) {
+    return book.status;
 }
 
 // ===================================================
@@ -130,13 +130,17 @@ function renderBooks() {
     // 2. FILTROVANIE DÁT PODĽA FILTROV
     const filteredBooks = BOOKS.filter(book => {
         const owner = getOwner(book);
+
+        // Default filter: ignoruj knihy, ktoré sú locked
+        if (book.status === 'locked') return false;
+
         let match = true;
         
         // Ak vlastník neexistuje, knihu ignorujeme
         if (!owner) return false;
 
         // Filter: Dostupnosť
-        if (filters.lenDostupne && book.is_available !== 'yes') {
+        if (filters.lenDostupne && book.status !== 'available') {
              match = false;
         }
 
@@ -201,7 +205,7 @@ function renderBooks() {
         booksToRender.forEach(book => {
             const card = document.createElement("div");
             card.className = "karta-knihy";
-            const dostupne = isBookAvailable(book);
+            const dostupne = getBookStatus(book);
             const owner = getOwner(book);
 
             card.innerHTML = `
@@ -216,7 +220,7 @@ function renderBooks() {
                             ${getOwnerReputation(book)}
                         </p>
                         <p>${getOwnerLocation(book)}</p>
-                        <div class="${dostupne ? "dostupne" : "pozicane"}">
+                        <div class="${dostupne ? "available" : "unavailable"}">
                             ${dostupne ? "Dostupné" : "Požičané"}
                         </div>
                         <button class="btn-detail" onclick="window.showBookDetail(${book.id})">
@@ -404,7 +408,7 @@ function deleteFilters() {
 
 function getAvailableCities() {
     const availableOwnerIds = new Set(
-        BOOKS.filter(book => book.is_available === "yes")
+        BOOKS.filter(book => book.status === "available" && book.status !== "locked")
              .map(book => book.owner_id)
     );
 
