@@ -24,8 +24,15 @@ class MyHeader extends HTMLElement {
                 </div>
                 <nav class="hlavne-menu">
                     <a href="home.html" class="navigacne-tlacidlo">Domov</a>
-                    <a href="moje_knihy.html" class="navigacne-tlacidlo">Moje knihy</a>
-                    <a href="pozicane.html" class="navigacne-tlacidlo">Mám požičané</a>
+
+                    <div class="pouzivatel-dropdown sprava-knihy-kontajner"> 
+                        <button class="navigacne-tlacidlo dropdown-tlacidlo pouzivatel_tlacidlo">Správa kníh</button>
+                        <div class="pouzivatel_obsah sprava-knih-obsah">
+                            <a href="moje_knihy.html">Moje knihy</a>
+                            <a href="pozicane.html">Požičané</a>
+                            <a href="vypozicky.html">Výpožičky</a>
+                        </div>
+                    </div>
                     <a href="spravy.html" class="navigacne-tlacidlo">Správy</a>
                 </nav>
 
@@ -36,12 +43,12 @@ class MyHeader extends HTMLElement {
                 <div>
                     ${
                         currentUser
-                        ? `<div class="pouzivatel-dropdown">
+                        ? `<div class="pouzivatel-dropdown profil-kontajner">
                                <button class="pouzivatel_tlacidlo">
-									<h2>${displayName}</h2>
-                                   	<img src="${profilePic}" class="pouzivatel-hlavicka-obr">
+                                   <h2>${displayName}</h2>
+                                   <img src="${profilePic}" class="pouzivatel-hlavicka-obr">
                                </button>
-                               <div class="pouzivatel_obsah">
+                               <div class="pouzivatel_obsah profil-obsah">
                                    <a href="#">Spravuj účet</a>
                                    <a id="signOutBtn">Odhlás ma</a>
                                </div>
@@ -51,6 +58,19 @@ class MyHeader extends HTMLElement {
                 </div>
             </header>
         `;
+        
+        // --- FUNKCIA PRE ZATVÁRANIE OSTATNÝCH DROPDOWNOV ---
+        const toggleDropdown = (targetContent) => {
+            const allDropdowns = this.querySelectorAll('.pouzivatel_obsah');
+            allDropdowns.forEach(content => {
+                if (content !== targetContent) {
+                    content.classList.remove('show');
+                }
+            });
+            targetContent.classList.toggle('show');
+        };
+        // ----------------------------------------------------
+
 
         // Sign Out listener
         const signOutBtn = this.querySelector('#signOutBtn');
@@ -62,39 +82,81 @@ class MyHeader extends HTMLElement {
             window.location.href = 'auth/login.html';
         });
 
-        // Dropdown listener
-        const dropdownBtn = this.querySelector('.pouzivatel_tlacidlo');
-        const dropdownContent = this.querySelector('.pouzivatel_obsah');
-        if (dropdownBtn && dropdownContent) {
-            dropdownBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); // aby klik neodchádzal von
-                dropdownContent.classList.toggle('show');
-            });
-
-            // Klik mimo dropdown zatvorí menu
-            document.addEventListener('click', () => {
-                dropdownContent.classList.remove('show');
+        // Dropdown listener pre používateľa (Profil)
+        const userDropdownBtn = this.querySelector('.profil-kontajner .pouzivatel_tlacidlo');
+        const userDropdownContent = this.querySelector('.profil-obsah');
+        if (userDropdownBtn && userDropdownContent) {
+            userDropdownBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleDropdown(userDropdownContent);
             });
         }
+        
+        // Dropdown listener pre Správu kníh
+        const bookDropdownBtn = this.querySelector('.sprava-knihy-kontajner .dropdown-tlacidlo');
+        const bookDropdownContent = this.querySelector('.sprava-knih-obsah');
+        if (bookDropdownBtn && bookDropdownContent) {
+            bookDropdownBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleDropdown(bookDropdownContent);
+            });
+        }
+
+        // Global click listener na zatvorenie VŠETKÝCH dropdownov
+        document.addEventListener('click', (e) => {
+             const allDropdowns = this.querySelectorAll('.pouzivatel_obsah');
+             const allButtons = this.querySelectorAll('.pouzivatel_tlacidlo, .dropdown-tlacidlo');
+             
+             let isInsideDropdown = false;
+             allDropdowns.forEach(content => {
+                 if (content.contains(e.target)) {
+                     isInsideDropdown = true;
+                 }
+             });
+             
+             let isButton = false;
+             allButtons.forEach(button => {
+                 if (button.contains(e.target)) {
+                     isButton = true;
+                 }
+             });
+
+             if (!isInsideDropdown && !isButton) {
+                allDropdowns.forEach(content => content.classList.remove('show'));
+             }
+        });
+
 
         const hamburger = this.querySelector('.hamburger');
         const menu = this.querySelector('.hlavne-menu');
 
         hamburger.addEventListener('click', () => {
-        menu.classList.toggle('open');
+            menu.classList.toggle('open');
+            // Zavri všetky ostatné dropdowny, keď otvoríš/zatvoríš hamburger
+            const allDropdowns = this.querySelectorAll('.pouzivatel_obsah');
+            allDropdowns.forEach(content => content.classList.remove('show'));
         });
 
         // Zisti aktuálne meno súboru (napr. "spravy.html")
         const currentPage = window.location.pathname.split('/').pop();
 
         // Nájdeme všetky navigačné odkazy
-        const links = this.querySelectorAll('.hlavne-menu a');
+        // Teraz cielime na odkazy v novej triede .pouzivatel_obsah
+        const links = this.querySelectorAll('.hlavne-menu a, .pouzivatel_obsah a'); 
 
         // Prejdi všetky odkazy a prefarby ten, ktorý zodpovedá aktuálnej stránke
         links.forEach(link => {
             const linkPage = link.getAttribute('href');
             if (linkPage === currentPage) {
-                link.style.color = '#003f87';  // zmeň farbu tlačidla
+                // Ak je to podkategória (napr. moje_knihy), zafarbíme aj nadradené tlačidlo (Správa kníh)
+                if (link.closest('.sprava-knihy-kontajner')) {
+                    const parentButton = link.closest('.sprava-knihy-kontajner').querySelector('.dropdown-tlacidlo');
+                    if (parentButton) {
+                        parentButton.style.color = '#003f87';
+                    }
+                }
+                // Pre všetky ostatné linky (vrátane podkategórií)
+                link.style.color = '#003f87';  
             }
         });
     }
@@ -104,8 +166,14 @@ class MyFooter extends HTMLElement {
     connectedCallback() {
         this.innerHTML = `
         <footer>
-            Vytvorili <strong>Adrián Kýška, Lukáš Heldák, Jozef Blaško, Mária Cerulíková, Veronika Horňáková </strong> v rámci predmetu Metodológie tvorby webu.<br>
-            <strong>Posledne aktualizované:</strong> 8.12.2025<br>
+            <div class="footer-obsah">
+                <p class="autori">
+                    Vytvorili <strong>Adrián Kýška, Lukáš Heldák, Mária Cerulíková, Veronika Horňáková </strong> v rámci predmetu Metodológie tvorby webu.
+                </p>
+                <p class="aktualizacia">
+                    <strong>Posledne aktualizované:</strong> 8.12.2025
+                </p>
+            </div>
         </footer>`;
     }
 }
