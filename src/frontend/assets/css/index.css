@@ -93,7 +93,7 @@ header div a{
 /* NAVIGACIA TLAČIDLÁ (DESKTOP) */
 .navigacne-tlacidlo {
     width: 150px;
-    text-align: center;
+    text-align: center !important;
     padding: 15px 5px;
     text-decoration: none;
     background: #2f70e9; 
