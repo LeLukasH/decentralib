@@ -1,3 +1,6 @@
+import { db } from "./firebase.js";
+import { doc, addDoc, getDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
 // Exportujeme funkciu, ktorú budeme volať z home.js
 export function setupBookDetailModal(USERS, BOOKS) {
     const modal = document.getElementById("bookDetailModal");
@@ -79,6 +82,8 @@ export function setupBookDetailModal(USERS, BOOKS) {
         document.getElementById("modal-language").textContent = book.language || "Neznámy";
         document.getElementById("modal-genre").textContent = book.type || "Neznámy";
 
+        document.getElementById("request-borrow").onclick = () => createLoanRequest(bookId, document.getElementById("date-from").value, document.getElementById("date-to").value);
+
         
         // === KĽÚČOVÁ LOGIKA PRE POPIS A TLAČIDLO ===
         const descriptionText = document.getElementById("modal-description-full");
@@ -138,3 +143,59 @@ export function setupBookDetailModal(USERS, BOOKS) {
     });
 
 }
+
+import { BOOKS } from "./api/books.js";
+
+export async function createLoanRequest(bookId, dateFrom, dateTo) {
+    console.log("Vytváram požiadavku na požičanie knihy ID:", bookId, "od", dateFrom, "do", dateTo);
+    
+    let loanRef;
+    // Create Loan
+    const book = BOOKS.find(b => b.id === bookId);
+    const owner_id = book ? book.owner_id : null;
+    const timestamp = new Date().toISOString();
+    const raw = localStorage.getItem("currentUser");
+    const user = JSON.parse(raw);
+    const borrower_id = user.id;
+    try {
+        // Uloženie do Firestore
+        loanRef = await addDoc(collection(db, "loans"), {
+            book_id: bookId,
+            borrower_id: borrower_id,
+            owner_id: owner_id,
+            date_from: dateFrom,
+            date_to: dateTo,
+            status: "waiting",
+            created_at: timestamp
+        });
+        
+    } catch (error) {
+        console.error( error);
+        alert("Nastala chyba pri odosielaní požiadavky.");
+        return;
+    }
+
+    console.log("Notifikacia 1");
+
+    await addDoc(collection(db, "notifications"), {
+        loan_id: loanRef.id,
+        type: "loan_request",
+        recipient_id: borrower_id,
+        is_read: false,
+        created_at: timestamp
+    });
+
+    console.log("Notifikacia 2");
+
+    await addDoc(collection(db, "notifications"), {
+        loan_id: loanRef.id,
+        type: "loan_request_approval",
+        recipient_id: owner_id,
+        is_read: false,
+        created_at: timestamp
+    });
+
+    alert("Vaša požiadavka na požičanie knihy bola odoslaná.");
+}
+
+window.createLoanRequest = createLoanRequest;
