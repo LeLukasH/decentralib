@@ -33,6 +33,12 @@ header div{
     display: flex;
 }
 
+header div a{
+    display: flex;
+    color:white;
+    text-decoration: none;
+}
+
 /* NAVIGACIA */
 .navigacne-tlacidla {
     display: flex;
@@ -122,8 +128,6 @@ header div{
     .filter {
         display: none;
         position: absolute;
-        top: 260px;
-        left: 30px;
         padding: 15px;
         border-radius: 8px;
         flex-direction: column;
@@ -195,6 +199,11 @@ header div{
     display: flex; 
     gap: 10px; 
     margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+#vyhladavanie input{
+    flex: 1 1 250px;
 }
 
 .vyhladavanie-item{

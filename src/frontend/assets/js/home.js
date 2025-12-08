@@ -510,12 +510,48 @@ document.addEventListener('click', function(e) {
 const filter_button = document.getElementById('home-filter');
 const filter_orgin = document.querySelector('.filter');
 
+const MOBILE_WIDTH = 800; // breakpoint
+
+
+// Funkcia: nastaví filter pod tlačidlo
+function positionFilter() {
+    if (!filter_orgin.classList.contains("open")) return; // Nerob nič, ak filter nie je otvorený
+
+    const rect = filter_button.getBoundingClientRect();
+
+    filter_orgin.style.position = "absolute";
+    filter_orgin.style.top = (rect.bottom + window.scrollY) + "px";
+    filter_orgin.style.left = (rect.left + window.scrollX) + "px";
+}
+
+function resetFilterStyles() {
+    filter_orgin.style.position = "";
+    filter_orgin.style.top = "";
+    filter_orgin.style.left = "";
+    //filter_orgin.style.width = "";
+    //filter_orgin.style.display = "";
+}
+
 filter_button.addEventListener('click', () => {
     filter_orgin.classList.toggle('open');
     if (filter_button.textContent === 'Zobraz filter') {
         filter_button.textContent = 'Skry filter';
     } else {
         filter_button.textContent = 'Zobraz filter';
+    }
+    if (filter_orgin.classList.contains("open")) {
+        positionFilter();
+    }
+});
+
+// Automatické reposition pri zmene veľkosti okna
+window.addEventListener("resize", () => {
+    if (window.innerWidth <= MOBILE_WIDTH) {
+        positionFilter();
+    } else {
+        filter_orgin.classList.remove("open");
+        filter_button.textContent = 'Zobraz filter';
+        resetFilterStyles();
     }
 });
 

@@ -17,8 +17,10 @@ class MyHeader extends HTMLElement {
         this.innerHTML = `
             <header>
                 <div>
-                    <img src="../assets/img/DecLibWhite.png" alt="Logo" title="Decentralizovaná knižnica" class="logo">
-                    <h1>Decentralizovaná knižnica</h1>
+                    <a href="home.html">
+                        <img src="../assets/img/DecLibWhite.png" alt="Logo" title="Decentralizovaná knižnica" class="logo">
+                        <h1>Decentralizovaná knižnica</h1>
+                    </a>
                 </div>
                 <nav class="hlavne-menu">
                     <a href="home.html" class="navigacne-tlacidlo">Domov</a>
@@ -103,7 +105,7 @@ class MyFooter extends HTMLElement {
         this.innerHTML = `
         <footer>
             Vytvorili <strong>Adrián Kýška, Lukáš Heldák, Jozef Blaško, Mária Cerulíková, Veronika Horňáková </strong> v rámci predmetu Metodológie tvorby webu.<br>
-            <strong>Posledne aktualizované:</strong> 26.11.2025<br>
+            <strong>Posledne aktualizované:</strong> 8.12.2025<br>
         </footer>`;
     }
 }
