@@ -48,6 +48,14 @@ export function setupBookDetailModal(USERS, BOOKS) {
         }
     }
 
+    /* Načíta používateľa*/
+    let currentUser = null;
+        try {
+            currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        } catch (e) {
+            currentUser = null;
+        }
+
 
     /**
      * Načíta detaily knihy do modálneho okna a zobrazí ho.
@@ -79,7 +87,21 @@ export function setupBookDetailModal(USERS, BOOKS) {
         document.getElementById("modal-language").textContent = book.language || "Neznámy";
         document.getElementById("modal-genre").textContent = book.type || "Neznámy";
 
-        document.getElementById("request-borrow").onclick = () => createLoanRequest(bookId, document.getElementById("date-from").value, document.getElementById("date-to").value);
+        if(currentUser == null){
+            document.getElementById("borrow-button-description").textContent = "Na požičanie knihy sa prihláste.";
+            document.getElementById("request-borrow").disabled = true;
+        }else if(currentUser.id == getOwner(book).id){
+            document.getElementById("borrow-button-description").textContent = "Toto je vaša vlastná kniha.";
+            document.getElementById("request-borrow").disabled = true;
+        }else if(book.status != "available"){
+            document.getElementById("borrow-button-description").textContent = "Táto kniha momentálne nie je dostupná.";
+            document.getElementById("request-borrow").disabled = true;
+        }else{
+            document.getElementById("borrow-button-description").textContent = "";
+            document.getElementById("request-borrow").disabled = false;
+        }
+
+        document.getElementById("request-borrow").onclick = () => createLoanRequest(bookId, document.getElementById("date-from").value, document.getElementById("date-to").value, document.getElementById("form-borrow"));
 
         
         // === KĽÚČOVÁ LOGIKA PRE POPIS A TLAČIDLO ===
@@ -146,7 +168,12 @@ import { addDoc, collection } from "https://www.gstatic.com/firebasejs/12.6.0/fi
 import { BOOKS } from "./api/allData.js";
 import { refreshHeader } from "./utils.js";
 
-export async function createLoanRequest(bookId, dateFrom, dateTo) {
+export async function createLoanRequest(bookId, dateFrom, dateTo, form) {
+    if (!form.checkValidity()) {
+        form.reportValidity(); // zobrazí chyby HTML validácie
+        return;
+    }
+    
     console.log("Vytváram požiadavku na požičanie knihy ID:", bookId, "od", dateFrom, "do", dateTo);
     
     let loanRef;
@@ -197,7 +224,8 @@ export async function createLoanRequest(bookId, dateFrom, dateTo) {
 
     console.log("Notifikacia 2 OK");
 
-    alert("Vaša požiadavka na požičanie knihy bola odoslaná.");
+    /*alert("Vaša požiadavka na požičanie knihy bola odoslaná.");*/
+    window.location.href = "success_page.html?book=" + encodeURIComponent(book.id);
     refreshHeader();
 }
 

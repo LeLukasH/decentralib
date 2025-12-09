@@ -965,3 +965,13 @@ button.danger {
 @media (max-width: 480px) {
   .msg-badge { font-size: 11px; top: -4px; right: -4px; }
 }
+
+/*Success Page*/
+.success-obsah{
+    padding: 20px;
+}
+.success-footer{
+    position:absolute;
+    width: 100%;
+    bottom: 0;
+}

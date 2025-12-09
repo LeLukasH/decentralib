@@ -103,6 +103,11 @@
     align-items: center;
     gap: 8px;
     margin: 12px 0;
+    flex-wrap: wrap;
+}
+
+.borrow-title{
+    margin: 0;
 }
 
 .borrow-form input[type="date"] {
@@ -133,6 +138,42 @@
 .request-button:hover {
     background: grey;
     color: black;
+}
+
+.request-button:disabled {
+    background-color: #b9b9b9;
+    color: gray;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+#borrow-button-description{
+    color:red;
+    font-weight: 600;
+}
+
+.request-dropdown{
+    margin-top: 2px;
+    padding: 7px 12px;
+    border: 1px solid black;
+    text-decoration: none;
+    background: #D3D3D3;
+    color: black;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: 0.2s;
+    align-self: flex-start;
+}
+
+.request-dropdown:hover {
+    background: grey;
+    color: black;
+}
+
+.request-dropdow-form{
+    background-color:#f1f3f7;
+    padding: 10px;
 }
 
 /* ŠPECIFIKÁCIE */
