@@ -12,13 +12,40 @@ async function getAll(collectionName) {
   }));
 }
 
+// -------------------------------
+// INITIAL FETCH
+// -------------------------------
 
-export const USERS = await getAll("users");
+export let USERS = await getAll("users");
+export let BOOKS = await getAll("books");
+export let LOANS = await getAll("loans");
+export let NOTIFICATIONS = await getAll("notifications");
 
-export const BOOKS = await getAll("books");
-export const BOOK_GENRES = getUniqueSortedValues(BOOKS, "type");
-export const BOOK_LANGS = getUniqueSortedValues(BOOKS, "language");
+export let BOOK_GENRES = getUniqueSortedValues(BOOKS, "type");
+export let BOOK_LANGS = getUniqueSortedValues(BOOKS, "language");
 
-export const LOANS = await getAll("loans");
+// -------------------------------
+// REFETCH FUNCTIONS
+// -------------------------------
 
-export const NOTIFICATIONS = await getAll("notifications");
+export async function refetchUsers() {
+  USERS = await getAll("users");
+  return USERS;
+}
+
+export async function refetchBooks() {
+  BOOKS = await getAll("books");
+  BOOK_GENRES = getUniqueSortedValues(BOOKS, "type");
+  BOOK_LANGS = getUniqueSortedValues(BOOKS, "language");
+  return BOOKS;
+}
+
+export async function refetchLoans() {
+  LOANS = await getAll("loans");
+  return LOANS;
+}
+
+export async function refetchNotifications() {
+  NOTIFICATIONS = await getAll("notifications");
+  return NOTIFICATIONS;
+}
