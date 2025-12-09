@@ -1,22 +1,24 @@
-import { LOANS, BOOKS, USERS, refetchLoans } from "./api/allData.js";
+import { LOANS, BOOKS, USERS, refetchLoans, refetchBooks } from "./api/allData.js";
 import { doc, updateDoc, addDoc, collection } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 import { db } from "./firebase.js";
+import { refreshHeader } from "./utils.js";
 
 async function updateLoanStatus(loanId, newStatus) {
+    const timestamp = new Date().toISOString();
+
+
     const loanRef = doc(db, "loans", loanId);
 
     await updateDoc(loanRef, {
-        status: newStatus
+        status: newStatus,
+        created_at: timestamp,
     });
 
     console.log(`Loan ${loanId} updated → ${newStatus}`);
 
     await refetchLoans();
-    refreshLists();
-    rerenderActiveTab();
 
     // Send notification to borrower
-    const timestamp = new Date().toISOString();
     const loan = LOANS.find(loan => loan.id === loanId);
     const owner_id = loan.owner_id;
     const borrower_id = loan.borrower_id;
@@ -42,6 +44,8 @@ async function updateLoanStatus(loanId, newStatus) {
     });
 
     console.log("Notifikacia 2 OK");
+
+    refreshHeader();
 }
 
 let refreshLists;     // defined globally so updateLoanStatus can call it
@@ -235,28 +239,44 @@ function init() {
 
         const id = card.getAttribute('data-id');
 
+        const loan = LOANS.find(loan => loan.id === id);
+        if (!loan) return;
+        const bookRef = doc(db, "books", String(loan.book_id));
+
         if (e.target.classList.contains('schvalena-akcia')) {
             await updateLoanStatus(id, "returned");
             
-            const bookId = LOANS.find(loan => loan.id === id).book_id;
-            const bookRef = doc(db, "books", bookId);
             await updateDoc(bookRef, {
                 status: "available"
             });
+
+            await refetchBooks();
+
+            refreshLists();
+
+            rerenderActiveTab();
         }
 
         if (e.target.classList.contains('cakajuca-schvalit')) {
             await updateLoanStatus(id, "approved");
 
-            const bookId = LOANS.find(loan => loan.id === id).book_id;
-            const bookRef = doc(db, "books", bookId);
             await updateDoc(bookRef, {
                 status: "unavailable"
             });
+
+            await refetchBooks();
+
+            refreshLists();
+
+            rerenderActiveTab();
         }
 
         if (e.target.classList.contains('cakajuca-zamietnut')) {
             await updateLoanStatus(id, "rejected");
+
+            refreshLists();
+
+            rerenderActiveTab();
         }
     });
 }
