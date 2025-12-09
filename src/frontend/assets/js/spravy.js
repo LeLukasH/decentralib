@@ -1,6 +1,7 @@
 import { db } from "./firebase.js";
 import { collection, query, where, getDocs , doc, updateDoc} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 import { refreshHeader } from "./utils.js";
+import { USERS, BOOKS } from "./api/allData.js";
 
 export async function getNotifications() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -48,7 +49,7 @@ export async function renderNotifications() {
         row.className = "notification-row" + (note.is_read ? " read" : "");
 
         row.innerHTML = `
-            <div class="notification-title">${getTextFromType(note.type) || "Notifikácia"}</div>
+            <div class="notification-title">${getTextFromNotification(note) || "Notifikácia"}</div>
             <div class="notification-preview">${note.message || ""}</div>
             <div class="notification-date">${new Date(note.created_at).toLocaleString()}</div>
         `;
@@ -64,10 +65,12 @@ export async function renderNotifications() {
     });
 }
 
-function getTextFromType(type) {
-    switch (type) {
+function getTextFromNotification(notification) {
+    const book = BOOKS.find(b => b.id === notification.book_id);
+    const borrowerName = notification.borrower_id;
+    switch (notification.type) {
         case "loan_request":
-            return "Zadali ste novú požiadavku na požičanie knihy.";
+            return `Zadali ste novú požiadavku na požičanie knihy.`;
         case "loan_request_approval":
             return "Dostali ste požiadavku na požičanie knihy.";
         default:

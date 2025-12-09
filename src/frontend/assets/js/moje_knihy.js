@@ -1,6 +1,6 @@
 import { setupBookDetailModal } from "./book_detail_modal.js";
-import { USERS } from "./api/users.js";
-import { BOOKS, BOOK_GENRES, BOOK_LANGS } from "./api/books.js";
+import { USERS } from "./api/allData.js";
+import { BOOKS, BOOK_GENRES, BOOK_LANGS } from "./api/allData.js";
 
 // Importy pre Firebase (ak sa používajú pre ukladanie stavu knihy)
 import { db } from "./firebase.js"; 

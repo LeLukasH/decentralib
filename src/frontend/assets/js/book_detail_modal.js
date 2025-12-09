@@ -142,8 +142,8 @@ export function setupBookDetailModal(USERS, BOOKS) {
 }
 
 import { db } from "./firebase.js";
-import { doc, addDoc, getDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-import { BOOKS } from "./api/books.js";
+import { addDoc, collection } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { BOOKS } from "./api/allData.js";
 import { refreshHeader } from "./utils.js";
 
 export async function createLoanRequest(bookId, dateFrom, dateTo) {
@@ -179,6 +179,7 @@ export async function createLoanRequest(bookId, dateFrom, dateTo) {
         loan_id: loanRef.id,
         type: "loan_request",
         recipient_id: borrower_id,
+        sender_id: owner_id,
         is_read: false,
         created_at: timestamp
     });
@@ -189,6 +190,7 @@ export async function createLoanRequest(bookId, dateFrom, dateTo) {
         loan_id: loanRef.id,
         type: "loan_request_approval",
         recipient_id: owner_id,
+        sender_id: borrower_id,
         is_read: false,
         created_at: timestamp
     });
