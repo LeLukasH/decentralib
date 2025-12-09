@@ -152,8 +152,19 @@ function init() {
         const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
         const endIndex = startIndex + ITEMS_PER_PAGE;
 
+        const pageItems = data.slice(startIndex, endIndex);
+
         container.style.display = 'grid';
-        container.innerHTML = data.slice(startIndex, endIndex).map(cardCreator).join('');
+
+        if (pageItems.length === 0) {
+            container.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">
+                    <p>Žiadne výpožičky na zobrazenie.</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML = pageItems.map(cardCreator).join('');
+        }
     }
 
     function setupPagination(data, paginationId, current, listType) {
