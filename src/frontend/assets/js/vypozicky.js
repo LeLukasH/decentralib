@@ -4,10 +4,14 @@ import { db } from "./firebase.js";
 import { refreshHeader } from "./utils.js";
 
 async function updateLoanStatus(loanId, newStatus) {
+    const timestamp = new Date().toISOString();
+
+
     const loanRef = doc(db, "loans", loanId);
 
     await updateDoc(loanRef, {
-        status: newStatus
+        status: newStatus,
+        created_at: timestamp,
     });
 
     console.log(`Loan ${loanId} updated → ${newStatus}`);
@@ -15,7 +19,6 @@ async function updateLoanStatus(loanId, newStatus) {
     await refetchLoans();
 
     // Send notification to borrower
-    const timestamp = new Date().toISOString();
     const loan = LOANS.find(loan => loan.id === loanId);
     const owner_id = loan.owner_id;
     const borrower_id = loan.borrower_id;
