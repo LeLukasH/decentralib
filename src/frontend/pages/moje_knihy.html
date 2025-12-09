@@ -7,19 +7,12 @@
     <link rel="stylesheet" href="../assets/css/index.css">
     <link rel="stylesheet" href="../assets/css/new_book_modal.css"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-
-
-    <script type="module" src="../assets/js/moje_knihy.js"></script>
-    <script type="module" src="../assets/js/book_detail_modal.js"></script>
-    <script type="module" src="../assets/js/delete_book_modal.js"></script>
-    <script type="module" src="../assets/js/header_footer.js"></script>
 </head>
 
 <body>
 
     <div>
-	    <my-header></my-header>
+        <my-header></my-header>
     </div>
 
 
@@ -43,7 +36,7 @@
                         <input type="checkbox" id="len-dostupne">
                         <label for="len-dostupne">Len dostupné &#9989</label>
 
-                        <input type="checkbox" id="len-pozicane">
+                        <input type="checkbox" id="len-nedostupne">
                         <label for="len-pozicane">Len požičané &#10060</label>
 
                         <input type="checkbox" id="len-zamknute">
@@ -55,12 +48,12 @@
                     Pridaj knihu
                 </button>
 
-            </div>    
+            </div>      
             
             <div style="margin-bottom: 10px;">
-                &#9989  Kniha je dostupná na požičanie<br>
-                &#10060  Kniha je momentálne požičaná<br>
-                &#128274  Knihu dočasne nepožičiavaš
+                &#9989   Kniha je dostupná na požičanie<br>
+                &#10060   Kniha je momentálne požičaná<br>
+                &#128274   Knihu dočasne nepožičiavaš
             </div>
             
 
@@ -81,7 +74,13 @@
         
     </div>
 
-    <!-- Modal - Vymaž knihu -->
+    <div id="bookDetailModal" class="modal"> 
+        <div class="modal-content">
+            <span class="close-button" onclick="closeBookDetailModal()">&times;</span>
+            <h2 id="detailBookTitle">Detail knihy</h2>
+            </div>
+    </div>
+    
     <div id="deleteModal" class="modal">
         <div class="modal-content">
             <p id="deleteText"></p>
@@ -92,7 +91,6 @@
         </div>
     </div>
 
-    <!-- Modal - Nová kniha -->
     <div id="newBookModal" class="modal">
         <div class="modal-content">
             <span class="close-button" onclick="closeNewBookModal()">&times;</span>
@@ -143,7 +141,6 @@
         </div>
     </div>
 
-    <!-- Modal - Detail knihy -->
     <div id="editBookModal" class="modal">
         <div class="modal-content">
             <span class="close-button" onclick="closeEditBookModal()">&times;</span>
@@ -165,7 +162,7 @@
                             <i class="fa fa-pencil edit-icon" onclick="enableEdit('editBookName')"></i>
                         </div>
                     </div>
-                   
+                    
                     <div class="form-row">
                         <label>Autor:</label>
                         <div class="editable_row">
@@ -208,6 +205,9 @@
 
     <my-footer></my-footer>
 
+    <script type="module" src="../assets/js/moje_knihy.js" defer></script>
+    <script type="module" src="../assets/js/book_detail_modal.js" defer></script>
+    <script type="module" src="../assets/js/header_footer.js" defer></script>
 </body>
 
 </html>

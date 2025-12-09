@@ -7,6 +7,10 @@ let AVAILABLE_CITIES = [];
 let selectedCityFilter = ""; 
 let searchCommitted = { nazov: "", autor: "" }; 
 
+console.log(BOOKS)
+console.log(USERS);
+
+
 // --- PRE STRÁNKOVANIE ---
 const BOOKS_PER_PAGE = 18;
 let currentPage = 1;
@@ -177,7 +181,7 @@ function renderBooks() {
         
         return match;
     });
-
+    console.log("Filtered Books:", filteredBooks);
     const totalBooks = filteredBooks.length;
     
     // Korekcia stránky po filtrovaní (ak sme na neexistujúcej stránke)
@@ -205,7 +209,7 @@ function renderBooks() {
         booksToRender.forEach(book => {
             const card = document.createElement("div");
             card.className = "karta-knihy";
-            const dostupne = getBookStatus(book);
+            const dostupne = getBookStatus(book) === "available";
             const owner = getOwner(book);
 
             card.innerHTML = `
@@ -434,10 +438,14 @@ function handleCityAutocomplete(event) {
         }
         return; 
     }
+    
+    const filteredCities = AVAILABLE_CITIES.filter(city => {
+        if (typeof city !== 'string' || city === null || city.trim() === '') {
+            return false; 
+        }
 
-    const filteredCities = AVAILABLE_CITIES.filter(city => 
-        city.toLowerCase().includes(value)
-    );
+        return city.toLowerCase().includes(value); 
+    });
     
     if (filteredCities.length > 0) {
         filteredCities.forEach(city => {
