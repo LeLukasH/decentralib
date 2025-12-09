@@ -1,6 +1,3 @@
-import { db } from "./firebase.js";
-import { doc, addDoc, getDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-
 // Exportujeme funkciu, ktorú budeme volať z home.js
 export function setupBookDetailModal(USERS, BOOKS) {
     const modal = document.getElementById("bookDetailModal");
@@ -144,6 +141,8 @@ export function setupBookDetailModal(USERS, BOOKS) {
 
 }
 
+import { db } from "./firebase.js";
+import { doc, addDoc, getDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 import { BOOKS } from "./api/books.js";
 
 export async function createLoanRequest(bookId, dateFrom, dateTo) {

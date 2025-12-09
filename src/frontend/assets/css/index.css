@@ -92,6 +92,7 @@ header div a{
 
 /* NAVIGACIA TLAČIDLÁ (DESKTOP) */
 .navigacne-tlacidlo {
+    position: relative;   /* REQUIRED */
     width: 150px;
     text-align: center !important;
     padding: 15px 5px;
@@ -934,4 +935,33 @@ button.danger {
     padding-bottom: 0px;
     margin: 5px;
     margin-top: 10px;
+}
+
+/* badge */
+.msg-badge {
+  position: absolute;
+  top: -6px;                     /* tweak to place in corner */
+  right: -6px;                   /* tweak to place in corner */
+  min-width: 18px;
+  height: 18px;
+  padding: 3px 3px;
+  border-radius: 999px;
+  background: #e53935;           /* red */
+  color: white;
+  font-size: 12px;
+  line-height: 18px;
+  display: none;                 /* hidden by default */
+  align-items: center;
+  justify-content: center;/* subtle ring to separate from background */
+  white-space: nowrap;
+}
+
+/* small tweak for two-digit numbers */
+.msg-badge--small {
+  min-width: 22px;
+}
+
+/* responsive scale (optional) */
+@media (max-width: 480px) {
+  .msg-badge { font-size: 11px; top: -4px; right: -4px; }
 }

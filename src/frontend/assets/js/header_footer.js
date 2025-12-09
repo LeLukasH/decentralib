@@ -1,7 +1,9 @@
 import { logout } from "./auth.js";
+import { db } from "./firebase.js";
+import { getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
 class MyHeader extends HTMLElement {
-    connectedCallback() {
+    async connectedCallback() {
         let currentUser = null;
         try {
             currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -33,7 +35,10 @@ class MyHeader extends HTMLElement {
                             <a href="vypozicky.html">Výpožičky</a>
                         </div>
                     </div>
-                    <a href="spravy.html" class="navigacne-tlacidlo">Správy</a>
+                    <a href="spravy.html" class="navigacne-tlacidlo" id="messagesLink" aria-labelledby="messagesLabel">
+                        <span id="messagesLabel">Správy</span>
+                        <span class="msg-badge" id="messagesBadge" aria-hidden="true"></span>
+                    </a>
                 </nav>
 
                 <button class="hamburger">
@@ -58,6 +63,9 @@ class MyHeader extends HTMLElement {
                 </div>
             </header>
         `;
+
+        const messagesCount = await getMessagesCount();
+        updateMessagesBadge(messagesCount);
         
         // --- FUNKCIA PRE ZATVÁRANIE OSTATNÝCH DROPDOWNOV ---
         const toggleDropdown = (targetContent) => {
@@ -180,3 +188,52 @@ class MyFooter extends HTMLElement {
 
 customElements.define('my-header', MyHeader);
 customElements.define('my-footer', MyFooter);
+
+function updateMessagesBadge(messagesCount) {
+    const badge = document.getElementById("messagesBadge");
+    console.log(badge)
+    if (!badge) return;
+
+    if (typeof messagesCount !== "number") {
+        // try to coerce if you got a string
+        messagesCount = Number(messagesCount) || 0;
+    }
+
+    if (messagesCount > 0) {
+        // clamp large numbers
+        badge.textContent = messagesCount > 99 ? "99+" : String(messagesCount);
+        badge.style.display = "inline-flex";
+
+        // style tweak for two+ digits
+        if (messagesCount >= 10 && messagesCount <= 99) {
+        badge.classList.add("msg-badge--small");
+        } else {
+        badge.classList.remove("msg-badge--small");
+        }
+
+        // for screen-readers: announce count (optional)
+        badge.setAttribute("aria-hidden", "false");
+        badge.setAttribute("aria-label", `${badge.textContent} neprečítaných správ`);
+    } else {
+        badge.style.display = "none";
+        badge.setAttribute("aria-hidden", "true");
+        badge.removeAttribute("aria-label");
+    }
+}
+
+async function getMessagesCount() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) return 0;
+    const currentUserId = currentUser.id;
+
+    const q = query(
+        collection(db, "notifications"),
+        where("recipient_id", "==", currentUserId)
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    console.log("Počet správ pre používateľa", currentUserId, "je:", querySnapshot.size);
+
+    return querySnapshot.size;        // number of docs
+}
