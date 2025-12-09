@@ -125,7 +125,7 @@ header div a{
     border: none;
     cursor: pointer;
     display: flex;
-    align-items: center; 
+    align-items: center !important; 
     gap: 8px;
 }
 
@@ -137,7 +137,7 @@ header div a{
     font-size: 18px;
     font-weight: 600;
     padding: 15px 5px; 
-    text-align: center;
+    text-align: center !important;
     width: 150px;
     cursor: pointer;
 }
