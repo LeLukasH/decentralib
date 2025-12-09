@@ -104,10 +104,15 @@
     gap: 8px;
     margin: 12px 0;
     flex-wrap: wrap;
+    margin-bottom: 0;
 }
 
 .borrow-title{
     margin: 0;
+}
+
+.borrow-povinne{
+    margin-top: 0;
 }
 
 .borrow-form input[type="date"] {
