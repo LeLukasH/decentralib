@@ -125,7 +125,7 @@ header div a{
     border: none;
     cursor: pointer;
     display: flex;
-    align-items: center; 
+    align-items: center !important; 
     gap: 8px;
 }
 
@@ -137,7 +137,7 @@ header div a{
     font-size: 18px;
     font-weight: 600;
     padding: 15px 5px; 
-    text-align: center;
+    text-align: center !important;
     width: 150px;
     cursor: pointer;
 }
@@ -964,4 +964,14 @@ button.danger {
 /* responsive scale (optional) */
 @media (max-width: 480px) {
   .msg-badge { font-size: 11px; top: -4px; right: -4px; }
+}
+
+/*Success Page*/
+.success-obsah{
+    padding: 20px;
+}
+.success-footer{
+    position:absolute;
+    width: 100%;
+    bottom: 0;
 }
