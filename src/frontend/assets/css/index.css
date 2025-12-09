@@ -537,6 +537,10 @@ header div a{
     gap: 15px;
 }
 
+.karta-content img {
+    border-radius: 6px;
+}
+
 .karta-info {
     display: flex;
     flex-direction: column;
