@@ -32,6 +32,7 @@ export async function markNotificationAsRead(notificationId) {
 
 export async function renderNotifications() {
     const container = document.getElementById("notificationsContainer");
+    if (!container) return;
     container.innerHTML = "<p>Načítavam...</p>";
 
     const notifications = (await getNotifications()).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -77,4 +78,5 @@ function getTextFromNotification(notification) {
             return "Neznáma notifikácia.";
     }
 }
+
 renderNotifications();
