@@ -1,0 +1,64 @@
+import { db } from "./firebase.js";
+import { collection, query, where, getDocs , doc, updateDoc} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+export async function getNotifications() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    if (!currentUser) return [];
+
+    const q = query(
+        collection(db, "notifications"),
+        where("recipient_id", "==", currentUser.id)
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    const messages = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    }));
+
+    return messages;
+}
+
+export async function markNotificationAsRead(notificationId) {
+    const ref = doc(db, "notifications", notificationId);
+    await updateDoc(ref, { is_read: true });
+}
+
+// ----------------- RENDER ----------------------
+
+export async function renderNotifications() {
+    const container = document.getElementById("notificationsContainer");
+    container.innerHTML = "<p>Načítavam...</p>";
+
+    const notifications = (await getNotifications()).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    if (notifications.length === 0) {
+        container.innerHTML = "<p>Nemáte žiadne notifikácie.</p>";
+        return;
+    }
+
+    container.innerHTML = "";
+
+    notifications.forEach((note) => {
+        const row = document.createElement("div");
+
+        row.className = "notification-row" + (note.is_read ? " read" : "");
+
+        row.innerHTML = `
+            <div class="notification-title">${note.type || "Notifikácia"}</div>
+            <div class="notification-preview">${note.message || ""}</div>
+            <div class="notification-date">${new Date(note.created_at).toLocaleString()}</div>
+        `;
+
+        row.addEventListener("click", async () => {
+            if (!note.read) {
+                await markNotificationAsRead(note.id);
+                row.classList.add("read");
+            }
+        });
+
+        container.appendChild(row);
+    });
+}
+renderNotifications();

@@ -144,6 +144,7 @@ export function setupBookDetailModal(USERS, BOOKS) {
 import { db } from "./firebase.js";
 import { doc, addDoc, getDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 import { BOOKS } from "./api/books.js";
+import { refreshHeader } from "./utils.js";
 
 export async function createLoanRequest(bookId, dateFrom, dateTo) {
     console.log("Vytváram požiadavku na požičanie knihy ID:", bookId, "od", dateFrom, "do", dateTo);
@@ -174,8 +175,6 @@ export async function createLoanRequest(bookId, dateFrom, dateTo) {
         return;
     }
 
-    console.log("Notifikacia 1");
-
     await addDoc(collection(db, "notifications"), {
         loan_id: loanRef.id,
         type: "loan_request",
@@ -184,7 +183,7 @@ export async function createLoanRequest(bookId, dateFrom, dateTo) {
         created_at: timestamp
     });
 
-    console.log("Notifikacia 2");
+    console.log("Notifikacia 1 OK");
 
     await addDoc(collection(db, "notifications"), {
         loan_id: loanRef.id,
@@ -194,7 +193,10 @@ export async function createLoanRequest(bookId, dateFrom, dateTo) {
         created_at: timestamp
     });
 
+    console.log("Notifikacia 2 OK");
+
     alert("Vaša požiadavka na požičanie knihy bola odoslaná.");
+    refreshHeader();
 }
 
 window.createLoanRequest = createLoanRequest;

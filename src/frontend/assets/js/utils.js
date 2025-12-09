@@ -9,3 +9,11 @@ export function getUniqueSortedValues(data, key) {
     // Filter zabezpečí, že hodnoty nie sú undefined alebo null
     return [...new Set(data.map(item => item[key]).filter(value => value))].sort();
 }
+
+export function refreshHeader() {
+    const header = document.querySelector('my-header');
+
+    // Remove and re-add
+    header.remove();
+    document.body.prepend(header); // or wherever it was
+}

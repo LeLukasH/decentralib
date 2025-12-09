@@ -1,6 +1,5 @@
 import { logout } from "./auth.js";
-import { db } from "./firebase.js";
-import { getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { getNotifications } from "./spravy.js";
 
 class MyHeader extends HTMLElement {
     async connectedCallback() {
@@ -191,7 +190,6 @@ customElements.define('my-footer', MyFooter);
 
 function updateMessagesBadge(messagesCount) {
     const badge = document.getElementById("messagesBadge");
-    console.log(badge)
     if (!badge) return;
 
     if (typeof messagesCount !== "number") {
@@ -222,18 +220,6 @@ function updateMessagesBadge(messagesCount) {
 }
 
 async function getMessagesCount() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (!currentUser) return 0;
-    const currentUserId = currentUser.id;
-
-    const q = query(
-        collection(db, "notifications"),
-        where("recipient_id", "==", currentUserId)
-    );
-
-    const querySnapshot = await getDocs(q);
-
-    console.log("Počet správ pre používateľa", currentUserId, "je:", querySnapshot.size);
-
-    return querySnapshot.size;        // number of docs
+    const messages = (await getNotifications()).filter(msg => !msg.is_read);
+    return messages.length;        // number of docs
 }
