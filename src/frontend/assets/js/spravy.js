@@ -105,7 +105,7 @@ function getTextFromNotification(notification) {
 
         // === BORROWER RETURNS BOOK – OWNER IS NOTIFIED ===
         case "loan_returned_owner":
-            return `Používateľ ${user.first_name} ${user.last_name} potvrdil vrátenie knihy "${book.title}".`;
+            return `Potvrdili ste vrátenie knihy "${book.title} od používateľa ${user.first_name} ${user.last_name}.`;
 
         // === OWNER CONFIRMS RETURN – BORROWER IS NOTIFIED ===
         case "loan_returned_borrower":
