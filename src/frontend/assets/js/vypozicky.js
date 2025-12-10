@@ -93,7 +93,7 @@ function init() {
             if (loan.owner_id === currentUser.id && loan.status === "approved" && book.status === "unavailable") {
                 schvaleneLoans.push(loan);
             }
-            if (loan.owner_id === currentUser.id && loan.status === "waiting" && book.status === "available") {
+            if (loan.owner_id === currentUser.id && loan.status === "waiting") {
                 cakajuceLoans.push(loan);
             }
         });
@@ -140,7 +140,7 @@ function init() {
                     </div>
                 </div>
                 <div class="action-buttons" style="display:flex;gap:10px;margin-top:10px;">
-                    <button class="request-button cakajuca-schvalit" style="background:#2f70e9;flex:1;">Schváliť</button>
+                    ${book.status == "available" ? '<button class="request-button cakajuca-schvalit" style="background:#2f70e9;flex:1;">Schváliť</button>' :  'Táto kniha je práve požičaná.'}
                     <button class="request-button cakajuca-zamietnut" style="background:#c62828;flex:1;">Zamietnuť</button>
                 </div>
             </div>
