@@ -1,5 +1,22 @@
-// Exportujeme funkciu, ktorú budeme volať z home.js
+import { db } from "./firebase.js";
+import { addDoc, collection, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { BOOKS } from "./api/allData.js";
+import { refreshHeader } from "./utils.js";
+
+// Global variable to hold the book ID currently being edited
+let currentEditingBookId = null; 
+let allBooksRef = null;
+let allUsersRef = null;
+
+// ===================================================
+// 1. DETAIL MODAL LOGIKA (Pôvodný kód)
+// ===================================================
+
 export function setupBookDetailModal(USERS, BOOKS) {
+    // Uloží referencie pre neskoršie použitie v edit modale
+    allBooksRef = BOOKS;
+    allUsersRef = USERS;
+
     const modal = document.getElementById("bookDetailModal");
     const closeModal = modal.querySelector(".close-button");
 
@@ -7,7 +24,7 @@ export function setupBookDetailModal(USERS, BOOKS) {
     function getOwner(book) {
         return USERS.find(u => u.id === book.owner_id) || null;
     }
-
+    // ... (ostatné pomocné funkcie pre vlastníka sú rovnaké) ...
     function getOwnerNick(book) {
         const owner = getOwner(book);
         return owner ? owner.nick : "neznámy";
@@ -23,22 +40,16 @@ export function setupBookDetailModal(USERS, BOOKS) {
         return owner ? owner.location : "—";
     }
     
-    // Nová funkcia na získanie počtu hodnotení pre vlastníka 
     function getOwnerRatingCount(book) {
         const owner = getOwner(book);
-        // Predpokladáme, že USERS má pole 'rating_count'
         return owner ? (owner.rating_count || 4) : 0; 
     }
     // -----------------------------------------------------------
 
-    /**
-     * TOGGLE FUNKCIA: Zbalí/rozbalí popis a zmení text tlačidla.
-     */
     function toggleDescription() {
         const descriptionText = document.getElementById("modal-description-full");
         const toggleButton = document.getElementById("toggle-description-button");
         
-        // Prepínanie triedy pre zobrazenie/skrytie (CSS sa postará o výšku)
         descriptionText.classList.toggle('expanded');
         
         if (descriptionText.classList.contains('expanded')) {
@@ -48,20 +59,14 @@ export function setupBookDetailModal(USERS, BOOKS) {
         }
     }
 
-    /* Načíta používateľa*/
     let currentUser = null;
-        try {
-            currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        } catch (e) {
-            currentUser = null;
-        }
+    try {
+        currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    } catch (e) {
+        currentUser = null;
+    }
 
 
-    /**
-     * Načíta detaily knihy do modálneho okna a zobrazí ho.
-     * Táto funkcia je prístupná globálne cez window.showBookDetail()
-     * @param {number} bookId - ID knihy.
-     */
     window.showBookDetail = function(bookId) {
         const book = BOOKS.find(b => b.id === bookId);
         if (!book) {
@@ -69,12 +74,13 @@ export function setupBookDetailModal(USERS, BOOKS) {
             return;
         }
 
-        // 1. Získanie dát vlastníka a nastavenie ostatných info polí
+        // 1. Získanie dát a nastavenie info polí
         const ownerNick = getOwnerNick(book);
         const ownerRating = getOwnerReputation(book);
         const ownerLocation = getOwnerLocation(book);
         const ownerRatingCount = getOwnerRatingCount(book);
         
+        // ... (Nastavenie elementov DOM - rovnaké ako Váš kód) ...
         document.getElementById("modal-title").textContent = book.title;
         document.getElementById("modal-image").src = book.image_url;
         document.getElementById("modal-author").textContent = book.autor;
@@ -87,6 +93,7 @@ export function setupBookDetailModal(USERS, BOOKS) {
         document.getElementById("modal-language").textContent = book.language || "Neznámy";
         document.getElementById("modal-genre").textContent = book.type || "Neznámy";
 
+        // Kontrola stavu požičania a vlastníctva
         if(currentUser == null){
             document.getElementById("borrow-button-description").textContent = "Na požičanie knihy sa prihláste.";
             document.getElementById("request-borrow").disabled = true;
@@ -103,30 +110,24 @@ export function setupBookDetailModal(USERS, BOOKS) {
 
         document.getElementById("request-borrow").onclick = () => createLoanRequest(bookId, document.getElementById("date-from").value, document.getElementById("date-to").value, document.getElementById("form-borrow"));
 
-        
-        // === KĽÚČOVÁ LOGIKA PRE POPIS A TLAČIDLO ===
+        // Logika pre Popis
         const descriptionText = document.getElementById("modal-description-full");
         const toggleButton = document.getElementById("toggle-description-button");
         const descriptionValue = book.description || "Popis nie je k dispozícii.";
         
         descriptionText.textContent = descriptionValue;
         
-        // Definovanie maximálnej dĺžky textu, po ktorej sa aktivuje roll-up
         const MAX_LENGTH = 250; 
 
         if (descriptionValue.length > MAX_LENGTH) {
-            // Text je dlhý: Zobraziť tlačidlo, nastaviť na zbalený stav
             toggleButton.style.display = 'block';
             toggleButton.textContent = 'Čítať celý popis (...)';
             descriptionText.classList.remove('expanded'); 
             toggleButton.onclick = toggleDescription;
         } else {
-            // Text je krátky: Skryť tlačidlo, nastaviť na plné zobrazenie
             toggleButton.style.display = 'none';
             descriptionText.classList.add('expanded'); 
         }
-        // ============================================
-
 
         // Nastavenie minimálnych dát pre formulár
         const dateFromInput = document.getElementById("date-from");
@@ -134,11 +135,11 @@ export function setupBookDetailModal(USERS, BOOKS) {
         
         const today = new Date().toISOString().split('T')[0];
         dateFromInput.setAttribute("min", today);
-        dateFromInput.value = today; // Predvolená hodnota
+        dateFromInput.value = today; 
         dateToInput.setAttribute("min", today);
 
 
-        // 3. Zobrazenie modálneho okna
+        // Zobrazenie modálneho okna
         modal.style.display = "block";
     };
 
@@ -163,29 +164,141 @@ export function setupBookDetailModal(USERS, BOOKS) {
 
 }
 
-import { db } from "./firebase.js";
-import { addDoc, collection } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-import { BOOKS } from "./api/allData.js";
-import { refreshHeader } from "./utils.js";
+// ===================================================
+// 2. MODAL PRE ÚPRAVU KNIHY (EXPORTY PRE moje_knihy.js)
+// ===================================================
+
+/**
+ * EXPORT: Otvorí modál na úpravu knihy
+ * @param {number} bookId - ID knihy.
+ */
+export function openEditBookModal(bookId) {
+    const book = allBooksRef.find(b => b.id === bookId);
+    const modal = document.getElementById("editBookModal");
+
+    if (!book) {
+        console.error("Kniha s ID " + bookId + " nebola nájdená pre editáciu.");
+        return;
+    }
+
+    currentEditingBookId = bookId; // Uloží ID editovanej knihy
+
+    // Nastavenie hodnôt polí
+    document.getElementById("editBookName").value = book.title || "";
+    document.getElementById("editBookAuthor").value = book.autor || "";
+    document.getElementById("editBookLang").value = book.language || "";
+    document.getElementById("editBookGenre").value = book.type || "";
+    document.getElementById("editBookDescription").value = book.description || "";
+    document.getElementById("editBookImage").src = book.image_url || "../assets/img/img_placeholder.png";
+
+    // Všetky polia sú na začiatku neaktívne
+    document.querySelectorAll('#editBookModal input, #editBookModal textarea').forEach(input => {
+        input.setAttribute('disabled', 'disabled');
+    });
+
+    if (modal) {
+        modal.classList.add("active");
+        modal.style.display = "flex";
+    }
+}
+
+/**
+ * EXPORT: Zavrie modál na úpravu knihy
+ */
+export function closeEditBookModal() {
+    const modal = document.getElementById("editBookModal");
+    if (modal) {
+        modal.classList.remove("active");
+        modal.style.display = "none";
+    }
+    currentEditingBookId = null; 
+}
+
+/**
+ * EXPORT: Aktivuje editáciu pre konkrétne pole
+ * @param {string} inputId - ID input/textarea poľa, ktoré má byť aktivované.
+ */
+export function enableEdit(inputId) {
+    const input = document.getElementById(inputId);
+    if (input) {
+        input.removeAttribute('disabled');
+        input.focus();
+        // Pridá vizuálnu triedu, ak je to potrebné
+        input.classList.add('editing-active'); 
+    }
+}
+
+/**
+ * EXPORT: Simuluje zmenu obrázka (len log pre konzolu)
+ */
+export function editChangeImage() {
+    console.log("Simulácia zmeny obrázku pre editovanú knihu.");
+    // Tu by sa implementovala logika na nahranie nového obrázku
+}
+
+/**
+ * EXPORT: Uloží upravené dáta do dátovej štruktúry a do Firebase
+ */
+export async function saveEditedBook() {
+    if (!currentEditingBookId) {
+        console.error("Nebolo nájdené ID editovanej knihy.");
+        return;
+    }
+
+    const book = allBooksRef.find(b => b.id === currentEditingBookId);
+    if (!book) return;
+
+    // 1. Získanie dát z formulára
+    const updatedData = {
+        title: document.getElementById("editBookName").value.trim(),
+        autor: document.getElementById("editBookAuthor").value.trim(),
+        language: document.getElementById("editBookLang").value.trim(),
+        type: document.getElementById("editBookGenre").value.trim(), // Používame 'type' pre žáner, ak súbor allData používa 'type'
+        description: document.getElementById("editBookDescription").value.trim(),
+        image_url: document.getElementById("editBookImage").src // Predpokladáme, že sa zmenilo cez editChangeImage
+    };
+
+    // 2. Aktualizácia lokálnych dát (len pre rýchly UI update)
+    Object.assign(book, updatedData);
+
+    // 3. Aktualizácia vo Firebase
+    try {
+        const bookRef = doc(db, "books", String(currentEditingBookId));
+        await updateDoc(bookRef, updatedData);
+
+        console.log(`Kniha ID ${currentEditingBookId} bola úspešne upravená a uložená do Firebase.`);
+        closeEditBookModal(); // Zavrie modál po uložení
+        // Nutné znova vykresliť zoznam kníh na stránke moje_knihy
+        window.renderActiveFilters(); 
+
+    } catch (error) {
+        console.error("Chyba pri ukladaní upravenej knihy do Firebase:", error);
+        alert("Chyba pri ukladaní zmien.");
+    }
+}
+
+
+// ===================================================
+// 3. LOGIKA PRE VYTVÁRANIE POŽIČIEK (Pôvodný kód)
+// ===================================================
 
 export async function createLoanRequest(bookId, dateFrom, dateTo, form) {
     if (!form.checkValidity()) {
-        form.reportValidity(); // zobrazí chyby HTML validácie
+        form.reportValidity(); 
         return;
     }
     
     console.log("Vytváram požiadavku na požičanie knihy ID:", bookId, "od", dateFrom, "do", dateTo);
     
     let loanRef;
-    // Create Loan
-    const book = BOOKS.find(b => b.id === bookId);
+    const book = allBooksRef.find(b => b.id === bookId);
     const owner_id = book ? book.owner_id : null;
     const timestamp = new Date().toISOString();
     const raw = localStorage.getItem("currentUser");
     const user = JSON.parse(raw);
     const borrower_id = user.id;
+
     try {
-        // Uloženie do Firestore
         loanRef = await addDoc(collection(db, "loans"), {
             book_id: bookId,
             borrower_id: borrower_id,
@@ -202,6 +315,7 @@ export async function createLoanRequest(bookId, dateFrom, dateTo, form) {
         return;
     }
 
+    // Vytvorenie notifikácií (ako vo Vašom kóde)
     await addDoc(collection(db, "notifications"), {
         loan_id: loanRef.id,
         type: "loan_request",
@@ -210,8 +324,6 @@ export async function createLoanRequest(bookId, dateFrom, dateTo, form) {
         is_read: false,
         created_at: timestamp
     });
-
-    console.log("Notifikacia 1 OK");
 
     await addDoc(collection(db, "notifications"), {
         loan_id: loanRef.id,
@@ -222,9 +334,8 @@ export async function createLoanRequest(bookId, dateFrom, dateTo, form) {
         created_at: timestamp
     });
 
-    console.log("Notifikacia 2 OK");
-
-    /*alert("Vaša požiadavka na požičanie knihy bola odoslaná.");*/
+    console.log("Požiadavka na požičanie a notifikácie úspešne odoslané.");
+    
     window.location.href = "success_page.html?book=" + encodeURIComponent(book.id);
     refreshHeader();
 }

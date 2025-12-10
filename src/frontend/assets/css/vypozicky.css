@@ -17,8 +17,11 @@ body {
 /* Centrálny kontajner a priestor po stranách */
 .list-vypoziciek-sekcia {
     max-width: 1200px; 
-    margin: 0 auto; 
-    padding: 0 15px; 
+    /* Zmena z margin: 0 auto na zarovnanie doľava */
+    margin: 0; /* Odstráni automatické marginy */
+    /* Môžete pridať margin-left: auto/0 alebo len ponechať margin: 0, 
+       a riadiť odsadenie pomocou paddingu na rodičovskom elemente */
+    padding: 0 15px;
 }
 
 /* ================================================= */
@@ -91,9 +94,9 @@ body {
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     
     /* OPRAVA: Zabezpečí, že obsah zostane v rámci karty a nedôjde k pretečeniu */
-    overflow: hidden; 
-    
-    height: 100%; 
+    overflow: hidden;   
+    height: auto; /* Karta sa prispôsobí obsahu */
+
 }
 
 .karta-content {

@@ -1,0 +1,276 @@
+/* ================================================= */
+/* MOJE KNIHY - VLASTNÉ ŠTÝLY (FINÁLNA VERZIA 2.0)        */
+/* ================================================= */
+
+/* Globálne nastavenie box-sizing pre presné výpočty šírky/paddingu */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* Kľúčové pre odstránenie horizontálneho scrollu na malých zariadeniach */
+html, body {
+    overflow-x: hidden; 
+}
+
+.list-knih-sekcia {
+    max-width: 1200px; 
+    margin: 0 auto;
+    /* Symetrický padding pre veľké obrazovky */
+    padding: 15px 15px 35px 15px; 
+}
+
+/* Hlavička a panel filtrov */
+.hlavny-panel {
+    display: flex;
+    justify-content: space-between; 
+    align-items: flex-start;
+    margin-bottom: 20px;
+    gap: 20px;
+}
+
+/* Tlačidlo Pridaj knihu */
+.button-pridaj-knihu {
+    background-color: #2f70e9; 
+    color: white;
+    padding: 12px 25px; 
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+    align-self: flex-start; 
+    min-width: 180px;
+}
+.button-pridaj-knihu:hover {
+    background-color: #2358b5;
+}
+
+
+/* ================================================= */
+/* KARTY (GRID) & ŠTRUKTÚRA                         */
+/* ================================================= */
+
+.zoznam-knih {
+    display: grid;
+    gap: 25px; 
+    margin-top: 20px; 
+    margin-bottom: 30px; 
+    grid-template-columns: repeat(4, 1fr); 
+}
+
+/* Karta Moja kniha */
+.karta-knihy {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 18px; 
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #d9dce2;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    overflow: hidden; 
+    height: auto; 
+    text-align: left; 
+}
+
+.karta-knihy h4 {
+    margin-top: 0;
+    font-size: 17px;
+    margin-bottom: 15px;
+    text-align: center; 
+}
+
+/* KONTENJER PRE OBRÁZOK A INFO */
+.karta-content {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    flex-grow: 1; 
+    width: 100%; 
+}
+
+/* Sekcia obrázka */
+.karta-content img {
+    flex-shrink: 0;
+    width: 100px; 
+    height: auto;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+/* Informačná sekcia (Text Autor, Jazyk, atď.) */
+.karta-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; 
+}
+
+.karta-info p {
+    margin: 4px 0;
+    font-size: 14px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    text-align: left; 
+}
+
+
+/* Stav knihy (Dostupná/Požičaná/Zamknutá) */
+.book-status {
+    font-weight: 600;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    display: inline-block;
+    margin-top: 5px; 
+    text-align: center;
+}
+.book-status.available { color: #1e8543; background: #e6f7eb; }
+.book-status.unavailable { color: #c62828; background: #fbe6e6; }
+.book-status.locked { color: #5a5a5a; background: #f0f0f0; }
+
+
+/* ================================================= */
+/* TLAČIDLÁ AKCIE (POD KARTA-CONTENT - DESKTOP: VEDĽA SEBA)*/
+/* ================================================= */
+
+.action-buttons {
+    display: flex; 
+    flex-direction: row; 
+    justify-content: space-between; 
+    gap: 10px;
+    margin-top: 5px; 
+    width: 100%; 
+}
+
+.action-buttons button {
+    flex: 1; 
+    width: auto; 
+    padding: 10px; 
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+/* Tlačidlo Upraviť knihu */
+.btn-edit {
+    background-color: #f7f7f7; 
+    color: #2f70e9;
+    border: 1px solid #d9dce2; 
+}
+.btn-edit:hover {
+    background-color: #e9e9e9;
+    color: #2358b5;
+}
+
+
+/* Tlačidlo Zamknúť/Odomknúť */
+.btn-lock {
+    /* OPRAVA: Odstránenie defaultného sivého pozadia, ponechanie bielej farby */
+    background-color: white; 
+    color: #444; 
+    border: none; 
+    
+    /* OPRAVA: Zväčšenie a lepšie centrovanie */
+    font-size: 22px; /* Väčšia ikona */
+    line-height: 1; 
+    height: 38px; /* O niečo vyššie ako edit, kvôli väčšej ikone */
+    padding: 0; /* Reset paddingu, aby ikona zaberala celú výšku */
+    
+    display: flex;
+    justify-content: center; /* Centruje horizontálne */
+    align-items: center; /* Centruje vertikálne */
+    
+    /* OPRAVA: Hover - iba farba ikony, bez zmeny pozadia */
+    transition: color 0.2s;
+}
+.btn-lock:hover:not(:disabled) {
+    background-color: white; /* Ponechať biele pozadie */
+    color: #000; /* Stmaví len ikonu */
+}
+.btn-lock:disabled {
+    background-color: #f0f0f0;
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+/* Tooltip (Popup s popisom) */
+.btn-lock[data-tooltip]:hover:after {
+    /* (štýly tooltipu zostávajú rovnaké) */
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+    font-size: 12px;
+    margin-bottom: 10px;
+    z-index: 1000;
+}
+
+/* ================================================= */
+/* RESPONZIVITA                                      */
+/* ================================================= */
+
+/* Tablet (max-width: 1024px): 3 stĺpce */
+@media (max-width: 1024px) {
+    .zoznam-knih {
+        grid-template-columns: repeat(3, 1fr); 
+    }
+}
+
+/* Mobil (max-width: 767px): 2 stĺpce a opravené okraje */
+@media (max-width: 767px) {
+    /* OPRAVA OKRAJOV: Symetrické a menšie odsadenie */
+    .list-knih-sekcia {
+        padding: 15px 10px 25px 10px; 
+    }
+    
+    .zoznam-knih {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px; 
+    }
+    
+    /* OBSAH KARTY: Vertikálne usporiadanie Obrázok/Info */
+    .karta-content {
+        flex-direction: column; 
+        align-items: center;
+        text-align: center;
+    }
+    .karta-content img {
+        width: 100%; 
+        max-width: 150px; 
+    }
+    .karta-info {
+        text-align: center;
+    }
+    .karta-info p {
+        font-size: 13px;
+        text-align: center;
+    }
+    
+    /* TLAČIDLÁ NA MOBILNOM ZARIADENÍ: Pod sebou */
+    .action-buttons {
+        flex-direction: column; 
+    }
+    .action-buttons button {
+        flex: none; 
+        width: 100%; 
+    }
+}
+
+/* Najmenšie mobilné zariadenia (max-width: 480px): 1 stĺpec */
+@media (max-width: 480px) {
+    .zoznam-knih {
+        grid-template-columns: 1fr;
+    }
+    .list-knih-sekcia {
+        padding: 15px 5px 25px 5px; 
+    }
+}

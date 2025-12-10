@@ -795,46 +795,6 @@ header div a{
     right:0;
 }
 
-
-/* Moje knihy*/
-.hlavny-panel {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    flex-wrap: nowrap;
-    gap: 20px;
-    margin-bottom: 20px;
-}
-
-.vyhladavanie-filter {
-    display: flex;
-    flex-direction: column; 
-    gap: 10px;
-}
-
-#pridaj-knihu {
-    display: flex;
-    align-items: flex-start;
-}
-
-.button-pridaj-knihu {
-    background-color: #2f70e9;
-    color: white;
-    padding: 20px 35px;
-    margin-right: 50px; 
-    font-size: 22px;
-    font-weight: 600;
-    border-radius: 6px;
-    text-decoration: none;
-    display: inline-block; 
-    white-space: nowrap;
-    border: none;
-}
-
-.button-pridaj-knihu:hover {
-    background-color: #0056c7;
-}
-
 @media (max-width: 400px) {
     .hlavny-panel {
         flex-wrap: wrap; 
@@ -860,13 +820,7 @@ header div a{
         width: 100%;
     }
 }
-
-/* Moje knihy grid*/ 
-.moje-knihy .zoznam-knih {
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-
-}
-
+_
 .delete-button {
     position: absolute;
     top: 10px;
