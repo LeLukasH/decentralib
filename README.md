@@ -4,38 +4,18 @@ Decentralized Library
 Link to Google Drive with specification:
 https://drive.google.com/drive/folders/1GxQByZQTANNJHtBcSTy3pYJMHnR-bDwZ?usp=sharing
 
+---
 
-### 1️⃣ Prerequisites
+### Website URL
 
-Make sure you have these installed:
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Windows / Mac / Linux)
-- Git
+https://lelukash.github.io/decentralib/
 
 ---
 
-### 2️⃣ Clone the repository
+### Clone the repository
 
 ```bash
 git clone https://github.com/LeLukasH/decentralib
 ```
 
 ---
-
-### 3️⃣ Run Backend
-
-Run the following command:
-
-```bash
-cd decentralib/src/backend
-docker-compose up --build
-docker-compose exec web python manage.py migrate
-```
-
-This will:
-- Build the Django image
-- Start the PostgreSQL container
-- Start the Django web container
-- Apply Database Migrations
-
-Django will be available at: http://localhost:8000
-
