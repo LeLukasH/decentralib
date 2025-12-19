@@ -22,30 +22,17 @@ html, body {
 /* Hlavička a panel filtrov */
 .hlavny-panel {
     display: flex;
-    justify-content: space-between; 
+    justify-content:space-between; 
     align-items: flex-start;
     margin-bottom: 20px;
     gap: 20px;
 }
 
-/* Tlačidlo Pridaj knihu */
-.button-pridaj-knihu {
-    background-color: #2f70e9; 
-    color: white;
-    padding: 12px 25px; 
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 17px;
-    font-weight: 600;
-    transition: background-color 0.2s;
-    align-self: flex-start; 
-    min-width: 180px;
+#button-pridaj-knihu{
+    position: absolute;
+    top:100px;
+    right:50px;
 }
-.button-pridaj-knihu:hover {
-    background-color: #2358b5;
-}
-
 
 /* ================================================= */
 /* KARTY (GRID) & ŠTRUKTÚRA                         */
@@ -272,5 +259,9 @@ html, body {
     }
     .list-knih-sekcia {
         padding: 15px 5px 25px 5px; 
+    }
+
+    #button-pridaj-knihu{
+    position:unset;
     }
 }

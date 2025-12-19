@@ -499,6 +499,12 @@ document.addEventListener("keydown", function(e) {
     }
 });
 
+document.getElementById("hladaj-home").addEventListener("click", () => {
+    searchCommitted.nazov = document.getElementById("nazov-home").value.trim();
+    searchCommitted.autor = document.getElementById("autor-home").value.trim();
+    renderActiveFilters();
+});
+
 document.querySelectorAll(".dropdown-header").forEach(header => {
     header.addEventListener("click", () => toggleFilter(header));
 });

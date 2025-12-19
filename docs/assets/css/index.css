@@ -426,6 +426,11 @@ header div a{
         background: #1f5fd1;
         transform: translateY(-2px);
     }
+
+    /*zabraňuje pretečeniu pri mobilnom zobrazení*/
+    .obsah{
+        display: block;
+    }
 }
 
 .dropdown-header {
@@ -474,10 +479,14 @@ header div a{
 }
 
 .vyhladavanie-item{
-    flex: 1; 
+    flex: 1;
     padding: 10px; 
     border-radius: 4px; 
     border: 1px solid #ccc;
+}
+
+.vyhladavanie-filter{
+    width: 100%;
 }
 
 /*  LIST KNÍH  */
@@ -807,7 +816,7 @@ header div a{
         justify-content: center;
     }
 
-    .button-pridaj-knihu {
+    #button-pridaj-knihu {
         width: 100%;
         text-align: center;
         padding: 18px 0;
@@ -819,6 +828,23 @@ header div a{
         order: 1;
         width: 100%;
     }
+}
+
+.button-modry {
+    background-color: #2f70e9; 
+    color: white;
+    padding: 12px 25px; 
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 17px;
+    font-weight: 600;
+    transition: background-color 0.2s;
+    align-self: flex-start; 
+    min-width: 180px;
+}
+.button-modry:hover {
+    background-color: #2358b5;
 }
 _
 .delete-button {
