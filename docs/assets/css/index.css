@@ -376,6 +376,21 @@ header div a{
     width: 100%;
 }
 
+.filter-skupina label{
+    margin-right: 15px;
+}
+
+@media (max-width: 600px) {
+    .filter-skupina label{
+        margin-right: 10px;
+    }
+
+    .filter-skupina{
+        display: flex;
+    }
+    
+}
+
 .filter-label {
     display: block;
     margin-bottom: 6px;

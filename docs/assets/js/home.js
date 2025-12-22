@@ -143,7 +143,8 @@ function renderBooks() {
         if (!owner) return false;
 
         // Ak ja som vlastnik, ignoruj moju knihu
-        /*if (owner.id === JSON.parse(localStorage.getItem('currentUser')).id) return false;*/
+        var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (currentUser != null && owner.id === currentUser.id) return false;
 
         // Filter: Dostupnosť
         if (filters.lenDostupne && book.status !== 'available') {

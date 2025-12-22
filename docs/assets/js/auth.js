@@ -96,11 +96,13 @@ export async function register() {
 
     const first_name = document.getElementById("first_name")?.value || "";
     const last_name = document.getElementById("last_name")?.value || "";
+    const nick = document.getElementById("nick")?.value || "";
+    const location = document.getElementById("location")?.value || "";
     const email = document.getElementById("email")?.value || "";
     const password = document.getElementById("password")?.value || "";
     const password2 = document.getElementById("password2")?.value || "";
 
-    if (!first_name || !last_name || !email || !password || !password2) {
+    if (!first_name || !last_name || !email || !password || !password2 || !nick || !location) {
         showMessage("Vyplňte všetky polia.", "error");
         return;
     }
@@ -124,9 +126,10 @@ export async function register() {
             id: newId,
             first_name,
             last_name,
+            nick,
             email,
             password,
-            location: null,
+            location,
             profile_pic: null,
             reputation: null
         });
