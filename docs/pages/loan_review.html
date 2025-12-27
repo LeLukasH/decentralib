@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preskúmanie výpožičky</title>
+
+  <link rel="stylesheet" href="../assets/css/index.css">
+  <link rel="stylesheet" href="../assets/css/spravy.css">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: inherit;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+
+    /* Hide titles */
+    .Nadpis,
+    .spravy-blok {
+      display: none;
+    }
+
+    /* Merged info block */
+    .merged-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 12px;
+      background: #fff;
+      padding: 12px;
+      border-radius: 6px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    .merged-info p {
+      margin: 0;
+    }
+
+    /* Star rating */
+    .stars {
+      font-size: 2rem;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+
+    .stars span {
+      color: #ccc;
+    }
+
+    .stars span.active {
+      color: gold;
+    }
+
+    /* Review textarea bigger */
+    textarea#reviewText {
+      width: 100%;
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    /* Review container spacing */
+    .notifikacie {
+      margin-top: 12px;
+      background: #fff;
+      padding: 12px;
+      border-radius: 6px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    button {
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: 4px;
+      border: none;
+      background-color: #007bff;
+      color: #fff;
+      font-size: 1rem;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 class="Nadpis">Detaily výpožičky a recenzia</h1>
+
+  <div class="vertical-container">
+
+    <!-- Hidden for JS -->
+    <div style="display:none" class="profil-info">
+      <div id="loanData" class="spravy-kontajner"></div>
+    </div>
+
+    <div style="display:none" class="profil-info">
+      <div id="borrowerData" class="spravy-kontajner"></div>
+    </div>
+
+    <!-- Merged Owner + Book -->
+    <div class="profil-info">
+      <div class="spravy-kontajner merged-info">
+        <div id="ownerData"></div>
+        <div id="bookData"></div>
+      </div>
+    </div>
+
+    <!-- Review Form -->
+    <div class="notifikacie">
+      <div class="spravy-kontajner">
+        <form id="reviewForm">
+
+          <input type="text" id="loanId" readonly style="display:none">
+          <input type="number" min="1" max="5" style="display:none">
+          <input type="hidden" id="rating" required>
+
+          <label>Hodnotenie:</label>
+          <div class="stars" id="starRating">
+            <span data-value="1">★</span>
+            <span data-value="2">★</span>
+            <span data-value="3">★</span>
+            <span data-value="4">★</span>
+            <span data-value="5">★</span>
+          </div>
+
+          <label>
+            Text recenzie:<br>
+            <textarea id="reviewText" required></textarea>
+          </label>
+
+          <br><br>
+          <button type="submit">Odoslať recenziu</button>
+        </form>
+
+        <p id="reviewMsg"></p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Existing JS -->
+  <script type="module" src="../assets/js/loan_review.js"></script>
+
+  <!-- Auto-close after review -->
+  <script>
+    const reviewForm = document.getElementById("reviewForm");
+    reviewForm.addEventListener("submit", () => {
+      setTimeout(() => {
+        const msg = document.getElementById("reviewMsg");
+        if (msg.textContent.includes("successfully")) {
+          window.close(); // close the popup window
+        }
+      }, 600);
+    });
+  </script>
+
+</body>
+</html>
