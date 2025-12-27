@@ -1,5 +1,5 @@
 import { logout } from "./auth.js";
-import { getNotifications } from "./spravy.js";
+import { getNotificationsCount, getUnreadMessagesCount } from "./header_counts.js";
 
 class MyHeader extends HTMLElement {
     async connectedCallback() {
@@ -44,6 +44,13 @@ class MyHeader extends HTMLElement {
                     ☰
                 </button>
 
+                <a href="notifikacie.html" class="navigation-icon" id="notificationsLink" aria-labelledby="notificationsLabel">
+                    <svg id="notificationsLabel" class="icon-bell" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2Zm6-6V11a6 6 0 1 0-12 0v5l-2 2v1h16v-1l-2-2Z"/>
+                    </svg>
+                    <span class="msg-badge" id="notificationsBadge" aria-hidden="true"></span>
+                </a>
+
                 <div>
                     ${
                         currentUser
@@ -63,8 +70,11 @@ class MyHeader extends HTMLElement {
             </header>
         `;
 
-        const messagesCount = await getMessagesCount();
+        const messagesCount = await getUnreadMessagesCount();
         updateMessagesBadge(messagesCount);
+
+        const notificationsCount = await getNotificationsCount();
+        updateNotificationsBadge(notificationsCount);
         
         // --- FUNKCIA PRE ZATVÁRANIE OSTATNÝCH DROPDOWNOV ---
         const toggleDropdown = (targetContent) => {
@@ -219,7 +229,33 @@ function updateMessagesBadge(messagesCount) {
     }
 }
 
-async function getMessagesCount() {
-    const messages = (await getNotifications()).filter(msg => !msg.is_read);
-    return messages.length;        // number of docs
+function updateNotificationsBadge(notificationsCount) {
+    const badge = document.getElementById("notificationsBadge");
+    if (!badge) return;
+
+    if (typeof notificationsCount !== "number") {
+        // try to coerce if you got a string
+        notificationsCount = Number(notificationsCount) || 0;
+    }
+
+    if (notificationsCount > 0) {
+        // clamp large numbers
+        badge.textContent = notificationsCount > 99 ? "99+" : String(notificationsCount);
+        badge.style.display = "inline-flex";
+
+        // style tweak for two+ digits
+        if (notificationsCount >= 10 && notificationsCount <= 99) {
+        badge.classList.add("msg-badge--small");
+        } else {
+        badge.classList.remove("msg-badge--small");
+        }
+
+        // for screen-readers: announce count (optional)
+        badge.setAttribute("aria-hidden", "false");
+        badge.setAttribute("aria-label", `${badge.textContent} neprečítaných notifikácií`);
+    } else {
+        badge.style.display = "none";
+        badge.setAttribute("aria-hidden", "true");
+        badge.removeAttribute("aria-label");
+    }
 }

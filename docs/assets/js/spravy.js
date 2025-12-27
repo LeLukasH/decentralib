@@ -1,119 +1,173 @@
 import { db } from "./firebase.js";
-import { collection, query, where, getDocs , doc, updateDoc} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import {
+    query,
+    where,
+    getDoc,
+    updateDoc,
+    doc,
+    addDoc,
+    orderBy,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { LOANS, USERS } from "./api/allData.js";
 import { refreshHeader } from "./utils.js";
-import { USERS, BOOKS, LOANS } from "./api/allData.js";
 
-export async function getNotifications() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    if (!currentUser) return [];
+let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+let currentChatroom = null;
 
-    const q = query(
-        collection(db, "notifications"),
-        where("recipient_id", "==", currentUser.id)
+const chatroomsList = document.getElementById("chatroomsList");
+const chatMessages = document.getElementById("chatMessages");
+const chatroomHeader = document.getElementById("chatroomHeader");
+const messageInput = document.getElementById("messageInput");
+const sendMessageForm = document.getElementById("sendMessageForm");
+const sendMessageButton = document.getElementById("sendMessageButton");
+
+const chatrooms = [];
+
+async function loadLoans(isBorrower = false) {
+    chatroomsList.innerHTML = "";
+
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if (!currentUser) return;
+
+    // Load loans based on role
+    const loans = LOANS.filter(loan => 
+        isBorrower ? loan.borrower_id === currentUser.id : loan.owner_id === currentUser.id
     );
 
-    const querySnapshot = await getDocs(q);
+    if (loans.length === 0) {
+        const span = document.createElement("span");
+        span.textContent = "Nemáte žiadne výpožičky.";
+        chatroomsList.appendChild(span);
+        return;
+    }
 
-    const messages = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-    }));
+    for (const loan of loans) {
+        let bookTitle = "Neznáma";
+        if (loan.book_id) {
+            const bookRef = doc(db, "books", String(loan.book_id));
+            const bookSnap = await getDoc(bookRef);
+            if (bookSnap.exists()) {
+                bookTitle = bookSnap.data().title || "Neznáma";
+            }
+        }
 
-    return messages;
+        let otherUserName = "Neznámy";
+        const userId = isBorrower ? loan.owner_id : loan.borrower_id;
+        if (userId) {
+            const user = USERS.find(u => u.id === userId);
+            if (user) {
+                otherUserName = `${user.first_name || ""} ${user.last_name || ""}`.trim() || "Neznámy";
+            }
+        }
+
+        // Check for unread messages
+        let hasUnread = false;
+        const messagesRef = collection(db, "messages");
+        const unreadQuery = query(
+            messagesRef,
+            where("loan_id", "==", loan.id),
+            where("sender_id", "!=", currentUser.id),
+            where("is_read", "==", false)
+        );
+        const unreadSnap = await getDocs(unreadQuery);
+        if (!unreadSnap.empty) hasUnread = true;
+
+        const chatroom = {
+            loanId: loan.id,
+            name: `Kniha: ${bookTitle} | ${isBorrower ? "Vlastník" : "Požiadal"}: ${otherUserName}`,
+            bookTitle,
+            username: otherUserName,
+            status: loan.status,
+            hasUnread
+        };
+        chatrooms.push(chatroom);
+
+        const li = document.createElement("li");
+        li.textContent = chatroom.name;
+        li.dataset.id = loan.id;
+        if (hasUnread) li.classList.add("unread"); // mark unread
+
+        li.addEventListener("click", () => selectChatroom(chatroom));
+        chatroomsList.appendChild(li);
+
+        // auto-select first chatroom if none selected
+        if (currentChatroom == null) {
+            currentChatroom = chatroom;
+            await selectChatroom(chatroom);
+        }
+    }
 }
 
-export async function markNotificationAsRead(notificationId) {
-    const ref = doc(db, "notifications", notificationId);
+async function selectChatroom(chatroom) {
+    currentChatroom = chatroom;
+
+    chatroomHeader.textContent = `${chatroom.name}`;
+    Array.from(chatroomsList.children).forEach(li => {
+        li.classList.toggle("active", li.dataset.id === chatroom.loanId);
+    });
+
+    sendMessageButton.removeAttribute("disabled");
+
+    await loadMessages();
+}
+
+async function loadMessages() {
+    if (!currentChatroom) return;
+    chatMessages.innerHTML = "";
+
+    const q = query(
+        collection(db, "messages"),
+        where("loan_id", "==", currentChatroom.loanId),
+        orderBy("created_at")
+    );
+
+    const snapshot = await getDocs(q);
+
+    for (const docSnap of snapshot.docs) {
+        const msg = docSnap.data();
+
+        const div = document.createElement("div");
+        div.className = "chat-message " + (msg.sender_id === currentUser.id ? "sent" : "received");
+        div.textContent = msg.text;
+        chatMessages.appendChild(div);
+
+        // Mark as read if not sent by current user
+        if (msg.sender_id !== currentUser.id && !msg.is_read) {
+            await markMessageAsRead(docSnap.id);
+        }
+    }
+
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+sendMessageForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!currentChatroom) return;
+
+    const text = messageInput.value.trim();
+    if (!text) return;
+
+    await addDoc(collection(db, "messages"), {
+        loan_id: currentChatroom.loanId,
+        text,
+        sender_id: currentUser.id,
+        created_at: serverTimestamp(),
+        is_read: false
+    });
+
+    messageInput.value = "";
+    await loadMessages();
+});
+
+async function markMessageAsRead(messageId) {
+    const ref = doc(db, "messages", messageId);
     await updateDoc(ref, { is_read: true });
     refreshHeader();
 }
 
-// ----------------- RENDER ----------------------
 
-export async function renderNotifications() {
-    const container = document.getElementById("notificationsContainer");
-    if (!container) return;
-    container.innerHTML = "<p>Načítavam...</p>";
 
-    const notifications = (await getNotifications()).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
-    if (notifications.length === 0) {
-        container.innerHTML = "<p>Nemáte žiadne notifikácie.</p>";
-        return;
-    }
-
-    container.innerHTML = "";
-
-    notifications.forEach((note) => {
-        const text = getTextFromNotification(note);
-        if (!text) return;
-        const row = document.createElement("div");
-
-        row.className = "notification-row" + (note.is_read ? " read" : "");
-
-        row.innerHTML = `
-            <div class="notification-title">${text}</div>
-            <div class="notification-preview">${note.message || ""}</div>
-            <div class="notification-date">${new Date(note.created_at).toLocaleString()}</div>
-        `;
-
-        row.addEventListener("click", async () => {
-            if (!note.read) {
-                await markNotificationAsRead(note.id);
-                row.classList.add("read");
-            }
-        });
-
-        container.appendChild(row);
-    });
-}
-
-function getTextFromNotification(notification) {
-    const loan = LOANS.find(l => l.id === notification.loan_id);
-    if (!loan) return null;
-
-    const book = BOOKS.find(b => b.id === loan.book_id);
-    const user = USERS.find(u => u.id === notification.sender_id);
-
-    if (!book || !user) return null;
-
-    switch (notification.type) {
-
-        // === REQUEST SENT BY BORROWER ===
-        case "loan_request":
-            return `Požiadali ste o požičanie knihy "${book.title}" od používateľa ${user.first_name} ${user.last_name}.`;
-
-        // === OWNER GETS NEW REQUEST ===
-        case "loan_request_approval":
-            return `Máte novú požiadavku na požičanie knihy "${book.title}" od používateľa ${user.first_name} ${user.last_name}.`;
-
-        // === OWNER APPROVES REQUEST ===
-        case "loan_approved_owner":
-            return `Potvrdili ste požičanie knihy "${book.title}" používateľovi ${user.first_name} ${user.last_name}.`;
-
-        // === BORROWER GETS APPROVAL ===
-        case "loan_approved_borrower":
-            return `Vaša požiadavka na knihu "${book.title}" bola schválená používateľom ${user.first_name} ${user.last_name}.`;
-
-        // === OWNER REJECTS REQUEST ===
-        case "loan_rejected_owner":
-            return `Zamietli ste požiadavku na požičanie knihy "${book.title}" od používateľa ${user.first_name} ${user.last_name}.`;
-
-        // === BORROWER GETS REJECTION ===
-        case "loan_rejected_borrower":
-            return `Vaša požiadavka na knihu "${book.title}" bola zamietnutá používateľom ${user.first_name} ${user.last_name}.`;
-
-        // === BORROWER RETURNS BOOK – OWNER IS NOTIFIED ===
-        case "loan_returned_owner":
-            return `Potvrdili ste vrátenie knihy "${book.title} od používateľa ${user.first_name} ${user.last_name}.`;
-
-        // === OWNER CONFIRMS RETURN – BORROWER IS NOTIFIED ===
-        case "loan_returned_borrower":
-            return `Vrátenie knihy "${book.title}" bolo potvrdené používateľom ${user.first_name} ${user.last_name}.`;
-
-        default:
-            return "Neznáma notifikácia.";
-    }
-}
-
-renderNotifications();
+loadLoans();
+loadLoans(true);

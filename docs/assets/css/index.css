@@ -201,6 +201,24 @@ header div a{
     cursor: pointer;
 }
 
+.navigation-icon {
+    position: relative; 
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+}
+
+.navigation-icon:hover {
+    background: #1f5fd1; 
+}
+
+.icon-bell {
+    fill: white;
+}
+
+
 /* --- RESPONSIVITA HEADERU (MOBIL) --- */
 
 @media(max-width: 1500px){

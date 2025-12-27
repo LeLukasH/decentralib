@@ -3,55 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decentralizovaná knižnica</title>
+    <title>Správy - Decentralizovaná knižnica</title>
     <link rel="stylesheet" href="../assets/css/index.css">
     <link rel="stylesheet" href="../assets/css/spravy.css">
-    
-    <script type="module" src="../assets/js/header_footer.js"></script>
+
+    <script type="module" src="../assets/js/spravy.js" defer></script>
+    <script type="module" src="../assets/js/header_footer.js" defer></script>
 </head>
-
 <body>
-    <div>
-	    <my-header></my-header>
+    <my-header></my-header>
+
+    <div class="messages-page">
+        <aside class="chatrooms-sidebar">
+            <h3>Chatrooms</h3>
+            <ul id="chatroomsList"></ul>
+        </aside>
+
+        <section class="chatroom-main">
+            <div id="chatroomHeader"></div>
+            <div id="chatMessages" class="chat-messages"></div>
+            <form id="sendMessageForm">
+                <input type="text" id="messageInput" placeholder="Napíšte správu..." required>
+                <button id="sendMessageButton" disabled type="submit">Odoslať</button>
+            </form>
+        </section>
     </div>
-    <h1 class="Nadpis">Správy</h1>
-    <div class="spravy">
-        <div class="chat">
-            <h2 class="spravy-blok">Chat</h2>
-            <div class ="spravy-kontajner">Nemáte dostupný chat so žiadnym používateľom.</div>
-        </div>
-        <div class="notifikacie">
-            <h2 class="spravy-blok" >Notifikácie</h2>
-            <div class="spravy-blok">
-                <h3>Filter</h3>
-                
-                <div class="filter-skupina" id="spravy-filter">
-                    
-                        <div>
-                            <input type="checkbox" id="prijate-ziadosti">
-                            <label for="prijate-ziadosti">Prijaté žiadosti</label>
-                        </div>
 
-                        <div>
-                            <input type="checkbox" id="odoslane-ziadosti">
-                            <label for="odoslane-ziadosti">Odoslané žiadosti</label>
-                        </div>
-
-                        <div>
-                            <input type="checkbox" id="koniec-vypozicky">
-                            <label for="koniec-vypozicky">Koniec výpožičky</label>
-                        </div>
-
-                        <div>
-                            <input type="checkbox" id="potvrdenie-vypozicky">
-                            <label for="potvrdenie-vypozicky">Potvrdenie výpožičky</label>
-                        </div>
-                </div>
-            </div>
-            <div id="notificationsContainer"></div>
-        
-        </div>
-    </div>
-    <my-footer class="spravy-footer"></my-footer>
+    <my-footer></my-footer>
 </body>
 </html>
