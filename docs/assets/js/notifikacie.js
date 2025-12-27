@@ -65,48 +65,52 @@ export async function renderNotifications() {
 
     container.innerHTML = "";
 
-    notifications.forEach(note => {
-        const text = getTextFromNotification(note);
-        if (!text) return;
+    notifications.forEach((note) => {
+    const text = getTextFromNotification(note);
+    if (!text) return;
 
-        const row = document.createElement("div");
-        row.className = "notification-row" + (note.is_read ? " read" : "");
+    const row = document.createElement("div");
+    row.className = "notification-row" + (note.is_read ? " read" : "");
 
+    // If it's a loan_approved_borrower notification, make it a clickable link
+    if (note.type === "loan_approved_borrower") {
+        const link = document.createElement("a");
+        link.href = "#"; // prevent default navigation
+        link.textContent = text;
+        link.style.textDecoration = "underline";
+        link.style.color = "#007bff";
+
+        link.addEventListener("click", (e) => {
+            e.preventDefault(); // prevent normal link behavior
+            const url = `loan_review.html?loan_id=${note.loan_id}`;
+            window.open(
+                url,
+                "LoanPopup",
+                "width=540,height=700,resizable=yes,scrollbars=yes"
+            );
+        });
+
+        row.appendChild(link);  // Append the link to the notification row
+    } else {
+        // else for other types of notifications
         row.innerHTML = `
-            <div class="notification-main">
-                <div class="notification-title">${text}</div>
-                <div class="notification-preview">${note.message || ""}</div>
-                <div class="notification-date">
-                    ${new Date(note.created_at).toLocaleString()}
-                </div>
-            </div>
-
-            <button class="notification-delete" title="Vymazať notifikáciu">
-                ✕
-            </button>
+            <div class="notification-title">${text}</div>
+            <div class="notification-preview">${note.message || ""}</div>
+            <div class="notification-date">${new Date(note.created_at).toLocaleString()}</div>
         `;
+    }
 
-        /* ---- mark as read ---- */
-        row.addEventListener("click", async () => {
-            if (!note.is_read) {
-                await markNotificationAsRead(note.id);
-                note.is_read = true;
-                row.classList.add("read");
-            }
-        });
-
-        /* ---- delete ---- */
-        const deleteBtn = row.querySelector(".notification-delete");
-        deleteBtn.addEventListener("click", async (e) => {
-            e.stopPropagation();
-            if (!confirm("Naozaj chcete vymazať túto notifikáciu?")) return;
-
-            await deleteNotification(note.id);
-            row.remove();
-        });
-
-        container.appendChild(row);
+    // Mark as read on click
+    row.addEventListener("click", async () => {
+        if (!note.is_read) {
+            await markNotificationAsRead(note.id);
+            row.classList.add("read");
+        }
     });
+
+    container.appendChild(row);
+});
+
 }
 
 /* =========================
