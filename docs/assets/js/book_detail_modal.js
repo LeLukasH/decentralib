@@ -20,6 +20,8 @@ export function setupBookDetailModal(USERS, BOOKS) {
     const modal = document.getElementById("bookDetailModal");
     const closeModal = modal.querySelector(".close-button");
 
+    const quickBorrowModal = document.getElementById("quickBorrowModal");
+
     // --- Pomocné funkcie pre VLASTNÍKA (prevzaté z home.js) ---
     function getOwner(book) {
         return USERS.find(u => u.id === book.owner_id) || null;
@@ -93,19 +95,23 @@ export function setupBookDetailModal(USERS, BOOKS) {
         document.getElementById("modal-language").textContent = book.language || "Neznámy";
         document.getElementById("modal-genre").textContent = book.type || "Neznámy";
 
+        const borrowDetails = modal.querySelector("details");
+        borrowDetails.style.display = "none";
+
         // Kontrola stavu požičania a vlastníctva
         if(currentUser == null){
             document.getElementById("borrow-button-description").textContent = "Na požičanie knihy sa prihláste.";
-            document.getElementById("request-borrow").disabled = true;
+            //document.getElementById("request-borrow").disabled = true;
         }else if(currentUser.id == getOwner(book).id){
             document.getElementById("borrow-button-description").textContent = "Toto je vaša vlastná kniha.";
-            document.getElementById("request-borrow").disabled = true;
+           // document.getElementById("request-borrow").disabled = true;
         }else if(book.status != "available"){
-            document.getElementById("borrow-button-description").textContent = "Táto kniha momentálne nie je dostupná.";
-            document.getElementById("request-borrow").disabled = true;
+           document.getElementById("borrow-button-description").textContent =  "Kniha je momentálne požičaná.";
         }else{
+            borrowDetails.style.display = "block";
+
             document.getElementById("borrow-button-description").textContent = "";
-            document.getElementById("request-borrow").disabled = false;
+           // document.getElementById("request-borrow").disabled = false;
         }
 
         document.getElementById("request-borrow").onclick = () => createLoanRequest(bookId, document.getElementById("date-from").value, document.getElementById("date-to").value, document.getElementById("form-borrow"));
@@ -153,6 +159,9 @@ export function setupBookDetailModal(USERS, BOOKS) {
         if (event.target === modal) {
             modal.style.display = "none";
         }
+        if (event.target === quickBorrowModal) {
+            quickBorrowModal.style.display = "none";
+        }
     };
     
     // Zatvorenie stlačením ESC
@@ -161,6 +170,51 @@ export function setupBookDetailModal(USERS, BOOKS) {
             modal.style.display = "none";
         }
     });
+
+
+    window.openQuickBorrow = function(bookId) {
+        
+        const book = BOOKS.find(b => b.id === bookId);
+
+        if (!book) {
+            console.error("Kniha s ID " + bookId + " nebola nájdená.");
+            return;
+        }
+
+        document.getElementById("quickBorrowTitle").textContent = `Požičanie knihy: ${book.title}`;
+
+        const dateFrom = document.getElementById("quick-date-from");
+        const dateTo = document.getElementById("quick-date-to");
+
+        const today = new Date().toISOString().split("T")[0];
+        dateFrom.setAttribute("min", today);
+        dateFrom.value = today; 
+        dateTo.setAttribute("min", today);
+        // dateFrom.min = today;
+        // dateFrom.value = today;
+        // dateTo.min = today;
+        // dateTo.value = "";
+
+        const form = document.getElementById("quick-borrow-form");
+        // form.onsubmit = function(e) {
+        //     e.preventDefault();
+        //     window.createLoanRequest(
+        //         bookId,
+        //         dateFrom.value,
+        //         dateTo.value,
+        //         form
+        //     );
+        // };
+
+        document.getElementById("quick-request-borrow").onclick = () => createLoanRequest(bookId, dateFrom.value, dateTo.value,form);
+
+        quickBorrowModal.style.display = "block";
+    };
+
+    document.getElementById("quickBorrowClose").onclick = () => {
+        quickBorrowModal.style.display = "none";
+    };
+
 
 }
 

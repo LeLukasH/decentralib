@@ -612,6 +612,27 @@ header div a{
     color: #c62828;
 }
 
+.btn-borrow {
+    background-color: #1e8e3e; 
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 8px;
+}
+
+.btn-borrow:disabled {
+  opacity: 0.5;           
+  cursor: not-allowed;    
+}
+
+.btn-borrow:hover {
+    background-color: #166f30;
+}
+
 .btn-detail {
     margin-top: 2px;
     padding: 8px 13px;

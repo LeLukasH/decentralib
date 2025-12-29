@@ -244,3 +244,7 @@
         margin: 10% auto;
     }
 }
+.small-modal {
+    max-width: 400px;
+    padding: 20px;
+}

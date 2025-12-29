@@ -214,6 +214,9 @@ function renderBooks() {
             card.className = "karta-knihy";
             const dostupne = getBookStatus(book) === "available";
             const owner = getOwner(book);
+            var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const disableButton = (currentUser == null) || (currentUser != null && owner.id === currentUser.id);
+            console.log(disableButton);
 
             card.innerHTML = `
                 <h4>${book.title}</h4>
@@ -227,9 +230,14 @@ function renderBooks() {
                             ${getOwnerReputation(book)}
                         </p>
                         <p>${getOwnerLocation(book)}</p>
-                        <div class="${dostupne ? "available" : "unavailable"}">
-                            ${dostupne ? "Dostupné" : "Požičané"}
-                        </div>
+                        ${dostupne 
+                            ? `<button class="btn-borrow" onclick="window.openQuickBorrow(${book.id})" ${disableButton ? `disabled` : ``} >
+                                Požičaj
+                            </button>`
+                            : `<div class="unavailable">
+                                Požičané
+                            </div>`
+                        }
                         <button class="btn-detail" onclick="window.showBookDetail(${book.id})">
                             Zobraziť detail
                         </button>
@@ -582,5 +590,6 @@ window.addEventListener("resize", () => {
 getAvailableCities(); 
 generateFilterOptions(); 
 renderActiveFilters(); // Spustí prvé renderovanie kníh, filtrov a stránkovania
+
 
 setupBookDetailModal(USERS, BOOKS);

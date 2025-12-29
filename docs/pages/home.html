@@ -123,6 +123,8 @@
                     <p id="modal-count" class="info-item">Počet hodnotení: 4</p>
                     <p id="modal-location" class="info-item">Lokalita</p>
                     
+                    <p id="borrow-button-description"></p>
+                    
                     <details>
                         <summary class="request-dropdown">Požičaj knihu</summary>
                         <div class="request-dropdow-form">
@@ -140,7 +142,7 @@
                                 </div>
                                 <p class="borrow-povinne">* povinné polia</p>
                             </form>
-                            <p id="borrow-button-description"></p>
+                            
                             <button id="request-borrow" class="request-button">Požiadať o požičanie</button>
                         </div>
                     </details>
@@ -166,6 +168,33 @@
 
         </div>
     </div>
+
+    <div id="quickBorrowModal" class="modal">
+        <div class="modal-content small-modal">
+            <span class="close-button"  id="quickBorrowClose">&times;</span>
+
+            <h3 id="quickBorrowTitle">Požičanie knihy</h3>
+
+            <form id="quick-borrow-form">
+                <div class="borrow-form">
+                    <p>
+                        <label for="quick-date-from">* Od:</label>
+                        <input type="date" id="quick-date-from" required>
+                    </p>
+                    <p>
+                        <label for="quick-date-to">* Do:</label>
+                        <input type="date" id="quick-date-to" required>
+                    </p>
+                </div>
+                <p class="borrow-povinne">* povinné polia</p>
+            </form>
+            <button class="request-button" id="quick-request-borrow">
+                Požiadať o požičanie
+            </button>
+
+        </div>
+    </div>
+
     <my-footer></my-footer>
 </body>
 </html>
