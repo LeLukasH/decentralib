@@ -88,8 +88,8 @@ async function loadLoanDetails() {
   if (owner) {
     ownerDataDiv.innerHTML = `
       <p style="display: none;" >${owner.first_name} ${owner.last_name}</p>
-      <p  >Nick: ${owner.nick}</p>
-      <p >Email: ${owner.email}</p>
+      <p  > Ohodnoť používaťela : ${owner.nick}</p>
+      <p style="display: none;" >Email: ${owner.email}</p>
       <p style="display: none;" >Location: ${owner.location}</p>
       <p style="display: none;" >Reputation: ${owner.reputation || "-"}</p>
     `;
@@ -101,12 +101,12 @@ async function loadLoanDetails() {
   const book = await getBookById(loan.book_id);
   if (book) {
     bookDataDiv.innerHTML = `
-      <p> Názov : ${book.title}</p>
+      <p> v rámci pôžičky knihy : ${book.title}</p>
       <p style="display: none;" > Autor: ${book.autor}</p>
       <p style="display: none;" >Type: ${book.type}</p>
       <p style="display: none;" >Language: ${book.language}</p>
       <p style="display: none;">Status: ${book.status}</p>
-      <p  > Popis : ${book.description}</p>
+      <p  style="display: none;" > Popis : ${book.description}</p>
       <img style="display: none;" src="${book.image_url}" width="150">
     `;
 
@@ -219,3 +219,4 @@ stars.forEach(star => {
   });
 
 });
+
