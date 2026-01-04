@@ -13,15 +13,28 @@
 <body>
     <my-header></my-header>
 
-    <div class="messages-page">
+    <div class="messages-page" id="messagesPage">
         <aside class="chatrooms-sidebar">
-            <h3>Chatrooms</h3>
+            <h3>Konverzácie</h3>
             <ul id="chatroomsList"></ul>
         </aside>
 
         <section class="chatroom-main">
-            <div id="chatroomHeader"></div>
+            <div id="chatroomHeader">
+                <button id="backButton" aria-label="Späť">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                        <path d="M15 18l-6-6 6-6"
+                            stroke="#1f5fd1"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <span id="chatroomTitle"></span>
+            </div>
+
             <div id="chatMessages" class="chat-messages"></div>
+
             <form id="sendMessageForm">
                 <input type="text" id="messageInput" placeholder="Napíšte správu..." required>
                 <button id="sendMessageButton" disabled type="submit">Odoslať</button>
