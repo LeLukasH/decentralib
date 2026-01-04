@@ -152,6 +152,48 @@ reviewForm.addEventListener("submit", async (e) => {
   }
 });
 
+// vypocitat user rating
+
+
+async function recalculateAllUserReputations(db) {
+  // 1. Read all reviews
+  const reviewsSnap = await getDocs(collection(db, "reviews"));
+
+  // 2. Aggregate ratings per user
+  const stats = {}; 
+  // stats[userId] = { total, count }
+
+  reviewsSnap.forEach(reviewDoc => {
+    const { user_id, rating } = reviewDoc.data();
+
+    if (!stats[user_id]) {
+      stats[user_id] = { total: 0, count: 0 };
+    }
+
+    stats[user_id].total += rating;
+    stats[user_id].count += 1;
+  });
+
+  // 3. Read all users
+  const usersSnap = await getDocs(collection(db, "users"));
+
+  // 4. Update each user's reputation
+  for (const userDoc of usersSnap.docs) {
+    const userData = userDoc.data();
+    const userId = userData.id;
+    const userRef = doc(db, "users", userDoc.id);
+
+    if (stats[userId]) {
+      const reputation = stats[userId].total / stats[userId].count;
+      await updateDoc(userRef, { reputation });
+    } else {
+      await updateDoc(userRef, { reputation: null });
+    }
+  }
+}
+
+await recalculateAllUserReputations(db);
+
 
 
 
@@ -175,4 +217,5 @@ stars.forEach(star => {
       s.classList.toggle("active", s.dataset.value <= value);
     });
   });
+
 });
