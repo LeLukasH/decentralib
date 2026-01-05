@@ -171,49 +171,50 @@ export function setupBookDetailModal(USERS, BOOKS) {
         }
     });
 
+    if(quickBorrowModal != null){
+        window.openQuickBorrow = function(bookId) {
+            
+            const book = BOOKS.find(b => b.id === bookId);
 
-    window.openQuickBorrow = function(bookId) {
-        
-        const book = BOOKS.find(b => b.id === bookId);
+            if (!book) {
+                console.error("Kniha s ID " + bookId + " nebola nájdená.");
+                return;
+            }
 
-        if (!book) {
-            console.error("Kniha s ID " + bookId + " nebola nájdená.");
-            return;
-        }
+            document.getElementById("quickBorrowTitle").textContent = `Požičanie knihy: ${book.title}`;
 
-        document.getElementById("quickBorrowTitle").textContent = `Požičanie knihy: ${book.title}`;
+            const dateFrom = document.getElementById("quick-date-from");
+            const dateTo = document.getElementById("quick-date-to");
 
-        const dateFrom = document.getElementById("quick-date-from");
-        const dateTo = document.getElementById("quick-date-to");
+            const today = new Date().toISOString().split("T")[0];
+            dateFrom.setAttribute("min", today);
+            dateFrom.value = today; 
+            dateTo.setAttribute("min", today);
+            // dateFrom.min = today;
+            // dateFrom.value = today;
+            // dateTo.min = today;
+            // dateTo.value = "";
 
-        const today = new Date().toISOString().split("T")[0];
-        dateFrom.setAttribute("min", today);
-        dateFrom.value = today; 
-        dateTo.setAttribute("min", today);
-        // dateFrom.min = today;
-        // dateFrom.value = today;
-        // dateTo.min = today;
-        // dateTo.value = "";
+            const form = document.getElementById("quick-borrow-form");
+            // form.onsubmit = function(e) {
+            //     e.preventDefault();
+            //     window.createLoanRequest(
+            //         bookId,
+            //         dateFrom.value,
+            //         dateTo.value,
+            //         form
+            //     );
+            // };
 
-        const form = document.getElementById("quick-borrow-form");
-        // form.onsubmit = function(e) {
-        //     e.preventDefault();
-        //     window.createLoanRequest(
-        //         bookId,
-        //         dateFrom.value,
-        //         dateTo.value,
-        //         form
-        //     );
-        // };
+            document.getElementById("quick-request-borrow").onclick = () => createLoanRequest(bookId, dateFrom.value, dateTo.value,form);
 
-        document.getElementById("quick-request-borrow").onclick = () => createLoanRequest(bookId, dateFrom.value, dateTo.value,form);
+            quickBorrowModal.style.display = "block";
+        };
 
-        quickBorrowModal.style.display = "block";
-    };
-
-    document.getElementById("quickBorrowClose").onclick = () => {
-        quickBorrowModal.style.display = "none";
-    };
+        document.getElementById("quickBorrowClose").onclick = () => {
+            quickBorrowModal.style.display = "none";
+        };
+    }
 
 
 }
