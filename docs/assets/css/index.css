@@ -10,7 +10,7 @@ body {
 /* --- FOOTER --- */
 footer{
     clear:both;
-    padding:  15px; 
+    padding: 15px; 
     background: #2f70e9;
     color: white;
 }
@@ -129,6 +129,13 @@ header div a{
     gap: 8px;
 }
 
+/* Meno používatela v hlavičke*/
+.pouzivatel_tlacidlo h2{
+    font-size: 18px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 /* Tlačidlo Správa kníh */
 .pouzivatel-dropdown button.dropdown-tlacidlo {
     background: transparent;
@@ -138,8 +145,13 @@ header div a{
     font-weight: 600;
     padding: 15px 5px; 
     text-align: center !important;
+    display: block;
     width: 150px;
     cursor: pointer;
+}
+
+.pouzivatel-dropdown button.dropdown-tlacidlo:hover {
+    background: #1f5fd1;
 }
 
 .pouzivatel_obsah {
@@ -187,9 +199,9 @@ header div a{
 }
 
 .pouzivatel-hlavicka-obr{
-    padding: 10px;
-    width: 50px;
-    height: 50px;
+    padding: 5px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
 }
 
@@ -203,11 +215,12 @@ header div a{
 
 .navigation-icon {
     position: relative; 
-    width: 40px;
+    width: 35px;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 8px;
+    margin-right: 6px;
 }
 
 .navigation-icon:hover {
@@ -221,14 +234,12 @@ header div a{
 
 /* --- RESPONSIVITA HEADERU (MOBIL) --- */
 
-@media(max-width: 1500px){
+@media(max-width: 1300px){
     /* skry meno – ostane len ikonka */
     .pouzivatel_tlacidlo h2 {
         display: none;
     }
-}
 
-@media(max-width: 1300px) {
     /* logo + názov vedľa seba ale menšie */
     header h1 {
         font-size: 18px;
@@ -237,6 +248,10 @@ header div a{
 }
 
 @media (max-width: 1000px) {
+
+    header {
+        padding: 0;
+    }
 
     /* ZMENA: Kontajner mobilného menu - BIELE pozadie a ŽIADNE MEDZERY/PADDING okolo tlačidiel */
     header .hlavne-menu {
@@ -334,6 +349,12 @@ header div a{
     /* Posledné tlačidlo/kontajner v menu na mobile nemá spodný border, ak je zatvorený */
     .hlavne-menu > *:last-child:not(.open) {
         border-bottom: none;
+    }
+}
+
+@media (max-width : 390px) {
+    header h1 {
+        font-size: 15px;
     }
 }
 /* ----------------------------------------------------------- */

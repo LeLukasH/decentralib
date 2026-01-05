@@ -7,6 +7,11 @@
     box-sizing: border-box;
 }
 
+/* Zabraňuje zmenšovaniu hlavičky na stránke Moje Knihy*/
+my-header *, *::before, *::after {
+    box-sizing: content-box;
+}
+
 /* Kľúčové pre odstránenie horizontálneho scrollu na malých zariadeniach */
 html, body {
     overflow-x: hidden; 
