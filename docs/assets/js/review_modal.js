@@ -1,232 +1,119 @@
 import { db } from "./firebase.js";
-import { addDoc, collection, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-import { BOOKS } from "./api/allData.js";
-import { refreshHeader } from "./utils.js";
+import { collection, addDoc, serverTimestamp, query, where, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { LOANS, USERS, BOOKS } from "./api/allData.js";
 
+let currentRating = 0;
+let currentLoanId = null;
+let reviewedUserId = null;
 
-// pre review modal, prerobene z book detail modal a z loan review ktore nebolo modal
+export async function openReviewModal({ loan_id, user_id }) {
+    currentLoanId = loan_id;
+    reviewedUserId = user_id;
+    currentRating = 0;
 
+    const modal = document.getElementById("reviewModal");
+    if (!modal) return;
 
-// Global variable to hold the book ID currently being edited
-let currentEditingBookId = null; 
-let allBooksRef = null;
-let allUsersRef = null;
+    const reviewText = modal.querySelector("#reviewText");
+    const submitButton = modal.querySelector("#submitReview");
+    const title = modal.querySelector("#reviewModalTitle");
+    const subTitle = modal.querySelector("#reviewModalSubtitle");
+    const ratingStars = modal.querySelectorAll(".rating span");
 
-// HTML elements
-const reviewMsg = document.getElementById("review-texts");
+    if (!reviewText || !submitButton || !title || !subTitle || !ratingStars) return;
 
+    reviewText.value = "";
+    submitButton.disabled = true;
 
+    ratingStars.forEach(star => star.classList.remove("active"));
 
+    modal.classList.remove("hidden");
 
-//-----------------
-// open modal - nech to berie loan id ked sa to modal okno 
+    const loan = LOANS.find(l => l.id == loan_id);
+    const user = USERS.find(u => u.id == user_id);
+    const book = BOOKS.find(b => b.id == loan.book_id);
 
-// 
-const openModal = () => {
-  const params = new URLSearchParams(window.location.search);
-  const loanId = params.get("loan_id");
+    title.textContent = user ? `${user.first_name} ${user.last_name}` : `Neznámy používateľ ${user_id}`;
+    subTitle.textContent = `(Požička knihy „${book ? book.title : "Neznáma kniha"}”)`;
 
-  if (!loanId) {
-    alert("nezname loan id");
-    throw new Error(" error Missing loan_id");
-  }
-
-  // Show modal and use loanId
-  showModal(loanId);
-    // Display the modal
-  modal.style.display = "block";
-};
-
-
-// ===================================================
-// 1. DETAIL MODAL LOGIKA (Pôvodný kód)
-// ===================================================
-
-
-// nacitanie informacii o pozicke
-async function loadLoanDetails() {
-  // --- Loan ---
-  const loanRef = doc(db, "loans", loanId);
-  const loanSnap = await getDoc(loanRef);
-  if (!loanSnap.exists()) {
-    loanDataDiv.textContent = "Loan not found.";
-    return;
-  }
-  const loan = loanSnap.data();
-  loanDataDiv.innerHTML = `
-    <p style="display: none;">Loan ID: ${loanId}</p>
-    <p style="display: none;">Book ID: ${loan.book_id}</p>
-    <p style="display: none;">Borrower ID: ${loan.borrower_id}</p>
-    <p style="display: none;">Owner ID: ${loan.owner_id}</p>
-    <p style="display: none;"> Status: ${loan.status}</p>
-  `;
-  loanIdInput.value = loanId;
-
-  // --- Borrower ---
-  const borrower = await getUserById(loan.borrower_id);
-  if (borrower) {
-    borrowerDataDiv.innerHTML = `
-      <p style="display: none;" >${borrower.first_name} ${borrower.last_name}</p>
-      <p>Nick: ${borrower.nick}</p>
-    `;
-  } else {
-    borrowerDataDiv.textContent = "Borrower info not found.";
-  }
-
-  // --- Owner ---
-  const owner = await getUserById(loan.owner_id);
-  if (owner) {
-    ownerDataDiv.innerHTML = `
-      <p style="display: none;" >${owner.first_name} ${owner.last_name}</p>
-      <p  >Nick: ${owner.nick}</p>
-    `;
-  } else {
-    ownerDataDiv.textContent = "Owner info not found.";
-  }
-
-  // --- Book ---
-  const book = await getBookById(loan.book_id);
-  if (book) {
-    bookDataDiv.innerHTML = `
-      <p> Názov : ${book.title}</p>
-    `;
-
-
-  } else {
-    bookDataDiv.textContent = "knihu sa nepodarilo najst.";
-  }
-}
-
-loadLoanDetails();
-
-
-
-
-// --- pridanie hodnotenia ---
-reviewForm.addEventListener("review-button", async (e) => {
-  e.preventDefault();
-  const rating = parseInt(document.getElementById("rating").value);
-  const text = document.getElementById("reviewText").value.trim();
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-
-  if (!currentUser) {
-    reviewMsg.textContent = "pre hodnotenie je nutne najprv sa prihlasit";
-    return;
-  }
-
-  if (!rating || rating < 1 || rating > 5 || !text) {
-    reviewMsg.textContent = " v hodnotení chýba text";
-    return;
-  }
-
-  try {
-    await addDoc(collection(db, "reviews"), {
-      load_id: loanId,
-      user_id: currentUser.id,
-      rating,
-      text,
-      timestamp: serverTimestamp()
-    });
-    reviewMsg.textContent = "Hodnotenie bolo úspešne pridané";
-    reviewForm.reset();
-    loanIdInput.value = loanId;
-  } catch (err) {
-    console.error(err);
-    reviewMsg.textContent = "Pri hodnotení nastala chyba stránky, skúste znovu ";
-  }
-});
-
-
-
-// toto nech zoberie veci o knihe a vlastnikovy knihy, reuse funkcii z book modal
-export function setupBookDetailModal(USERS, BOOKS) {
-    // Uloží referencie pre neskoršie použitie v edit modale
-    allBooksRef = BOOKS;
-    allUsersRef = USERS;
-
-    const modal = document.getElementById("reviewDetailModal");
-    const closeModal = modal.querySelector(".close-button");
-
-    const quickBorrowModal = document.getElementById("quickBorrowModal");
-
-    // --- Pomocné funkcie pre VLASTNÍKA (prevzaté z home.js) ---
-    function getOwner(book) {
-        return USERS.find(u => u.id === book.owner_id) || null;
-    }
-    // ... (ostatné pomocné funkcie pre vlastníka sú rovnaké) ...
-    function getOwnerNick(book) {
-        const owner = getOwner(book);
-        return owner ? owner.nick : "neznámy vlastník";
-    }
-
-
-    // -----------------------------------------------------------
-
-    window.showBookDetail = function(bookId) {
-        const book = BOOKS.find(b => b.id === bookId);
-        if (!book) {
-            console.error("Kniha s ID " + bookId + " nebola nájdená.");
-            return;
-        }
-
-        // 1. Získanie dát a nastavenie info polí
-        const ownerNick = getOwnerNick(book);
-        
-        // ... (Nastavenie elementov DOM - rovnaké ako Váš kód) ...
-        document.getElementById("modal-title").textContent = book.title;        
-        document.getElementById("modal-owner").textContent = ownerNick;
-        
-        const borrowDetails = modal.querySelector("details");
-        borrowDetails.style.display = "none";
-
-
-
-       // document.getElementById("review-button").onclick = () => createLoanRequest(bookId, document.getElementById("date-from").value, document.getElementById("date-to").value, document.getElementById("form-borrow"));
-        // v review modal toto bude fungovat inak
-        
-
-        // Zobrazenie modálneho okna
-        modal.style.display = "block";
-    };
-
-    // Zatvorenie kliknutím na X
-    closeModal.onclick = function() {
-        modal.style.display = "none";
-    };
-
-    // Zatvorenie kliknutím mimo modalu
-    window.onclick = function(event) {
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
-        if (event.target === quickBorrowModal) {
-            quickBorrowModal.style.display = "none";
-        }
-    };
-    
-    // Zatvorenie stlačením ESC
-    document.addEventListener("keydown", function(e) {
-        if (e.key === "Escape" && modal.style.display === "block") {
-            modal.style.display = "none";
-        }
+    // ===== rating stars event =====
+    ratingStars.forEach(star => {
+        star.onclick = () => {
+            currentRating = Number(star.dataset.value);
+            ratingStars.forEach(s => s.classList.toggle("active", Number(s.dataset.value) <= currentRating));
+            submitButton.disabled = false;
+        };
     });
 
+    // ===== buttons event =====
+    const cancelBtn = modal.querySelector("#cancelReview");
+    if (cancelBtn) cancelBtn.onclick = closeReviewModal;
 
+    submitButton.onclick = async () => {
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        if (!currentUser) return;
 
-    document.getElementById("quickBorrowClose").onclick = () => {
-        quickBorrowModal.style.display = "none";
+        const text = reviewText.value;
+
+        await addDoc(collection(db, "reviews"), {
+            loan_id: currentLoanId,
+            user_id: reviewedUserId,
+            reviewer_id: currentUser.id,
+            rating: currentRating,
+            text,
+            created_at: serverTimestamp()
+        });
+
+        // 2️⃣ Fetch all reviews of this user
+        const reviewsQuery = query(
+            collection(db, "reviews"),
+            where("user_id", "==", String(reviewedUserId))
+        );
+        const snapshot = await getDocs(reviewsQuery);
+        const allReviews = snapshot.docs.map(d => d.data());
+
+        // 3️⃣ Compute average rating and count
+        const count = allReviews.length;
+        const sum = allReviews.reduce((acc, r) => acc + r.rating, 0);
+        const avg = count ? (sum / count) : 0;
+
+        const user = USERS.find(u => u.id == reviewedUserId);
+        if (!user) return;
+
+        // 4️⃣ Update user reputation
+        const userRef = doc(db, "users", user.email); // assumes user doc id = reviewedUserId
+        await updateDoc(userRef, {
+            reputation: avg,
+            reviews_count: count
+        });
+
+        const modalContent = modal.querySelector(".modal-content");
+
+        // schovať pôvodný obsah
+        modalContent.querySelectorAll("*").forEach(el => el.style.display = "none");
+
+        // vytvoriť div s Dakujeme
+        const thankYouDiv = document.createElement("div");
+        thankYouDiv.id = "thankYouMessage";
+        thankYouDiv.textContent = "Hodnotenie odoslané ✅";
+        thankYouDiv.style.textAlign = "center";
+        thankYouDiv.style.fontSize = "1.3rem";
+        thankYouDiv.style.fontWeight = "bold";
+        modalContent.appendChild(thankYouDiv);
+
+        setTimeout(() => {
+            modal.classList.add("hidden");
+            thankYouDiv.remove();
+            modalContent.querySelectorAll("*").forEach(el => el.style.display = "");
+            reviewText.value = "";
+            currentRating = 0;
+            ratingStars.forEach(star => star.classList.remove("active"));
+            submitButton.disabled = true;
+        }, 1500);
     };
-
-
 }
 
-// ===================================================
-//
-// ===================================================
-
-
-
-
-
-
-
+function closeReviewModal() {
+    const modal = document.getElementById("reviewModal");
+    if (modal) modal.classList.add("hidden");
+}

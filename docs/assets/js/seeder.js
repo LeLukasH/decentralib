@@ -6,10 +6,10 @@ import { BOOKS_DATA, USERS_DATA } from './config.js';
 async function seedUsers() {
     for (const user of USERS_DATA) {
         const uid = user.email;;
-
+/*
         try {
             // Pokúsime sa vytvoriť používateľa v Firebase Auth
-            const userCredential = await createUserWithEmailAndPassword(auth, user.email, user.password);
+            //const userCredential = await createUserWithEmailAndPassword(auth, user.email, user.password);
             console.log(`User ${user.email} created in Auth.`);
         } catch (error) {
             if (error.code === 'auth/email-already-in-use') {
@@ -18,14 +18,14 @@ async function seedUsers() {
                 console.error(`Error creating user ${user.email} in Auth:`, error);
                 continue; // preskočíme tohto používateľa
             }
-        }
+        }*/
 
         // Odstránime heslo z dát pre Firestore
         const { password, ...userData } = user;
 
         try {
             // SetDoc s merge:true – vytvorí alebo aktualizuje dokument
-            await setDoc(doc(db, 'users', uid), { ...userData });
+            await setDoc(doc(db, 'users', uid), { ...userData }, { merge: true });
             console.log(`User ${user.email} set in Firestore.`);
         } catch (error) {
             console.error(`Error setting user ${user.email} in Firestore:`, error);
@@ -46,7 +46,7 @@ async function seedBooks() {
 }
 
 async function seedAll() {
-    await seedUsers();
+    //await seedUsers();
     await seedBooks();
 }
 

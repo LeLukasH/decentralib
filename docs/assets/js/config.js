@@ -12,7 +12,8 @@ export const USERS_DATA = [
     email: "martin.kovac@example.com",
     location: "Bratislava",
     profile_pic: "https://picsum.photos/seed/user1/200",
-    reputation: 4.8
+    reputation: 4.8,
+    reviews_count: 0,
   },
   {
     id: 2,
@@ -23,7 +24,8 @@ export const USERS_DATA = [
     email: "eva.novakova@example.com",
     location: "Bratislava3",
     profile_pic: "https://picsum.photos/seed/user2/200",
-    reputation: 4.5
+    reputation: 4.5,
+    reviews_count: 0,
   },
   {
     id: 3,
@@ -34,7 +36,8 @@ export const USERS_DATA = [
     email: "peter.hrasko@example.com",
     location: "Zilina",
     profile_pic: "https://picsum.photos/seed/user3/200",
-    reputation: 4.2
+    reputation: 4.2,
+    reviews_count: 0,
   }
 ];
 

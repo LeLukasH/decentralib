@@ -8,9 +8,9 @@ import {
     updateDoc,
     deleteDoc
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-
 import { refreshHeader } from "./utils.js";
 import { USERS, BOOKS, LOANS } from "./api/allData.js";
+import { openReviewModal } from "./review_modal.js";
 
 /* =========================
    DATA
@@ -65,7 +65,7 @@ export async function renderNotifications() {
 
     container.innerHTML = "";
 
-    notifications.forEach(note => {
+    for (const note of notifications) {
         const text = getTextFromNotification(note);
         if (!text) return;
 
@@ -86,6 +86,8 @@ export async function renderNotifications() {
             </button>
         `;
 
+        container.appendChild(row);
+
         /* ---- mark as read ---- */
         row.addEventListener("click", async () => {
             if (!note.is_read) {
@@ -104,8 +106,28 @@ export async function renderNotifications() {
             row.remove();
         });
 
-        container.appendChild(row);
-    });
+        /* ---- review link ---- */
+        const links = row.querySelectorAll(".review-link");
+        for (const link of links) {
+            const loanId = link.dataset.loanId;
+            const userId = link.dataset.userId;
+
+            if (!userId) {
+                link.textContent = "Chyba: neznámy používateľ";
+                continue;
+            };
+
+            link.addEventListener("click", e => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                openReviewModal({
+                    loan_id: loanId,
+                    user_id: userId
+                });
+            });
+        }
+    }
 }
 
 /* =========================
@@ -142,10 +164,25 @@ function getTextFromNotification(notification) {
             return `Vaša požiadavka na knihu "${book.title}" bola zamietnutá používateľom ${user.first_name} ${user.last_name}.`;
 
         case "loan_returned_owner":
-            return `Používateľ ${user.first_name} ${user.last_name} vrátil knihu "${book.title}".`;
+            return `
+            Používateľ ${user.first_name} ${user.last_name} vrátil knihu "${book.title}". 
+            <a href="#"
+                class="review-link"
+                data-loan-id="${loan.id}"
+                data-user-id="${user.id}">
+                Ohodnotiť používateľa
+            </a>`;
 
         case "loan_returned_borrower":
-            return `Vrátenie knihy "${book.title}" bolo potvrdené.`;
+            return `
+                Vrátenie knihy "${book.title}" bolo potvrdené.
+                <a href="#"
+                    class="review-link"
+                    data-loan-id="${loan.id}"
+                    data-user-id="${user.id}">
+                    Ohodnotiť používateľa
+                </a>
+            `;
 
         default:
             return "Neznáma notifikácia.";

@@ -131,7 +131,8 @@ export async function register() {
             password,
             location,
             profile_pic: null,
-            reputation: null
+            reputation: null,
+            reviews_count: 0
         });
 
         showMessage("Registrácia úspešná! Môžete sa prihlásiť.", "success");

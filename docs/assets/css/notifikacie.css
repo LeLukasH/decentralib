@@ -1,5 +1,7 @@
 .notifications-div {
     margin: 10px;
+    height: calc(100vh - 160px);
+    overflow-y: auto;
 }
 
 #notificationsContainer {
@@ -59,4 +61,13 @@
 
 .notification-delete:hover {
     color: #e53935;
+}
+
+.review-link {
+    display: inline-block;
+    margin-top: 4px;
+    font-weight: 600;
+    color: #2563eb;
+    text-decoration: underline;
+    cursor: pointer;
 }
