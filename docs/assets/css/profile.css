@@ -73,6 +73,7 @@
 .info-row .icon {
     color: #4A90E2;
     font-size: 1.1rem;
+    text-align: center;
     width: 24px;
 }
 .info-row .icon-star {
