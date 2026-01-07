@@ -1,70 +1,136 @@
+import { USERS, REVIEWS } from "./api/allData.js"; // lokálna kópia alebo Firestore fetch
 import { db } from "./firebase.js";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-// HTML elements
-const userDataDiv = document.getElementById("userData");
-const reviewsContainer = document.getElementById("reviewsContainer");
+async function getUserIdFromUrlOrCurrent() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userIdParam = urlParams.get("user_id");
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-// Current logged-in user
-const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-if (!currentUser) {
-  alert("You must be logged in to see your profile.");
-  throw new Error("No user logged in");
+    if (userIdParam) return Number(userIdParam);
+    if (currentUser) return currentUser.id;
+    return null;
 }
 
-// Display basic user info
-userDataDiv.innerHTML = `
-  <p>Name: ${currentUser.first_name} ${currentUser.last_name}</p>
-  <p>Nick: ${currentUser.nick}</p>
-  <p>Email: ${currentUser.email}</p>
-  <p>Location: ${currentUser.location}</p>
-  <p>Reputation: ${currentUser.reputation || "-"}</p>
-`;
-
-// Fetch all reviews about this user
-async function loadReviewsAboutUser() {
-  const reviewSnap = await getDocs(collection(db, "reviews"));
-  if (reviewSnap.empty) {
-    reviewsContainer.textContent = "Nemáte žiadne recenzie.";
-    return;
-  }
-
-  reviewsContainer.innerHTML = "";
-
-  for (const docSnap of reviewSnap.docs) {
-    const review = docSnap.data();
-
-    // Get loan info
-    const loanRef = doc(db, "loans", review.load_id);
-    const loanSnap = await getDoc(loanRef);
-    if (!loanSnap.exists()) continue;
-
-    const loan = loanSnap.data();
-
-    // Check if current user is borrower or owner of this loan
-    if (loan.borrower_id !== currentUser.id && loan.owner_id !== currentUser.id) continue;
-
-    // Show the review
-    const reviewDiv = document.createElement("div");
-    reviewDiv.style.border = "1px solid #ccc";
-    reviewDiv.style.margin = "10px 0";
-    reviewDiv.style.padding = "10px";
-
-    reviewDiv.innerHTML = `
-      <p><strong>Loan ID:</strong> ${review.load_id}</p>
-      <p><strong>Rating:</strong> ${review.rating}</p>
-      <p><strong>Review:</strong> ${review.text}</p>
-      <p><strong>Submitted:</strong> ${review.timestamp?.toDate ? review.timestamp.toDate().toLocaleString() : "-"}</p>
-      <p><strong>Loan Role:</strong> ${loan.borrower_id === currentUser.id ? "Borrower" : "Owner"}</p>
-    `;
-
-    reviewsContainer.appendChild(reviewDiv);
-  }
+async function getUserById(id) {
+    return USERS.find(u => u.id === id) || null;
 }
 
-loadReviewsAboutUser();
+async function getReviewsByUserId(userId) {
+    return REVIEWS.filter(r => r.user_id === userId);
+}
+
+async function renderProfile() {
+    const userId = await getUserIdFromUrlOrCurrent();
+    const profileContainer = document.getElementById("profileContainer");
+    const noUserMessage = document.getElementById("noUserMessage");
+
+    if (!userId) {
+        profileContainer.classList.add("hidden");
+        noUserMessage.classList.remove("hidden");
+        return;
+    }
+
+    const user = await getUserById(userId);
+    if (!user) {
+        profileContainer.classList.add("hidden");
+        noUserMessage.classList.remove("hidden");
+        return;
+    }
+
+    noUserMessage.classList.add("hidden");
+    profileContainer.classList.remove("hidden");
+
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const isEditable = currentUser && currentUser.id === user.id;
+
+      const profileInfo = document.querySelector(".profile-info");
+    if (!isEditable) {
+        profileInfo.classList.add("no-edit");
+    } else {
+        profileInfo.classList.remove("no-edit");
+    }
+
+    // PROFILOVÉ INFORMÁCIE
+    document.getElementById("profilePic").src = user.profile_pic || "https://picsum.photos/seed/user/200";
+
+    if (isEditable) {
+        // Editable inputs
+        document.getElementById("profileName").innerHTML = `
+          <div class="info-row">
+            <div class="icon"></div>
+            <input type="text" id="inputFirstName" placeholder="Meno" value="${user.first_name}">
+          </div>
+
+          <div class="info-row">
+            <div class="icon"></div>
+            <input type="text" id="inputLastName" placeholder="Priezvisko" value="${user.last_name}">
+          </div>
+            
+        `;
+        document.getElementById("profileNick").innerHTML = `<input type="text" id="inputNick" placeholder="Nick" value="${user.nick || ''}">`;
+        document.getElementById("profileLocation").innerHTML = `<input type="text" id="inputLocation" placeholder="Lokácia" value="${user.location || ''}">`;
+
+        const editButton = document.getElementById("editProfile");
+        editButton.classList.remove("hidden");
+        editButton.textContent = "Uložiť zmeny";
+
+        editButton.onclick = async () => {
+            const updatedData = {
+                first_name: document.getElementById("inputFirstName").value,
+                last_name: document.getElementById("inputLastName").value,
+                nick: document.getElementById("inputNick").value,
+                location: document.getElementById("inputLocation").value
+            };
+
+            // update Firestore
+            try {
+                const userRef = doc(db, "users", String(user.id)); // db document musí existovať
+                await updateDoc(userRef, updatedData);
+
+                // update lokálnu kópiu USERS pre demo účely
+                Object.assign(user, updatedData);
+
+                alert("Profil úspešne aktualizovaný ✅");
+                renderProfile(); // refresh zobrazenia
+            } catch (err) {
+                console.error(err);
+                alert("Chyba pri ukladaní profilu ❌");
+            }
+        };
+    } else {
+        document.getElementById("profileName").textContent = `${user.first_name} ${user.last_name}`;
+        document.getElementById("profileNick").textContent = `${user.nick || "-"}`;
+        document.getElementById("profileLocation").textContent = `${user.location || "-"}`;
+
+        document.getElementById("editProfile").classList.add("hidden");
+    }
+
+    // REPUTÁCIA
+    document.getElementById("profileEmail").textContent = `${user.email || '-'}`;
+    document.getElementById("profileReputation").textContent = `${user.reputation || "0"} (${user.reviews_count || 0} recenzií)`;
+
+    // RECENZIE
+    const reviewsContainer = document.getElementById("reviewsContainer");
+    const reviews = await getReviewsByUserId(user.id);
+
+    if (!reviews.length) {
+        reviewsContainer.innerHTML = "<p>Používateľ zatiaľ nemá žiadne recenzie.</p>";
+        return;
+    }
+
+    reviewsContainer.innerHTML = "";
+    reviews.forEach(r => {
+        const reviewer = USERS.find(u => u.id === r.reviewer_id);
+        const div = document.createElement("div");
+        div.className = "review-item";
+        div.innerHTML = `
+            <strong>${reviewer ? reviewer.first_name + " " + reviewer.last_name : "Neznámy hodnotiteľ"}</strong>
+            <span> | Hodnotenie: ${r.rating}/5</span>
+            <p>${r.text || ""}</p>
+        `;
+        reviewsContainer.appendChild(div);
+    });
+}
+
+renderProfile();

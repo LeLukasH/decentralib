@@ -60,7 +60,7 @@ class MyHeader extends HTMLElement {
                                    <img src="${profilePic}" class="pouzivatel-hlavicka-obr">
                                </button>
                                <div class="pouzivatel_obsah profil-obsah">
-                                   <a href="#">Spravuj účet</a>
+                                   <a href="profile.html">Spravuj účet</a>
                                    <a id="signOutBtn">Odhlás ma</a>
                                </div>
                            </div>`

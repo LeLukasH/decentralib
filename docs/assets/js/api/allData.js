@@ -20,6 +20,7 @@ export let USERS = await getAll("users");
 export let BOOKS = await getAll("books");
 export let LOANS = await getAll("loans");
 export let NOTIFICATIONS = await getAll("notifications");
+export let REVIEWS = await getAll("reviews");
 
 export let BOOK_GENRES = getUniqueSortedValues(BOOKS, "type");
 export let BOOK_LANGS = getUniqueSortedValues(BOOKS, "language");

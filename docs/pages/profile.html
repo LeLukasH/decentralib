@@ -5,31 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Decentralizovaná knižnica - Profil</title>
     <link rel="stylesheet" href="../assets/css/index.css">
-    <link rel="stylesheet" href="../assets/css/spravy.css">
+    <link rel="stylesheet" href="../assets/css/profile.css">
     
     <script type="module" src="../assets/js/header_footer.js"></script>
+    <script type="module" src="../assets/js/profile.js"></script>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
 </head>
 <body>
-    <div>
-        <my-header></my-header>
-    </div>
+    <my-header></my-header>
 
-    <h1 class="Nadpis">Môj Profil</h1>
+    <div class="profile-page">
+        <div id="profileContainer" class="profile-container hidden">
+            <div class="profile-card">
+                <div class="profile-header">
+                    <img id="profilePic" src="" alt="Profilová fotka">
 
-    <div class="spravy">
-        <div class="profil-info">
-            <h2 class="spravy-blok">Informácie o používateľovi</h2>
-            <div id="userData" class="spravy-kontajner">Načítavam údaje...</div>
+                    <div class="vertical-separator"></div>
+
+                    <div class="profile-info">
+                        <div id="profileName"></div>
+
+                        <div class="info-row">
+                            <i class="fas fa-envelope icon"></i>
+                            <span id="profileEmail"></span>
+                        </div>
+
+                        <div class="info-row">
+                            <i class="fas fa-user icon"></i>
+                            <span id="profileNick"></span>
+                        </div>
+
+                        <div class="info-row">
+                            <i class="fas fa-map-marker-alt icon"></i>
+                            <span id="profileLocation"></span>
+                        </div>
+
+                        <div class="info-row">
+                            <i class="fas fa-star icon icon-star"></i>
+                            <span id="profileReputation"></span>
+                        </div>
+
+                        <div class="profile-actions">
+                            <button id="editProfile" class="hidden">Upraviť profil</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="profile-reviews">
+                <h2>Recenzie používateľa</h2>
+                <div id="reviewsContainer">
+                    <p>Načítavam recenzie...</p>
+                </div>
+            </div>
         </div>
 
-        <div class="notifikacie">
-            <h2 class="spravy-blok">Recenzie o mne</h2>
-            <div id="reviewsContainer" class="spravy-kontajner">Načítavam recenzie...</div>
-        </div>
+        <p id="noUserMessage" class="hidden">Žiadny používateľ nie je vybraný ani prihlásený.</p>
     </div>
 
-    <my-footer class="spravy-footer"></my-footer>
-
-    <script type="module" src="../assets/js/profile.js"></script>
+    <my-footer></my-footer>
 </body>
 </html>

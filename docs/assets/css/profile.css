@@ -1,0 +1,208 @@
+.profile-page {
+    display: flex;
+    height: calc(100vh - 170px); /* Adjust based on header/footer height */
+    margin: 20px;
+    gap: 20px;
+    overflow-y: auto;
+    justify-content: center;
+}
+
+.profile-container {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+/* PROFILE CARD */
+.profile-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    margin: 30px auto;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.profile-header img {
+    max-width: 140px;
+    max-height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #4A90E2;
+}
+
+.vertical-separator {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 1px;
+    background: #ddd;
+    align-self: stretch;
+    height: auto;
+    flex-grow: 1;
+}
+
+.profile-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding-left: 20px;
+}
+
+.profile-info h1 {
+    margin: 0;
+    font-size: 1.9rem;
+    color: #222;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    color: #555;
+}
+
+.info-row .icon {
+    color: #4A90E2;
+    font-size: 1.1rem;
+    width: 24px;
+}
+.info-row .icon-star {
+    color: #F5A623;
+    font-size: 1.1rem;
+}
+
+#profileName {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-weight: bold;
+    font-size: 1.4rem;
+    color: #444;
+}
+
+/* input fields for editable profile */
+.profile-info input {
+    font-size: 1rem;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    min-width: 250px;
+}
+
+.profile-info span {
+    min-width: 250px;
+    text-align: left;
+}
+
+.profile-info button {
+    background: #4A90E2;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    align-items: flex-end;
+}
+
+.profile-info button:hover {
+    background: #357ABD;
+}
+
+.profile-actions {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 12px;
+}
+
+/* mobile layout */
+@media (max-width: 600px) {
+    .profile-header {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Only center the name when the edit button is hidden */
+    .profile-header .profile-info.no-edit #profileName {
+        text-align: center;
+        width: 100%;
+        margin-top: 12px; /* spacing under image */
+    }
+
+    .vertical-separator {
+        display: none; /* remove vertical line on mobile */
+    }
+
+    .profile-info {
+        padding-left: 0;
+        text-align: center;
+    }
+
+    .profile-info h1 {
+        margin-top: 12px; /* name under image */
+    }
+
+    .info-row {
+        justify-content: center; /* center icons and text */
+    }
+}
+
+
+/* REVIEWS */
+/*
+.profile-reviews {
+    margin-top: 30px;
+}
+
+.profile-reviews h2 {
+    margin-bottom: 15px;
+    color: #4A90E2;
+}
+
+.review-item {
+    background: #fff;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.review-item strong {
+    color: #222;
+}
+
+.review-item span {
+    font-size: 0.85rem;
+    color: #888;
+    margin-left: 6px;
+}
+
+.review-item p {
+    margin: 6px 0 0 0;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: #555;
+}*/
+
+/* NO USER MESSAGE */
+.no-user {
+    text-align: center;
+    margin-top: 50px;
+    font-size: 1.2rem;
+    color: #999;
+}
+
+/* HIDDEN CLASS */
+.hidden {
+    display: none;
+}
