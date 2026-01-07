@@ -1,6 +1,6 @@
 .messages-page {
     display: flex;
-    height: calc(100vh - 140px); /* Adjust based on header/footer height */
+    min-height: calc(100vh - 140px); /* Adjust based on header/footer height */
     margin: 20px;
     gap: 20px;
 }

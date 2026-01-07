@@ -1,7 +1,6 @@
 .notifications-div {
     margin: 10px;
-    height: calc(100vh - 160px);
-    overflow-y: auto;
+    min-height: calc(100vh - 160px);
 }
 
 #notificationsContainer {
