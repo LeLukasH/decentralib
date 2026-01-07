@@ -122,27 +122,56 @@ async function renderProfile() {
     document.getElementById("profileEmail").textContent = `${user.email || '-'}`;
     document.getElementById("profileReputation").textContent = `${user.reputation || "0"} (${user.reviews_count || 0} recenzií)`;
 
+    // ======================
     // RECENZIE
+    // ======================
     const reviewsContainer = document.getElementById("reviewsContainer");
     const reviews = await getReviewsByUserId(user.id);
 
-    if (!reviews.length) {
+    reviewsContainer.innerHTML = ""; // vymažeme pôvodný obsah
+
+    if (reviews.length == 0) {
         reviewsContainer.innerHTML = "<p>Používateľ zatiaľ nemá žiadne recenzie.</p>";
-        return;
+    } else {
+        reviews.forEach(r => {
+            const reviewer = USERS.find(u => u.id === r.reviewer_id);
+
+            // Formátovanie timestampu
+            let reviewDate = "";
+            if (r.created_at) {
+                const date = r.created_at.toDate ? r.created_at.toDate() : new Date(r.created_at);
+                reviewDate = date.toLocaleString("sk-SK", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit"
+                });
+            }
+            
+            // Hlavný div recenzie
+            const reviewDiv = document.createElement("div");
+            reviewDiv.className = "review-item";
+
+            // Vloženie obsahu
+            reviewDiv.innerHTML = `
+                <div class="review-header">
+                    <img src="${reviewer?.profile_pic || 'https://picsum.photos/seed/user/100'}" alt="Fotka hodnotiteľa" class="reviewer-pic">
+                    <div class="reviewer-info">
+                        <strong>${reviewer ? reviewer.first_name + " " + reviewer.last_name : "Neznámy hodnotiteľ"}</strong>
+                        <span class="review-rating">
+                            ${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}
+                        </span>
+                        <span class="review-date"><i class="fas fa-calendar"></i>   ${reviewDate}</span>
+                    </div>
+                </div>
+                <p class="review-text">${r.text || ""}</p>
+            `;
+
+            reviewsContainer.appendChild(reviewDiv);
+        });
     }
 
-    reviewsContainer.innerHTML = "";
-    reviews.forEach(r => {
-        const reviewer = USERS.find(u => u.id === r.reviewer_id);
-        const div = document.createElement("div");
-        div.className = "review-item";
-        div.innerHTML = `
-            <strong>${reviewer ? reviewer.first_name + " " + reviewer.last_name : "Neznámy hodnotiteľ"}</strong>
-            <span> | Hodnotenie: ${r.rating}/5</span>
-            <p>${r.text || ""}</p>
-        `;
-        reviewsContainer.appendChild(div);
-    });
 }
 
 renderProfile();

@@ -157,43 +157,6 @@
     }
 }
 
-
-/* REVIEWS */
-/*
-.profile-reviews {
-    margin-top: 30px;
-}
-
-.profile-reviews h2 {
-    margin-bottom: 15px;
-    color: #4A90E2;
-}
-
-.review-item {
-    background: #fff;
-    border-radius: 10px;
-    padding: 15px 20px;
-    margin-bottom: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-}
-
-.review-item strong {
-    color: #222;
-}
-
-.review-item span {
-    font-size: 0.85rem;
-    color: #888;
-    margin-left: 6px;
-}
-
-.review-item p {
-    margin: 6px 0 0 0;
-    font-size: 0.95rem;
-    line-height: 1.4;
-    color: #555;
-}*/
-
 /* NO USER MESSAGE */
 .no-user {
     text-align: center;
@@ -205,4 +168,86 @@
 /* HIDDEN CLASS */
 .hidden {
     display: none;
+}
+
+/* REVIEW CARD */
+.review-item {
+    background: #fff;
+    border-radius: 10px;
+    padding: 15px 20px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.reviewer-pic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #4A90E2;
+}
+
+.reviewer-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1; /* umožní dátumu byť napravo */
+    position: relative;
+}
+
+.reviewer-info strong {
+    color: #222;
+    font-size: 1rem;
+}
+
+.review-rating {
+    font-size: 0.95rem;
+    color: #F5A623; /* zlaté hviezdičky */
+}
+
+.review-date {
+    font-size: 0.7rem;
+    color: #999;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.review-date i {
+    margin-right: 6px; /* viac priestoru medzi ikonou a textom */
+}
+
+.review-text {
+    margin: 8px 0 0 0;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: #555;
+}
+
+/* mobil */
+@media (max-width: 600px) {
+    .review-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .reviewer-info {
+        position: static;
+    }
+
+    .review-date {
+        position: static;
+        margin-top: 4px;
+    }
+
+    .review-text {
+        margin: 16px 0 0 0;
+    }
 }

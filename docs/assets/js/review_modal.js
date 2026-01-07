@@ -57,7 +57,7 @@ export async function openReviewModal({ loan_id, user_id }) {
 
         await addDoc(collection(db, "reviews"), {
             loan_id: currentLoanId,
-            user_id: reviewedUserId,
+            user_id: Number(reviewedUserId),
             reviewer_id: currentUser.id,
             rating: currentRating,
             text,
@@ -67,7 +67,7 @@ export async function openReviewModal({ loan_id, user_id }) {
         // 2️⃣ Fetch all reviews of this user
         const reviewsQuery = query(
             collection(db, "reviews"),
-            where("user_id", "==", String(reviewedUserId))
+            where("user_id", "==", reviewedUserId)
         );
         const snapshot = await getDocs(reviewsQuery);
         const allReviews = snapshot.docs.map(d => d.data());
@@ -76,6 +76,8 @@ export async function openReviewModal({ loan_id, user_id }) {
         const count = allReviews.length;
         const sum = allReviews.reduce((acc, r) => acc + r.rating, 0);
         const avg = count ? (sum / count) : 0;
+        // Zaokrúhlenie na 2 desatinné miesta
+        const avgRounded = Math.round(avg * 100) / 100;
 
         const user = USERS.find(u => u.id == reviewedUserId);
         if (!user) return;
@@ -83,7 +85,7 @@ export async function openReviewModal({ loan_id, user_id }) {
         // 4️⃣ Update user reputation
         const userRef = doc(db, "users", user.email); // assumes user doc id = reviewedUserId
         await updateDoc(userRef, {
-            reputation: avg,
+            reputation: avgRounded,
             reviews_count: count
         });
 
