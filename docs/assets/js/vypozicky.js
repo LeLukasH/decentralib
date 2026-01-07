@@ -2,6 +2,7 @@ import { LOANS, BOOKS, USERS, refetchLoans, refetchBooks } from "./api/allData.j
 import { doc, updateDoc, addDoc, collection } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 import { db } from "./firebase.js";
 import { refreshHeader } from "./utils.js";
+import { renderUserLink } from "./utils.js";
 
 async function updateLoanStatus(loanId, newStatus) {
     const timestamp = new Date().toISOString();
@@ -112,8 +113,7 @@ function init() {
                     <div class="karta-info">
                         <h4>${book.title}</h4>
                         <p><strong>Autor:</strong> ${book.autor}</p>
-                        <p><strong>Požičal si:</strong> ${borrower.first_name} ${borrower.last_name}
-                        (<span class="rating-star">&#9733;</span>${borrower.reputation})</p>
+                        <p><strong>Požičal si:</strong> ${renderUserLink(borrower.id, true, 14)}</p>
                         <p><strong>Od:</strong> ${loan.date_from} <strong>Do:</strong> ${loan.date_to}</p>
                     </div>
                 </div>
@@ -134,8 +134,7 @@ function init() {
                     <div class="karta-info">
                         <h4>${book.title}</h4>
                         <p><strong>Autor:</strong> ${book.autor}</p>
-                        <p><strong>Žiadateľ:</strong> ${borrower.first_name} ${borrower.last_name}
-                        (<span class="rating-star">&#9733;</span>${borrower.reputation})</p>
+                        <p><strong>Žiadateľ:</strong> ${renderUserLink(borrower.id, true, 14)}</p>
                         <p><strong>Požadované:</strong> ${loan.date_from} - ${loan.date_to}</p>
                     </div>
                 </div>

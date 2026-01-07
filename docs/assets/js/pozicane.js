@@ -1,4 +1,5 @@
 import { LOANS, BOOKS, USERS } from "./api/allData.js";
+import { renderUserLink } from "./utils.js";
 
 // === Konštanty pre Stránkovanie ===
 const BOOKS_PER_PAGE = 12; // 4 stĺpce * 3 riadky
@@ -64,9 +65,7 @@ export async function renderBorrowedBooks() {
                 <div class="karta-info">
                     <p><strong>Autor:</strong> ${book.autor}</p>
                     <p>
-                        <strong>Majiteľ:</strong> ${owner.first_name} ${owner.last_name}
-                        <span class="rating-star">&#9733;</span>
-                        ${owner.reputation}
+                        <strong>Majiteľ:</strong> ${renderUserLink(owner.id, true, 14)}
                     </p>
                     <p><strong>Lokalita:</strong> ${owner.location}</p>
                     

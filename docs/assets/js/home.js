@@ -1,5 +1,6 @@
 import { setupBookDetailModal } from "./book_detail_modal.js";
 import { USERS, BOOKS, BOOK_GENRES, BOOK_LANGS } from "./api/allData.js";
+import { renderUserLink } from "./utils.js";
 
 // --- GLOBÁLNE PREMENNÉ ---
 let AVAILABLE_CITIES = []; 
@@ -224,11 +225,7 @@ function renderBooks() {
                     <img src="${book.image_url}" alt="" width="130" height="200">
                     <div class="karta-info">
                         <p>${book.autor}</p>
-                        <p style="font-size: 16px;">
-                            ${getOwnerNick(book)}
-                            <span style='font-size:25px; color:yellow'>&#9733;</span>
-                            ${getOwnerReputation(book)}
-                        </p>
+                        ${renderUserLink(book.owner_id, true)}
                         <p>${getOwnerLocation(book)}</p>
                         ${dostupne 
                             ? `<button class="btn-borrow" onclick="window.openQuickBorrow(${book.id})" ${disableButton ? `disabled` : ``} >
