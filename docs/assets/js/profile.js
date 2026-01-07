@@ -85,14 +85,26 @@ async function renderProfile() {
 
             // update Firestore
             try {
-                const userRef = doc(db, "users", String(user.id)); // db document musí existovať
+                const userRef = doc(db, "users", user.email); // db document musí existovať
                 await updateDoc(userRef, updatedData);
 
                 // update lokálnu kópiu USERS pre demo účely
                 Object.assign(user, updatedData);
 
-                alert("Profil úspešne aktualizovaný ✅");
-                renderProfile(); // refresh zobrazenia
+                // zmena textu tlačidla
+                const editButton = document.getElementById("editProfile");
+                const originalText = editButton.textContent;
+                editButton.textContent = "✅ Uložené";
+                editButton.disabled = true; // voliteľné, nech sa nedá kliknúť počas animácie
+
+                // po 1,5 sekundy vrátiť späť
+                setTimeout(() => {
+                    editButton.textContent = originalText;
+                    editButton.disabled = false;
+                    renderProfile();
+                }, 1500);
+
+                 // refresh zobrazenia
             } catch (err) {
                 console.error(err);
                 alert("Chyba pri ukladaní profilu ❌");
