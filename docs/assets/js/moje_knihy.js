@@ -4,7 +4,7 @@ import { BOOKS, BOOK_GENRES, BOOK_LANGS } from "./api/allData.js";
 
 // Importy pre Firebase (ak sa používajú pre ukladanie stavu knihy)
 import { db } from "./firebase.js"; 
-import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
 // --- GLOBÁLNE PREMENNÉ ---
 let AVAILABLE_CITIES = []; 
@@ -216,11 +216,11 @@ document.getElementById("cancelDelete").onclick = function () {
     bookToDelete = null;
 };
 
-document.getElementById("confirmDelete").onclick = function () {
+document.getElementById("confirmDelete").onclick = async function () {
     if (bookToDelete !== null) {
         console.log("Vymazaná kniha s ID:", bookToDelete); 
 
-        //vymazať knihu s ID bookToDelete z databázy
+        await deleteDoc(doc(db, "books", String(bookToDelete)));
 
         renderBooks();
         bookToDelete = null;
