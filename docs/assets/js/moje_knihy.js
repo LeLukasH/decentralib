@@ -13,7 +13,7 @@ let searchCommitted = { nazov: "", autor: "" };
 let currentUser = null; 
 let currentUserId = null; 
 
-
+let bookToDelete = null;
 // ===================================================
 // POMOCNÉ FUNKCIE (PRE KNIHY A VLASTNÍKOV)
 // ===================================================
@@ -159,7 +159,7 @@ function renderBooks() {
                                 class="btn-edit" 
                                 onclick="window.openEditModal(${book.id})"
                             >
-                                Upraviť knihu
+                                <i class="fa fa-pencil" style=" color:black"></i>
                             </button>
                             
                             <button 
@@ -170,6 +170,10 @@ function renderBooks() {
                                 ${buttonDisabled ? 'disabled' : ''}
                             > 
                                 ${buttonIcon} 
+                            </button>
+
+                            <button class="delete-button" onclick="deleteBook(${book.id})">
+                                <i class="fa fa-trash-o" style="color:red"></i>
                             </button>
                         </div>
                     </div>
@@ -192,6 +196,39 @@ function displayLoginRequired() {
     if (paginationContainer) paginationContainer.innerHTML = '';
 }
 
+
+// ===================================================
+// VYMAZANIE KNIHY
+// ===================================================
+function deleteBook(id) {
+   // console.log(BOOKS);
+    const book = BOOKS.find(b => b.id === id);
+    bookToDelete = id;
+
+    document.getElementById("deleteText").textContent =`Naozaj chcete odstrániť knihu "${book.title}"?`;
+    document.getElementById("deleteModal").style.display = "block";
+}
+
+window.deleteBook = deleteBook;
+
+document.getElementById("cancelDelete").onclick = function () {
+    document.getElementById("deleteModal").style.display = "none";
+    bookToDelete = null;
+};
+
+document.getElementById("confirmDelete").onclick = function () {
+    if (bookToDelete !== null) {
+        console.log("Vymazaná kniha s ID:", bookToDelete); 
+
+        //vymazať knihu s ID bookToDelete z databázy
+
+        renderBooks();
+        bookToDelete = null;
+    }
+
+    document.getElementById("deleteModal").style.display = "none";
+    alert("Kniha bola vymazaná.");
+};
 // ===================================================
 // LOGIKA FILTROV A ZOBRAZENIE ZNAČIEK (PÔVODNÁ)
 // ===================================================

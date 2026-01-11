@@ -914,25 +914,27 @@ header div a{
 .button-modry:hover {
     background-color: #2358b5;
 }
-_
-.delete-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
 
-    background: rgba(255,255,255,0.8);
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 16px;
-    padding: 4px 8px;
-    transition: 0.2s;
+.delete-button {
+    background-color: white; 
+    color: #444;
+    border: none; 
+    font-size: 22px; 
+    line-height: 1; 
+    height: 38px; 
+    padding: 0; 
+    
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    
+    transition: color 0.2s;
 }
 
-.delete-btn:hover {
+/* .delete-btn:hover {
     background: rgba(255,0,0,0.8);
     color: white;
-}
+} */
 
 
 /* Delete book modal*/

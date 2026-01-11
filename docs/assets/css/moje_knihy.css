@@ -134,6 +134,7 @@ html, body {
     gap: 10px;
     margin-top: 5px; 
     width: 100%; 
+    margin-top: auto; 
 }
 
 .action-buttons button {
@@ -148,14 +149,24 @@ html, body {
 
 /* Tlačidlo Upraviť knihu */
 .btn-edit {
-    background-color: #f7f7f7; 
-    color: #2f70e9;
-    border: 1px solid #d9dce2; 
+    background-color: white; 
+    color: #444;
+    border: none; 
+    font-size: 22px; 
+    line-height: 1; 
+    height: 38px; 
+    padding: 0; 
+    
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    
+    transition: color 0.2s;
 }
-.btn-edit:hover {
-    background-color: #e9e9e9;
-    color: #2358b5;
-}
+/* .btn-edit:hover {
+    background-color: white;
+    color: 000;
+} */
 
 
 /* Tlačidlo Zamknúť/Odomknúť */
