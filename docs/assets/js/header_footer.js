@@ -188,7 +188,7 @@ class MyFooter extends HTMLElement {
                     Vytvorili <strong>Adrián Kýška, Lukáš Heldák, Mária Cerulíková, Veronika Horňáková </strong> v rámci predmetu Metodológie tvorby webu.
                 </p>
                 <p class="aktualizacia">
-                    <strong>Posledne aktualizované:</strong> 8.12.2025
+                    <strong>Posledne aktualizované:</strong> 12.01.2026
                 </p>
             </div>
         </footer>`;
