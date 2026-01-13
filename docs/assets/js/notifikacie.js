@@ -93,7 +93,8 @@ export async function renderNotifications() {
             if (!note.is_read) {
                 await markNotificationAsRead(note.id);
                 note.is_read = true;
-                row.classList.add("read");
+                row.querySelector(".notification-main")
+                        .classList.add("read");            
             }
         });
 
