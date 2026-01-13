@@ -107,7 +107,11 @@ async function loadLoans(isBorrower = false) {
         li.dataset.id = loan.id;
         if (hasUnread) li.classList.add("unread");
 
-        li.addEventListener("click", () => selectChatroom(chatroom));
+        li.addEventListener("click", () => {
+            selectChatroom(chatroom);
+            chatroom.hasUnread = false;
+            li.classList.remove("unread");
+        });
         chatroomsList.appendChild(li);
     }
 }
