@@ -1,0 +1,275 @@
+/* --- ZÁKLADNÝ LAYOUT --- */
+.dashboard-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.dashboard-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 30px 0;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* --- ŠPECIFICKÉ TLAČIDLÁ PRE VÝPOŽIČKY (NEMENIA PÔVODNÉ) --- */
+
+.btn-vratenie {
+    background-color: #1e8543 !important;
+    color: white !important;
+    border: none !important;
+    width: 100%;
+    padding: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s;
+}
+.btn-vratenie:hover { background-color: #166332 !important; }
+
+.btn-schvalit {
+    background-color: #2f70e9 !important;
+    color: white !important;
+    border: none !important;
+    flex: 1;
+    padding: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-schvalit:hover { background-color: #1e56c4 !important; }
+
+.btn-zamietnut {
+    background-color: #c62828 !important;
+    color: white !important;
+    border: none !important;
+    flex: 1;
+    padding: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-zamietnut:hover { background-color: #a82222 !important; }
+
+.vypozicka-akcie-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    width: 100%;
+}
+
+/* --- MODAL A LEGENDA (OPRAVENÉ UMIESTNENIE A SCROLL) --- */
+.legenda-trigger {
+    background: none;
+    border: none;
+    color: #2f70e9;
+    font-size: 26px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0; top: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(3px);
+    
+    /* OPRAVA: Centrovanie namiesto marginu */
+    align-items: center;
+    justify-content: center;
+}
+
+/* Pomocná trieda, aby flexbox fungoval, keď JS prepne display */
+.modal[style*="display: block"] {
+    display: flex !important;
+}
+
+.modal-content {
+    background: white;
+    padding: 25px; /* Mierne zmenšené z 30px */
+    border-radius: 15px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    
+    /* OPRAVA: Povolenie scrollu a limit výšky */
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.close-modal {
+    position: absolute;
+    right: 20px; top: 15px;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+/* OPRAVA: Zmenšené medzery v zozname (z 15px na 10px) */
+.legend-list { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 10px; 
+    margin-top: 20px; 
+}
+.legend-item { display: flex; align-items: center; gap: 12px; }
+
+.dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.dot-green { background: #28a745; }
+.dot-orange { background: #fd7e14; }
+.dot-red { background: #dc3545; }
+
+/* --- ŠTATISTIKY --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #d9dce2;
+    text-align: center;
+}
+
+.stat-value { display: block; font-size: 32px; font-weight: 800; color: #2f70e9; }
+.stat-label { font-size: 14px; color: #666; text-transform: uppercase; font-weight: 600; }
+
+/* --- HARMONIKY --- */
+.accordion-trigger {
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 15px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.accordion-trigger h2 {
+    text-align: left;
+    margin: 0 0 5px 0 !important;
+    font-size: 24px;
+    color: #2b3340;
+}
+
+.arrow-icon {
+    width: 100%;
+    text-align: center;
+    color: #a0a0a0;
+    font-size: 18px;
+    transition: transform 0.3s;
+}
+
+.accordion-trigger.active .arrow-icon { transform: rotate(180deg); }
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.accordion-content.open { max-height: 2000px; }
+.section-divider { border: 0; height: 1px; background: #d9dce2; margin: 10px 0; }
+
+/* --- GRID KARIET --- */
+.zoznam-knih {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 25px;
+    padding: 20px 0;
+}
+
+.karta-vypozicky {
+    background: white;
+    padding: 18px;
+    border-radius: 10px;
+    border: 1px solid #d9dce2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: box-shadow 0.2s;
+}
+
+.karta-vypozicky:hover { box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.karta-content { display: flex; gap: 15px; margin-bottom: 12px; }
+.karta-img { border-radius: 5px; object-fit: cover; width: 60px; height: 90px; }
+.karta-info h4 { margin: 0 0 8px 0; font-size: 17px; line-height: 1.2; }
+.karta-info p { margin: 4px 0; font-size: 14px; color: #555; }
+.book-status-row { display: flex; align-items: center; gap: 8px; margin-top: 5px; font-weight: 600; font-size: 13px; }
+
+/* --- TLAČIDLÁ (ZAROVNANÉ NA STRED A ROVNAKÁ VEĽKOSŤ) --- */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.action-buttons .request-button {
+    flex: 1;
+    height: 40px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.2s;
+    padding: 0;
+}
+
+.btn-edit { background-color: #f0f0f0; color: #333; border: 1px solid #d9dce2 !important; }
+.btn-lock { background-color: #666; color: white; }
+.btn-lock.is-locked { background-color: #28a745; }
+.btn-lock:disabled { background-color: #ccc; cursor: not-allowed; }
+.btn-delete { background-color: white; color: #ff4d4d; border: 1px solid #ff4d4d !important; }
+
+/* --- OSTATNÉ PRVKY --- */
+.toggle-arrow {
+    display: inline-block; 
+    transition: transform 0.4s; 
+    color: #2f70e9; 
+    font-size: 20px; 
+    cursor: pointer; 
+}
+
+.pBtn-style {
+    width: 32px; height: 32px; 
+    border-radius: 50%; 
+    border: 1px solid #2f70e9; 
+    cursor: pointer; 
+    font-weight: bold; 
+    margin: 0 4px;
+}
+
+.empty-msg {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #999;
+    padding: 40px;
+    font-style: italic;
+}
+
+/* RESPONSIVITA */
+@media (max-width: 1100px) { .zoznam-knih { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 850px) { .zoznam-knih { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px) { .zoznam-knih { grid-template-columns: 1fr; } }
