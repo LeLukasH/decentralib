@@ -50,8 +50,9 @@ async function loadLoans(isBorrower = false) {
     // UPRAVENÝ FILTER: Pridaná podmienka loan.status !== 'returned'
     const loans = LOANS.filter(loan => {
         const matchesUser = isBorrower ? loan.borrower_id === currentUser.id : loan.owner_id === currentUser.id;
-        const isNotReturned = loan.status !== 'returned' && loan.status !== 'rejected';
-        return matchesUser && isNotReturned;
+        const isApproved = loan.status === 'approved';
+        //const isNotReturned = loan.status !== 'returned' && loan.status !== 'rejected';
+        return matchesUser && isApproved;
     });
 
     console.log(loans);
