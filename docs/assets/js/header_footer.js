@@ -25,24 +25,14 @@ class MyHeader extends HTMLElement {
                 </div>
                 <nav class="hlavne-menu">
                     <a href="home.html" class="navigacne-tlacidlo">Domov</a>
-
-                    <div class="pouzivatel-dropdown sprava-knihy-kontajner"> 
-                        <button class="navigacne-tlacidlo dropdown-tlacidlo pouzivatel_tlacidlo">Správa kníh</button>
-                        <div class="pouzivatel_obsah sprava-knih-obsah">
-                            <a href="moje_knihy.html">Moje knihy</a>
-                            <a href="pozicane.html">Požičané</a>
-                            <a href="vypozicky.html">Výpožičky</a>
-                        </div>
-                    </div>
+                    <a href="dashboard.html" class="navigacne-tlacidlo">Správa knih</a>
                     <a href="spravy.html" class="navigacne-tlacidlo" id="messagesLink" aria-labelledby="messagesLabel">
                         <span id="messagesLabel">Správy</span>
                         <span class="msg-badge" id="messagesBadge" aria-hidden="true"></span>
                     </a>
                 </nav>
 
-                <button class="hamburger">
-                    ☰
-                </button>
+                <button class="hamburger">☰</button>
 
                 <a href="notifikacie.html" class="navigation-icon" id="notificationsLink" aria-labelledby="notificationsLabel">
                     <svg id="notificationsLabel" class="icon-bell" viewBox="0 0 24 24" aria-hidden="true">
@@ -76,30 +66,22 @@ class MyHeader extends HTMLElement {
         const notificationsCount = await getNotificationsCount();
         updateNotificationsBadge(notificationsCount);
         
-        // --- FUNKCIA PRE ZATVÁRANIE OSTATNÝCH DROPDOWNOV ---
         const toggleDropdown = (targetContent) => {
             const allDropdowns = this.querySelectorAll('.pouzivatel_obsah');
             allDropdowns.forEach(content => {
-                if (content !== targetContent) {
-                    content.classList.remove('show');
-                }
+                if (content !== targetContent) content.classList.remove('show');
             });
             targetContent.classList.toggle('show');
         };
-        // ----------------------------------------------------
 
-
-        // Sign Out listener
         const signOutBtn = this.querySelector('#signOutBtn');
         if (signOutBtn) signOutBtn.addEventListener('click', logout);
 
-        // Sign In listener
         const signInBtn = this.querySelector('#signInBtn');
         if (signInBtn) signInBtn.addEventListener('click', () => {
             window.location.href = 'auth/login.html';
         });
 
-        // Dropdown listener pre používateľa (Profil)
         const userDropdownBtn = this.querySelector('.profil-kontajner .pouzivatel_tlacidlo');
         const userDropdownContent = this.querySelector('.profil-obsah');
         if (userDropdownBtn && userDropdownContent) {
@@ -109,72 +91,26 @@ class MyHeader extends HTMLElement {
             });
         }
         
-        // Dropdown listener pre Správu kníh
-        const bookDropdownBtn = this.querySelector('.sprava-knihy-kontajner .dropdown-tlacidlo');
-        const bookDropdownContent = this.querySelector('.sprava-knih-obsah');
-        if (bookDropdownBtn && bookDropdownContent) {
-            bookDropdownBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                toggleDropdown(bookDropdownContent);
-            });
-        }
-
-        // Global click listener na zatvorenie VŠETKÝCH dropdownov
         document.addEventListener('click', (e) => {
              const allDropdowns = this.querySelectorAll('.pouzivatel_obsah');
-             const allButtons = this.querySelectorAll('.pouzivatel_tlacidlo, .dropdown-tlacidlo');
-             
-             let isInsideDropdown = false;
-             allDropdowns.forEach(content => {
-                 if (content.contains(e.target)) {
-                     isInsideDropdown = true;
-                 }
-             });
-             
-             let isButton = false;
-             allButtons.forEach(button => {
-                 if (button.contains(e.target)) {
-                     isButton = true;
-                 }
-             });
-
+             const allButtons = this.querySelectorAll('.pouzivatel_tlacidlo');
+             let isInsideDropdown = Array.from(allDropdowns).some(c => c.contains(e.target));
+             let isButton = Array.from(allButtons).some(b => b.contains(e.target));
              if (!isInsideDropdown && !isButton) {
                 allDropdowns.forEach(content => content.classList.remove('show'));
              }
         });
 
-
         const hamburger = this.querySelector('.hamburger');
         const menu = this.querySelector('.hlavne-menu');
-
         hamburger.addEventListener('click', () => {
             menu.classList.toggle('open');
-            // Zavri všetky ostatné dropdowny, keď otvoríš/zatvoríš hamburger
-            const allDropdowns = this.querySelectorAll('.pouzivatel_obsah');
-            allDropdowns.forEach(content => content.classList.remove('show'));
+            this.querySelectorAll('.pouzivatel_obsah').forEach(c => c.classList.remove('show'));
         });
 
-        // Zisti aktuálne meno súboru (napr. "spravy.html")
         const currentPage = window.location.pathname.split('/').pop();
-
-        // Nájdeme všetky navigačné odkazy
-        // Teraz cielime na odkazy v novej triede .pouzivatel_obsah
-        const links = this.querySelectorAll('.hlavne-menu a, .pouzivatel_obsah a'); 
-
-        // Prejdi všetky odkazy a prefarby ten, ktorý zodpovedá aktuálnej stránke
-        links.forEach(link => {
-            const linkPage = link.getAttribute('href');
-            if (linkPage === currentPage) {
-                // Ak je to podkategória (napr. moje_knihy), zafarbíme aj nadradené tlačidlo (Správa kníh)
-                if (link.closest('.sprava-knihy-kontajner')) {
-                    const parentButton = link.closest('.sprava-knihy-kontajner').querySelector('.dropdown-tlacidlo');
-                    if (parentButton) {
-                        parentButton.style.color = '#003f87';
-                    }
-                }
-                // Pre všetky ostatné linky (vrátane podkategórií)
-                link.style.color = '#003f87';  
-            }
+        this.querySelectorAll('.hlavne-menu a, .pouzivatel_obsah a').forEach(link => {
+            if (link.getAttribute('href') === currentPage) link.style.color = '#003f87';
         });
     }
 }
@@ -184,12 +120,8 @@ class MyFooter extends HTMLElement {
         this.innerHTML = `
         <footer>
             <div class="footer-obsah">
-                <p class="autori">
-                    Vytvorili <strong>Adrián Kýška, Lukáš Heldák, Mária Cerulíková, Veronika Horňáková </strong> v rámci predmetu Metodológie tvorby webu.
-                </p>
-                <p class="aktualizacia">
-                    <strong>Posledne aktualizované:</strong> 12.01.2026
-                </p>
+                <p class="autori">Vytvorili <strong>Adrián Kýška, Lukáš Heldák, Mária Cerulíková, Veronika Horňáková</strong>...</p>
+                <p class="aktualizacia"><strong>Posledne aktualizované:</strong> 12.01.2026</p>
             </div>
         </footer>`;
     }
@@ -198,64 +130,26 @@ class MyFooter extends HTMLElement {
 customElements.define('my-header', MyHeader);
 customElements.define('my-footer', MyFooter);
 
-function updateMessagesBadge(messagesCount) {
+function updateMessagesBadge(count) {
     const badge = document.getElementById("messagesBadge");
     if (!badge) return;
-
-    if (typeof messagesCount !== "number") {
-        // try to coerce if you got a string
-        messagesCount = Number(messagesCount) || 0;
-    }
-
-    if (messagesCount > 0) {
-        // clamp large numbers
-        badge.textContent = messagesCount > 99 ? "99+" : String(messagesCount);
+    count = Number(count) || 0;
+    if (count > 0) {
+        badge.textContent = count > 99 ? "99+" : String(count);
         badge.style.display = "inline-flex";
-
-        // style tweak for two+ digits
-        if (messagesCount >= 10 && messagesCount <= 99) {
-        badge.classList.add("msg-badge--small");
-        } else {
-        badge.classList.remove("msg-badge--small");
-        }
-
-        // for screen-readers: announce count (optional)
-        badge.setAttribute("aria-hidden", "false");
-        badge.setAttribute("aria-label", `${badge.textContent} neprečítaných správ`);
     } else {
         badge.style.display = "none";
-        badge.setAttribute("aria-hidden", "true");
-        badge.removeAttribute("aria-label");
     }
 }
 
-function updateNotificationsBadge(notificationsCount) {
+function updateNotificationsBadge(count) {
     const badge = document.getElementById("notificationsBadge");
     if (!badge) return;
-
-    if (typeof notificationsCount !== "number") {
-        // try to coerce if you got a string
-        notificationsCount = Number(notificationsCount) || 0;
-    }
-
-    if (notificationsCount > 0) {
-        // clamp large numbers
-        badge.textContent = notificationsCount > 99 ? "99+" : String(notificationsCount);
+    count = Number(count) || 0;
+    if (count > 0) {
+        badge.textContent = count > 99 ? "99+" : String(count);
         badge.style.display = "inline-flex";
-
-        // style tweak for two+ digits
-        if (notificationsCount >= 10 && notificationsCount <= 99) {
-        badge.classList.add("msg-badge--small");
-        } else {
-        badge.classList.remove("msg-badge--small");
-        }
-
-        // for screen-readers: announce count (optional)
-        badge.setAttribute("aria-hidden", "false");
-        badge.setAttribute("aria-label", `${badge.textContent} neprečítaných notifikácií`);
     } else {
         badge.style.display = "none";
-        badge.setAttribute("aria-hidden", "true");
-        badge.removeAttribute("aria-label");
     }
 }
