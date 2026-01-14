@@ -47,10 +47,15 @@ async function loadLoans(isBorrower = false) {
 
     if (!currentUser) return;
 
-    const loans = LOANS.filter(loan =>
-        isBorrower ? loan.borrower_id === currentUser.id : loan.owner_id === currentUser.id
-    );
+    // UPRAVENÝ FILTER: Pridaná podmienka loan.status !== 'returned'
+    const loans = LOANS.filter(loan => {
+        const matchesUser = isBorrower ? loan.borrower_id === currentUser.id : loan.owner_id === currentUser.id;
+        const isNotReturned = loan.status !== 'returned' && loan.status !== 'rejected';
+        return matchesUser && isNotReturned;
+    });
 
+    console.log(loans);
+   
     if (loans.length === 0) {
         const span = document.createElement("span");
         span.textContent = "Nemáte žiadne výpožičky.";
