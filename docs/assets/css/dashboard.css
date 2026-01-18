@@ -148,6 +148,13 @@
     border-radius: 12px;
     border: 1px solid #d9dce2;
     text-align: center;
+    cursor: pointer; 
+}
+
+.stat-card:hover {
+    transform: translateY(-5px) scale(1.02); /* jemné zdvihnutie a zväčšenie */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2); /* väčší tieň */
+    background: #f0f4ff; /* jemná zmena farby */
 }
 
 .stat-value { display: block; font-size: 32px; font-weight: 800; color: #2f70e9; }
@@ -273,3 +280,15 @@
 @media (max-width: 1100px) { .zoznam-knih { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 850px) { .zoznam-knih { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 500px) { .zoznam-knih { grid-template-columns: 1fr; } }
+
+
+@keyframes pop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.pop-animation {
+  display: inline-block;
+  animation: pop 0.5s ease forwards;
+}

@@ -86,15 +86,15 @@
             </div>
 
             <div class="stats-grid">
-                <div class="stat-card">
+                <div class="stat-card" data-target="section-moje-knihy">
                     <span class="stat-value" id="count-my-books">0</span>
                     <span class="stat-label">Moje knihy</span>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card" data-target="section-moje-pozicane">
                     <span class="stat-value" id="count-active-rentals">0</span>
                     <span class="stat-label">Aktívne výpožičky</span>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card" data-target="section-schvalene">
                     <span class="stat-value" id="count-total-borrows">0</span>
                     <span class="stat-label">Aktívne pôžičky</span>
                 </div>
@@ -117,7 +117,7 @@
 
             <hr class="section-divider">
 
-            <section class="dashboard-section">
+            <section class="dashboard-section" id="section-schvalene">
                 <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
                     <h2 style="font-size: 24px; color: #2b3340; margin: 0;">Požičané odo mňa</h2>
                     <div id="toggle-schvalene"></div>
@@ -132,7 +132,7 @@
 
             <hr class="section-divider">
 
-            <section class="dashboard-section" id="section-borrowed-books">
+            <section class="dashboard-section" id="section-moje-pozicane">
                 <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
                     <h2 style="font-size: 24px; color: #2b3340; margin: 0;">Moje požičané knihy</h2>
                     <div id="toggle-borrowed-books"></div>
@@ -147,7 +147,7 @@
 
             <hr class="section-divider">
 
-            <section class="dashboard-section">
+            <section class="dashboard-section" id="section-moje-knihy">
                 <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
                     <h2 style="font-size: 24px; color: #2b3340; margin: 0;">Moje knihy</h2>
                     <div id="toggle-my-books"></div>
@@ -221,6 +221,34 @@
     <script type="module" src="../assets/js/dashboard_pozicane.js"></script>
     <script type="module" src="../assets/js/dashboard_vypozicky.js"></script>
     <script type="module" src="../assets/js/header_footer.js" defer></script>
+
+    <script>
+        document.querySelectorAll('.stat-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const targetId = card.dataset.target;
+            const targetElement = document.getElementById(targetId);
+            if (!targetElement) return;
+
+            // scroll na sekciu
+            targetElement.scrollIntoView({ behavior: 'smooth' });
+
+            // Po krátkom čase, keď scroll skončí, sprav pop animáciu
+            setTimeout(() => {
+                const h2 = targetElement.querySelector('h2');
+                if (!h2) return;
+
+                // pridáme triedu s pop animáciou
+                h2.classList.add('pop-animation');
+
+                // odstránime ju po animácii (0.5s)
+                setTimeout(() => {
+                    h2.classList.remove('pop-animation');
+                }, 500);
+
+            }, 500); // delay, aby scroll mal čas dokončiť
+        });
+        });
+    </script>
 
 </body>
 </html>
