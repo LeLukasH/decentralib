@@ -153,10 +153,10 @@ function getTextFromNotification(notification) {
             return `Máte novú požiadavku na požičanie knihy "${book.title}" od používateľa ${user.first_name} ${user.last_name}. Rozhodnite o akceptácii tejto požiadavky v sekcii <a href="vypozicky.html">Výpožičky</a>.`;
 
         case "loan_approved_owner":
-            return `Potvrdili ste požičanie knihy "${book.title}" používateľovi ${user.first_name} ${user.last_name}. Dohodnite sa na prevzatí knihy prostredníctvom sekcie <a href="spravy.html">Správy</a>.`;
+            return `Potvrdili ste požičanie knihy "${book.title}" používateľovi ${user.first_name} ${user.last_name}. Dohodnite sa na prevzatí knihy prostredníctvom sekcie <a href="spravy.html?loanId=${loan.id}">Správy</a>.`;
 
         case "loan_approved_borrower":
-            return `Vaša požiadavka na knihu "${book.title}" bola schválená používateľom ${user.first_name} ${user.last_name}. Dohodnite sa na prevzatí knihy prostredníctvom sekcie <a href="spravy.html">Správy</a>.`;
+            return `Vaša požiadavka na knihu "${book.title}" bola schválená používateľom ${user.first_name} ${user.last_name}. Dohodnite sa na prevzatí knihy prostredníctvom sekcie <a href="spravy.html?loanId=${loan.id}">Správy</a>.`;
 
         case "loan_rejected_owner":
             return `Zamietli ste požiadavku na požičanie knihy "${book.title}" od používateľa ${user.first_name} ${user.last_name}.`;

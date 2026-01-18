@@ -11,13 +11,14 @@ import {
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 import { LOANS, USERS } from "./api/allData.js";
-import { refreshHeader } from "./utils.js";
+import { refreshHeader, getUrlParam } from "./utils.js";
 
 /* =====================================================
    STATE
 ===================================================== */
 let currentUser = JSON.parse(localStorage.getItem("currentUser"));
 let currentChatroom = null;
+let pendingLoanId = getUrlParam("loanId");
 
 /* =====================================================
    ELEMENTS
@@ -118,6 +119,16 @@ async function loadLoans(isBorrower = false) {
             chatroom.hasUnread = false;
             li.classList.remove("unread");
         });
+
+        // AUTO OPEN CHATROOM FROM URL
+        if (pendingLoanId && String(loan.id) === String(pendingLoanId)) {
+            // počkáme na DOM
+            setTimeout(() => {
+                selectChatroom(chatroom);
+                li.classList.remove("unread");
+                pendingLoanId = null; // už netreba znovu
+            }, 0);
+        }
         chatroomsList.appendChild(li);
     }
 }
@@ -126,6 +137,10 @@ async function loadLoans(isBorrower = false) {
    SELECT CHAT
 ===================================================== */
 async function selectChatroom(chatroom) {
+    const url = new URL(window.location);
+    url.searchParams.set("loanId", chatroom.loanId);
+    history.replaceState({}, "", url);
+
     currentChatroom = chatroom;
 
     const [line1, line2] = chatroom.name.split("|");

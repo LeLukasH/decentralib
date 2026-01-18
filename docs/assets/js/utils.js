@@ -40,3 +40,8 @@ export function renderUserLink(userId, withReputation = true, fontSize = 16) {
         </p>
     `;
 }
+
+export function getUrlParam(name) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(name);
+}
