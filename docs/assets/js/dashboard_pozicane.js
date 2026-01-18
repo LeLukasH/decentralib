@@ -73,7 +73,14 @@ export async function renderBorrowedBooks() {
                     <img src="${book.image_url}" alt="${book.title}" class="karta-img" style="width:100px; height:150px; border-radius: 5px; object-fit: cover;">
                     <div class="karta-detaily">
                         <p><strong>Autor:</strong> ${book.autor}</p>
-                        <p><strong>Majiteľ:</strong> ${renderUserLink(owner.id, true, 14)}</p>
+                        <div class="majitel-row">
+                            <div class="majitel-info">
+                                <strong>Majiteľ:</strong> ${renderUserLink(owner.id, true, 14)}
+                            </div>
+                            <a href="spravy.html?loanId=${loan.id}" class="msg-link" title="Poslať správu">
+                                <i class="fa-solid fa-envelope"></i>
+                            </a>
+                        </div>
                         <p style="font-size: 0.85em; color: #666; margin-top: 5px;">
                             <strong>Termín:</strong><br>
                             ${loan.date_from} — ${loan.date_to}

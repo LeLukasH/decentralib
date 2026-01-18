@@ -78,7 +78,14 @@ function createSchvalenaCard(loan) {
                 <div class="karta-info">
                     <h4>${book.title}</h4>
                     <p><strong>Autor:</strong> ${book.autor}</p>
-                    <p><strong>Požičal si:</strong> ${renderUserLink(borrower.id, true, 14)}</p>
+                    <div class="majitel-row">
+                            <div class="majitel-info">
+                                <strong>Požičal si:</strong> ${renderUserLink(borrower.id, true, 14)}
+                            </div>
+                            <a href="spravy.html?loanId=${loan.id}" class="msg-link" title="Poslať správu">
+                                <i class="fa-solid fa-envelope"></i>
+                            </a>
+                        </div>
                     <p><strong>Od:</strong> ${loan.date_from} <strong>Do:</strong> ${loan.date_to}</p>
                 </div>
             </div>

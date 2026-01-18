@@ -216,6 +216,49 @@
     transition: box-shadow 0.2s;
 }
 
+.msg-link {
+    margin-left: 10px;
+    color: #2f70e9; 
+    text-decoration: none;
+    font-size: 1.1em;
+    vertical-align: middle;
+    transition: transform 0.2s, color 0.2s;
+    display: inline-block;
+}
+
+.msg-link:hover {
+    color: #1a4ba3;
+    transform: scale(1.2); 
+}
+
+
+.majitel-row {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    margin-top: 5px;
+    gap: 10px;
+}
+
+.majitel-info {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap; 
+    align-items: center;
+}
+
+.msg-link {
+    color: #2f70e9;
+    font-size: 1.1em;
+    text-decoration: none;
+    transition: transform 0.2s;
+    flex-shrink: 0;
+}
+
+.msg-link:hover {
+    transform: scale(1.2);
+    color: #1a4ba3;
+}
 .karta-vypozicky:hover { box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 .karta-content { display: flex; gap: 15px; margin-bottom: 12px; }
 .karta-img { border-radius: 5px; object-fit: cover; width: 60px; height: 90px; }
