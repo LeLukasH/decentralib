@@ -45,3 +45,27 @@ export function getUrlParam(name) {
     const params = new URLSearchParams(window.location.search);
     return params.get(name);
 }
+
+export function debugUI(message) {
+    let box = document.getElementById("debug-box");
+    if (!box) {
+        box = document.createElement("div");
+        box.id = "debug-box";
+        box.style.position = "fixed";
+        box.style.bottom = "10px";
+        box.style.right = "10px";
+        box.style.zIndex = "99999";
+        box.style.background = "#111";
+        box.style.color = "#0f0";
+        box.style.padding = "10px";
+        box.style.fontSize = "12px";
+        box.style.maxWidth = "320px";
+        box.style.borderRadius = "6px";
+        box.style.boxShadow = "0 0 10px rgba(0,0,0,0.4)";
+        document.body.appendChild(box);
+    }
+
+    const line = document.createElement("div");
+    line.textContent = message;
+    box.appendChild(line);
+}

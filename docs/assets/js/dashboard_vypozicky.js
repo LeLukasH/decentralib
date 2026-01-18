@@ -2,6 +2,7 @@ import { db } from "./firebase.js";
 import { doc, updateDoc, addDoc, collection } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 import { LOANS, BOOKS, USERS, refetchLoans, refetchBooks } from "./api/allData.js";
 import { renderUserLink, refreshHeader } from "./utils.js";
+import { openReviewModal } from "./review_modal.js";
 
 // --- STAVY PRE STRÁNKOVANIE ---
 let pageWaiting = 1;
@@ -168,7 +169,15 @@ window.processLoan = async function(loanId, newStatus) {
         await updateDoc(loanRef, { status: newStatus, created_at: timestamp });
 
         if (newStatus === "approved") await updateDoc(bookRef, { status: "unavailable" });
-        else if (newStatus === "returned") await updateDoc(bookRef, { status: "available" });
+        else if (newStatus === "returned") {
+            await updateDoc(bookRef, { status: "available" });
+
+            // OTVORENIE HODNOTIACEHO OKNA
+            openReviewModal({
+                loan_id: loanId,
+                user_id: loan.borrower_id
+            });
+        }
 
         const baseNotif = { loan_id: loanId, is_read: false, created_at: timestamp };
         await addDoc(collection(db, "notifications"), { ...baseNotif, type: "loan_" + newStatus + "_borrower", recipient_id: loan.borrower_id, sender_id: loan.owner_id });
@@ -177,7 +186,7 @@ window.processLoan = async function(loanId, newStatus) {
         await refetchLoans();
         await refetchBooks();
         renderDashboardLoans();
-        if (typeof refreshHeader === 'function') refreshHeader();
+        refreshHeader();
     } catch (error) {
         console.error("Chyba:", error);
     }

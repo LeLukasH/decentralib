@@ -1,35 +1,35 @@
-/* základný modal */
-.modal {
+/* =========================
+   REVIEW MODAL
+========================= */
+
+.review-modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    display: flex;              
-    align-items: center;        
-    justify-content: center;    
+    display: flex;
+    align-items: center;
+    justify-content: center;
     z-index: 1000;
 }
 
-.modal.hidden {
+.review-modal.hidden {
     display: none;
 }
 
-/* šedý backdrop */
-.modal-backdrop {
+/* backdrop */
+.review-modal-backdrop {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background: rgba(0,0,0,0.5);
 }
 
-/* modal content */
-.modal-content {
+/* content */
+.review-modal-content {
     position: relative;
     background: white;
-    padding: 20px 30px;  /* menej padding hore/dole */
+    padding: 20px 30px;
     border-radius: 10px;
     width: 90%;
     max-width: 400px;
@@ -40,26 +40,31 @@
     gap: 15px;
 }
 
-/* nadpisy */
-.modal-content h2 {
+/* nadpis */
+.review-modal-content h2 {
     text-align: center;
-    margin: 0;             /* odstránime veľký margin */
-    font-size: 1.5rem;     /* primeraná veľkosť */
+    margin: 0;
+    font-size: 1.5rem;
 }
 
+/* titul + podtitul */
 #reviewModalTitle,
 #reviewModalSubtitle {
     text-align: center;
-    font-size: 1.2rem;
     margin: 0;
+}
+
+#reviewModalTitle {
+    font-size: 1.2rem;
 }
 
 #reviewModalSubtitle {
     font-size: 0.8rem;
+    color: #666;
 }
 
-/* hviezdičky */
-.rating {
+/* rating */
+.review-rating {
     display: flex;
     justify-content: center;
     gap: 5px;
@@ -67,9 +72,8 @@
     cursor: pointer;
 }
 
-/* hviezdičky aktívne */
-.rating span.active {
-    color: gold;           /* zlatá farba pre hodnotené hviezdy */
+.review-rating span.active {
+    color: gold;
 }
 
 /* textarea */
@@ -82,29 +86,30 @@
     resize: vertical;
 }
 
-/* tlačidlá */
-.modal-actions {
+/* actions */
+.review-modal-actions {
     display: flex;
     gap: 10px;
-    justify-content: center;  
+    justify-content: center;
     width: 100%;
 }
 
-.modal-actions button {
+.review-modal-actions button {
     padding: 8px 15px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
 }
 
-#submitReview:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
+/* buttons */
 #submitReview {
     background-color: #1f5fd1;
     color: white;
+}
+
+#submitReview:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 
 #cancelReview {
