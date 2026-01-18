@@ -1,0 +1,250 @@
+/* MODAL TLO */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+}
+
+/* OBSAH MODALU */
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 85%;
+    max-width: 600px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #000;
+    text-decoration: none;
+}
+
+/* DETAILY KNIHY */
+.modal-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #2b3340;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.modal-body {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.book-cover img {
+    width: 130px;
+    height: 200px;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.book-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    font-size: 14px;
+}
+
+.info-item {
+    margin: 2px 0;
+    font-size: 15px;
+    color: #444c59;
+}
+
+.author {
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.owner-rating {
+    font-size: 17px;
+    color: #2b3340;
+    font-weight: 500;
+}
+
+.rating-star {
+    font-size: 20px;
+    color: gold;
+    margin-left: 3px;
+    vertical-align: middle;
+}
+
+.rating-value {
+    margin-left: 3px;
+    vertical-align: middle;
+}
+
+/* FORMULÁR POŽIČANIE */
+.borrow-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 12px 0;
+    flex-wrap: wrap;
+    margin-bottom: 0;
+}
+
+.borrow-title{
+    margin: 0;
+}
+
+.borrow-povinne{
+    margin-top: 0;
+}
+
+.borrow-form input[type="date"] {
+    padding: 6px;
+    border: 1px solid #d9dce2;
+    border-radius: 4px;
+    width: 110px;
+    font-size: 14px;
+}
+
+/* UPRAVENÉ ŠTÝLY PRE TLAČIDLO POŽIČANIE */
+.request-button {
+    margin-top: 2px;
+    padding: 7px 12px;
+    border: 1px solid black;
+    text-decoration: none;
+    background: #D3D3D3;
+    color: black;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
+    transition: 0.2s;
+    display: inline-block;
+    align-self: flex-start;
+}
+
+.request-button:hover {
+    background: grey;
+    color: black;
+}
+
+.request-button:disabled {
+    background-color: #b9b9b9;
+    color: gray;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+#borrow-button-description{
+    color:red;
+    font-weight: 600;
+}
+
+.request-dropdown{
+    margin-top: 2px;
+    padding: 7px 12px;
+    border: 1px solid black;
+    text-decoration: none;
+    background: #D3D3D3;
+    color: black;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: 0.2s;
+    align-self: flex-start;
+}
+
+.request-dropdown:hover {
+    background: grey;
+    color: black;
+}
+
+.request-dropdow-form{
+    background-color:#f1f3f7;
+    padding: 10px;
+}
+
+/* ŠPECIFIKÁCIE */
+.book-specs {
+    border-top: 1px solid #d9dce2;
+    padding-top: 10px;
+    margin-bottom: 15px;
+    display: flex;
+    gap: 20px;
+}
+
+.book-specs p {
+    margin: 0;
+    font-size: 15px;
+}
+
+/* POPIS ROLL-UP LOGIKA */
+.description-title {
+    font-size: 18px;
+    margin: 0 0 8px 0;
+    color: #2b3340;
+}
+
+.description-text {
+    max-height: 100px;
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #444c59;
+}
+
+.description-text.expanded {
+    max-height: 500px;
+}
+
+.toggle-button {
+    background: none;
+    border: none;
+    color: #007bff;
+    padding: 5px 0;
+    margin-top: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: left;
+    display: block;
+    width: 100%;
+    font-weight: 500;
+}
+
+.toggle-button:hover {
+    text-decoration: underline;
+}
+
+/* MEDIA QUERY */
+@media (max-width: 500px) {
+    .modal-body {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .modal-content {
+        margin: 10% auto;
+    }
+}
+.small-modal {
+    max-width: 400px;
+    padding: 20px;
+}

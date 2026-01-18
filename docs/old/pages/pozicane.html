@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moje požičané knihy</title> 
+    <link rel="stylesheet" href="../assets/css/index.css">
+    <link rel="stylesheet" href="../assets/css/book_detail_modal.css"> 
+    <link rel="stylesheet" href="../assets/css/pozicane.css"> 
+
+    <script type="module" src="../assets/js/pozicane.js" defer></script>
+    <script type="module" src="../assets/js/book_detail_modal.js"></script>
+    <script type="module" src="../assets/js/header_footer.js"></script>
+</head>
+
+<body>
+
+    <div>
+        <my-header></my-header>
+    </div>
+
+    <div class="obsah">
+        
+        <div class="list-knih-sekcia list-vypoziciek-sekcia">
+            <h2 class="Nadpis">Požičané knihy</h2> 
+
+            <div class="vysledky-vyhladavania">
+                <h3 id="vysledky-nadpis">Všetky tituly</h3> 
+            </div>
+            
+            <div id="pozicane-knihy" class="zoznam-knih"></div>
+            
+            <div id="pagination-container" class="pagination-controls"></div> 
+        </div>
+
+    </div>
+    <my-footer></my-footer>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moje knihy a výpožičky | Dashboard</title>
+
+    <link rel="stylesheet" href="../assets/css/index.css">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link rel="stylesheet" href="../assets/css/new_book_modal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+
+    <my-header></my-header>
+
+    <main class="obsah">
+        <div class="dashboard-container">
+            
+            <div class="dashboard-header-row">
+                <h1 class="Nadpis">Správa kníh</h1>
+                <div class="header-actions">
+                    <button class="legenda-trigger" id="open-legend-btn" title="Používateľská príručka" onclick="window.openLegend()">
+                        <i class="fa fa-question-circle"></i>
+                    </button>
+
+                    <div id="legend-modal" class="modal">
+                        <div class="modal-content">
+                            <span class="close-modal" onclick="window.closeLegend()">&times;</span>
+                            <h2>Používateľská príručka</h2>
+                            
+                            <hr class="section-divider">
+
+                            <div class="legend-group">
+                                <h3 style="color: #2f70e9;"><i class="fa fa-bar-chart"></i> Horný sumár (Štatistiky)</h3>
+                                <div class="legend-text-list" style="margin-left: 10px; font-size: 0.95em; line-height: 1.6;">
+                                    <p><strong>Moje knihy:</strong> Celkový počet kníh, ktoré ste nahrali do systému.</p>
+                                    <p><strong>Aktívne výpožičky:</strong> Počet kníh, ktoré máte aktuálne požičané vy od iných používateľov.</p>
+                                    <p><strong>Aktívne pôžičky:</strong> Počet vašich kníh, ktoré sú momentálne u iných čitateľov.</p>
+                                </div>
+                            </div>
+
+                            <hr class="section-divider">
+
+                            <div class="legend-group">
+                                <h3 style="color: #2f70e9;"><i class="fa fa-th-list"></i> Časti dashboardu</h3>
+                                <div class="legend-item-desc" style="background: #f4f7fe; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 0.9em;">
+                                    <p><strong>1. Čaká na rozhodnutie:</strong> Zoznam žiadostí od iných používateľov o vaše knihy. Každú požiadavku môžete <strong>schváliť</strong> alebo <strong>zamietnuť</strong>.</p>
+                                </div>
+                                <div class="legend-item-desc" style="background: #f4f7fe; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 0.9em;">
+                                    <p><strong>2. Požičané odo mňa:</strong> Zoznam vašich kníh, ktoré už majú iní čitatelia. Tu môžete <strong>potvrdiť vrátenie</strong>, čím sa kniha uvoľní.</p>
+                                </div>
+                                <div class="legend-item-desc" style="background: #f4f7fe; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 0.9em;">
+                                    <p><strong>3. Moje požičané knihy:</strong> Prehľad kníh, ktoré ste si vy požičali od ostatných používateľov.</p>
+                                </div>
+                                <div class="legend-item-desc" style="background: #f4f7fe; padding: 10px; border-radius: 8px; font-size: 0.9em;">
+                                    <p><strong>4. Moje knihy (Knižnica):</strong> Kompletný zoznam vašich titulov. Knihu tu môžete upraviť, vymazať alebo <strong>zamknúť</strong> (skryť z vyhľadávania).</p>
+                                </div>
+                            </div>
+
+                            <hr class="section-divider">
+
+                            <div class="legend-group">
+                                <h3 style="color: #2f70e9;"><i class="fa fa-info-circle"></i> Vysvetlivky k ikonám a stavom</h3>
+                                <div class="legend-list">
+                                    <div class="legend-item">
+                                        <span class="dot dot-green"></span>
+                                        <p><strong>Zelená (Dostupná):</strong> Odomknutá kniha, zobrazená vo vyhľadávaní.</p>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="dot dot-orange"></span>
+                                        <p><strong>Žltá (Zamknutá):</strong> Skrytá kniha. Nedá sa nájsť ani požičať (vhodné pre dočasnú nedostupnosť).</p>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="dot dot-red"></span>
+                                        <p><strong>Červená (Požičaná):</strong> Kniha je u čitateľa. V tomto stave sa nedá zamknúť ani mazať.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="button-modry" id="save-new-book-btn" onclick="window.openNewBookModal()">Pridať knihu</button>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-value" id="count-my-books">0</span>
+                    <span class="stat-label">Moje knihy</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="count-active-rentals">0</span>
+                    <span class="stat-label">Aktívne výpožičky</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value" id="count-total-borrows">0</span>
+                    <span class="stat-label">Aktívne pôžičky</span>
+                </div>
+            </div>
+
+            <hr class="section-divider">
+
+            <section class="dashboard-section">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                    <h2 style="font-size: 24px; color: #2b3340; margin: 0;">Čaká na rozhodnutie</h2>
+                    <div id="toggle-cakajuce"></div>
+                </div>
+                <div id="all-cakajuce">
+                    <div class="zoznam-knih" id="zoznam-cakajucich">
+                        <p class="empty-msg">Načítavam žiadosti...</p>
+                    </div>
+                    <div id="pagination-cakajuce"></div>
+                </div>
+            </section>
+
+            <hr class="section-divider">
+
+            <section class="dashboard-section">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                    <h2 style="font-size: 24px; color: #2b3340; margin: 0;">Požičané odo mňa</h2>
+                    <div id="toggle-schvalene"></div>
+                </div>
+                <div id="all-schvalene">
+                    <div class="zoznam-knih" id="zoznam-schvalenych">
+                        <p class="empty-msg">Načítavam aktívne výpožičky...</p>
+                    </div>
+                    <div id="pagination-schvalene"></div>
+                </div>
+            </section>
+
+            <hr class="section-divider">
+
+            <section class="dashboard-section" id="section-borrowed-books">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                    <h2 style="font-size: 24px; color: #2b3340; margin: 0;">Moje požičané knihy</h2>
+                    <div id="toggle-borrowed-books"></div>
+                </div>
+                <div id="all-borrowed-books">
+                    <div id="pozicane-knihy" class="zoznam-knih">
+                        <p class="empty-msg">Načítavam požičané knihy...</p>
+                    </div>
+                    <div id="pagination-borrowed"></div>
+                </div>
+            </section>
+
+            <hr class="section-divider">
+
+            <section class="dashboard-section">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+                    <h2 style="font-size: 24px; color: #2b3340; margin: 0;">Moje knihy</h2>
+                    <div id="toggle-my-books"></div>
+                </div>
+                <div id="all-my-books">
+                    <div class="zoznam-knih" id="my-books-container">
+                        <p class="empty-msg">Načítavam knihy...</p>
+                    </div>
+                    <div id="pagination-container"></div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <my-footer></my-footer>
+
+    <div id="newBookModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="window.closeNewBookModal()">&times;</span>
+            <h2>Pridať novú knihu do knižnice</h2>
+            <div class="modal-grid">
+                <div class="left-panel">
+                    <img id="newBookPreview" src="https://via.placeholder.com/150x200?text=Obalka" class="book-preview">
+                    <button class="btn-change-image" onclick="window.changeNewBookImage()">
+                        <i class="fa fa-upload"></i> Nahrať obrázok
+                    </button>
+                </div>
+                <div class="right-panel">
+                    <div class="form-row"><label>Názov knihy:</label><input id="newName" type="text" placeholder="Zadajte názov"></div>
+                    <div class="form-row"><label>Autor:</label><input id="newAuthor" type="text" placeholder="Meno autora"></div>
+                    <div class="form-row"><label>Jazyk:</label><input id="newLang" type="text" placeholder="Napr. Slovenský"></div>
+                    <div class="form-row"><label>Žáner:</label><input id="newGenre" type="text" placeholder="Napr. Detektívka"></div>
+                    <div class="form-row"><label>Popis:</label><textarea id="newDescription" placeholder="Stručný obsah knihy..."></textarea></div>
+                    <button class="btn-save" onclick="window.saveNewBook()">Pridať do zoznamu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="editBookModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeEditBookModal()">&times;</span>
+            <h2>Upraviť knihu</h2>
+            <div class="modal-grid">
+                <div class="left-panel">
+                    <img id="editBookImage" class="book-preview">
+                    <button class="btn-change-image" onclick="editChangeImage()"><i class="fa fa-upload"></i> Zmeň obrázok</button>
+                </div>
+                <div class="right-panel">
+                    <div class="form-row"><label>Názov:</label><div class="editable_row"><input id="editBookName" type="text"><i class="fa fa-pencil edit-icon" onclick="enableEdit('editBookName')"></i></div></div>
+                    <div class="form-row"><label>Autor:</label><div class="editable_row"><input id="editBookAuthor" type="text"><i class="fa fa-pencil edit-icon" onclick="enableEdit('editBookAuthor')"></i></div></div>
+                    <div class="form-row"><label>Jazyk:</label><div class="editable_row"><input id="editBookLang" type="text"><i class="fa fa-pencil edit-icon" onclick="enableEdit('editBookLang')"></i></div></div>
+                    <div class="form-row"><label>Žáner:</label><div class="editable_row"><input id="editBookGenre" type="text"><i class="fa fa-pencil edit-icon" onclick="enableEdit('editBookGenre')"></i></div></div>
+                    <div class="form-row"><label>Popis:</label><div class="editable_row"><textarea id="editBookDescription"></textarea><i class="fa fa-pencil edit-icon" onclick="enableEdit('editBookDescription')"></i></div></div>
+                    <button class="btn-save" onclick="saveEditedBook()">Uložiť zmeny</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="bookDetailModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeDetail">&times;</span>
+            <div id="detailContent"></div>
+        </div>
+    </div>
+
+    <script type="module" src="../assets/js/dashboard.js"></script>
+    <script type="module" src="../assets/js/dashboard_moje_knihy.js"></script>
+    <script type="module" src="../assets/js/dashboard_pozicane.js"></script>
+    <script type="module" src="../assets/js/dashboard_vypozicky.js"></script>
+    <script type="module" src="../assets/js/header_footer.js" defer></script>
+
+</body>
+</html>

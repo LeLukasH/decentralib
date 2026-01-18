@@ -1,0 +1,177 @@
+/*
+ * ŠTÝLY PRE STRÁNKU 'POŽIČANÉ KNIHY'
+ * Zabezpečujú 4-stĺpcový grid, kompaktnú výšku a zarovnanie nadpisov.
+ */
+
+/* ================================================= */
+/* CENTROVANIE A ZÁKLADNÉ ROZLOŽENIE OBSAHU          */
+/* ================================================= */
+.obsah {
+    flex-grow: 1; 
+    padding: 35px 0; 
+}
+.list-vypoziciek-sekcia {
+    max-width: 1200px; 
+    margin: 0 auto; 
+    padding: 0 15px; 
+}
+
+/* ================================================= */
+/* NADPISY - OPRAVA ZAROVNANIA                       */
+/* ================================================= */
+.list-vypoziciek-sekcia .Nadpis {
+    margin-top: 0;
+    margin-bottom: 20px;
+    margin-left: 0;
+    padding-left: 0;
+}
+.list-knih-sekcia .vysledky-vyhladavania h3 {
+     margin-top: 0;
+     margin-bottom: 15px;
+     margin-left: 0;
+     padding-left: 0;
+}
+
+/* ================================================= */
+/* KARTY (GRID) A KOMPAKTNÝ VZHĽAD                   */
+/* ================================================= */
+
+/* Kontajner kariet: Vynúti 4 stĺpce */
+.zoznam-knih { 
+    display: grid;
+    gap: 25px; 
+    margin-top: 20px; 
+    margin-bottom: 30px; 
+    grid-template-columns: repeat(4, 1fr); 
+}
+
+/* Karta knihy: Kompaktná výška, prispôsobená obsahu (bez tlačidla) */
+.karta-knihy { 
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Zarovnanie obsahu na vrch */
+    padding: 18px; 
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #d9dce2;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    overflow: hidden; 
+    height: auto; /* Karta sa prispôsobí obsahu */
+}
+
+/* Obsah karty (Obrázok + Info) - vedľa seba */
+.karta-content {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    margin-bottom: 10px;
+    flex-grow: 1; 
+    align-items: flex-start;
+}
+
+/* Veľkosť obrázkov pre 4 stĺpce */
+.karta-content img {
+    width: 100px; 
+    height: 140px; 
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+/* Titulok knihy */
+.karta-knihy h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 17px; 
+    text-align: left;
+}
+
+/* Informačné pole */
+.karta-info {
+    flex-grow: 1; 
+}
+
+.karta-info p {
+    margin: 4px 0;
+    font-size: 14px; 
+    word-wrap: break-word; 
+    overflow-wrap: break-word; 
+}
+
+/* Tučné písmo pre dátumy a labely */
+.karta-info p strong {
+    font-weight: 600;
+}
+
+/* Štýl hviezdičky (Reputácia) */
+.rating-star {
+    color: gold;
+    margin-right: 3px;
+    font-size: 18px; 
+    display: inline-block;
+}
+
+/* ================================================= */
+/* STRÁNKOVANIE (Ponechané bez zmien)                */
+/* ================================================= */
+
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px 0; 
+}
+
+.pagination-button {
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    background-color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+
+.pagination-button.active {
+    background-color: #2f70e9;
+    color: white;
+    border-color: #2f70e9;
+}
+
+.pagination-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* ================================================= */
+/* RESPONZIVITA (Ponechaná bez zmien)                */
+/* ================================================= */
+
+@media (max-width: 1024px) {
+    .zoznam-knih {
+        grid-template-columns: repeat(3, 1fr); 
+    }
+}
+
+@media (max-width: 767px) {
+    .zoznam-knih {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px; 
+    }
+    
+    .karta-content {
+        flex-direction: column; 
+        align-items: center;
+        text-align: center;
+    }
+    .karta-info {
+        text-align: center;
+    }
+    .karta-info p {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .zoznam-knih {
+        grid-template-columns: 1fr;
+    }
+}

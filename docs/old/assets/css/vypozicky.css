@@ -1,0 +1,218 @@
+
+/* ================================================= */
+/* VYPOŽIČKY - ŠTÝLY PRE STRÁNKU VYPOŽIČIEK          */
+/* ================================================= */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Správne rozostupy (padding) hore a dole pre hlavný obsah */
+.obsah {
+    flex-grow: 1; 
+    padding: 35px 0; /* Zabezpečuje priestor hore a dole od obsahu */
+}
+
+/* Centrálny kontajner a priestor po stranách */
+.list-vypoziciek-sekcia {
+    max-width: 1200px; 
+    /* Zmena z margin: 0 auto na zarovnanie doľava */
+    margin: 0; /* Odstráni automatické marginy */
+    /* Môžete pridať margin-left: auto/0 alebo len ponechať margin: 0, 
+       a riadiť odsadenie pomocou paddingu na rodičovskom elemente */
+    padding: 0 15px;
+}
+
+/* ================================================= */
+/* PREPÍNAČE SEKCIÍ & ZOBRAZENIE                     */
+/* ================================================= */
+
+.Nadpis {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.zoznam-vypoziciek h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.prepinatele-vypoziciek {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #d9dce2;
+    padding-bottom: 5px;
+}
+.prepinatele-tlacidlo {
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: #444c59;
+    border-bottom: 3px solid transparent; 
+    transition: all 0.2s ease-in-out;
+}
+.prepinatele-tlacidlo.active {
+    color: #2f70e9; 
+    border-bottom: 3px solid #2f70e9; 
+    background: none;
+}
+.hidden {
+    display: none !important;
+}
+
+/* ================================================= */
+/* KARTY (GRID) - OPRAVA PREKRYVANIA                 */
+/* ================================================= */
+
+/* Kontajner pre karty: Rieši priestor medzi kartami */
+.zoznam-kariet {
+    display: grid;
+    gap: 25px; /* Priestor medzi kartami (vertikálne aj horizontálne) */
+    
+    margin-top: 20px; 
+    margin-bottom: 30px; 
+    
+    /* VÝCHODISKOVÉ NASTAVENIE: 4 STĹPCE */
+    grid-template-columns: repeat(4, 1fr); 
+}
+
+/* Karta výpožičky */
+.karta-vypozicky {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 18px; 
+    background: white;
+    border-radius: 10px;
+    border: 1px solid #d9dce2;
+    border-bottom: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    
+    /* OPRAVA: Zabezpečí, že obsah zostane v rámci karty a nedôjde k pretečeniu */
+    overflow: hidden;   
+    height: auto; /* Karta sa prispôsobí obsahu */
+
+}
+
+.karta-content {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 10px;
+    flex-grow: 1; 
+}
+
+/* Informačná sekcia (Text) */
+.karta-info {
+    flex-grow: 1; 
+}
+.karta-info h4 {
+    margin-top: 0;
+    font-size: 17px;
+}
+.karta-info p {
+    margin: 4px 0;
+    font-size: 14px;
+    /* OPRAVA: Zalomí dlhé slová/texty */
+    word-wrap: break-word; 
+    overflow-wrap: break-word; 
+}
+.rating-star {
+    color: gold;
+    margin-right: 3px;
+}
+
+/* Tlačidlá Akcie */
+.request-button {
+    width: 100%;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 6px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+/* ================================================= */
+/* STRÁNKOVANIE                                      */
+/* ================================================= */
+
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px 0; 
+}
+
+.pagination-button {
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    background-color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.2s;
+}
+
+.pagination-button.active {
+    background-color: #2f70e9;
+    color: white;
+    border-color: #2f70e9;
+}
+
+.pagination-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* ================================================= */
+/* RESPONZIVITA (CSS RIADI STĹPCE)                   */
+/* ================================================= */
+
+/* Tablet (max-width: 1024px): 3 stĺpce */
+@media (max-width: 1024px) {
+    .zoznam-kariet {
+        grid-template-columns: repeat(3, 1fr); 
+    }
+}
+
+/* Mobil (max-width: 767px): 2 stĺpce a úprava karty */
+@media (max-width: 767px) {
+    .zoznam-kariet {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px; 
+    }
+    
+    .obsah {
+        padding: 20px 0; 
+    }
+    
+    /* Zmena layoutu karty na vertikálny */
+    .karta-content {
+        flex-direction: column; 
+        align-items: center;
+        text-align: center;
+    }
+    .karta-info {
+        text-align: center;
+    }
+    .karta-info p {
+        font-size: 13px;
+    }
+    
+    .request-button {
+        font-size: 14px;
+        padding: 8px;
+    }
+}
+
+/* Najmenšie mobilné zariadenia (max-width: 480px): 1 stĺpec */
+@media (max-width: 480px) {
+    .zoznam-kariet {
+        grid-template-columns: 1fr;
+    }
+}

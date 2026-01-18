@@ -1,0 +1,156 @@
+/* Modal pozadie */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Obsah okna */
+.modal-content {
+    background: white;
+    padding: 25px 35px;
+    border-radius: 8px;
+    width: 85%;
+    max-width: 700px;
+    /* width: 900px;
+    max-height: 90vh; */
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* X v pravom hornom rohu */
+.close-button {
+    position: absolute;
+    right: 25px;
+    top: 20px;
+    font-size: 32px;
+    cursor: pointer;
+}
+
+/* Nadpis */
+.modal-title {
+    margin-bottom: 20px;
+    font-size: 32px;
+}
+
+/* Rozloženie */
+.modal-grid {
+    display: grid;
+    grid-template-columns: 300px auto;
+    gap: 30px;
+}
+
+/* Ľavý panel */
+.left-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.book-preview {
+    width: 260px;
+    height: 360px;
+    object-fit: cover;
+    background: lightgray;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+/* Tlačidlo zmeny obrázku */
+.btn-change-image {
+    margin-top: 15px;
+    padding: 10px 20px;
+    width: 260px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background: #f4f4f4;
+    cursor: pointer;
+}
+
+.btn-change-image:hover {
+    background: #e5e5e5;
+}
+
+/* Pravý panel */
+.right-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.editable_row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+}
+.editable_row input,
+.editable_row textarea {
+    flex: 1;
+    width: 100%;
+}
+.form-row {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-row label {
+    font-weight: bold;
+    margin-bottom: 3px;
+}
+
+.form-row input,
+.form-row textarea{
+    padding: 7px 10px;
+    font-size: 15px;
+    border-radius: 5px;
+    border: 1px solid #aaa;
+}
+
+textarea {
+    height: 150px;
+    resize: vertical;
+}
+
+/* Uložiť */
+.btn-save {
+    margin-top: 15px;
+    align-self: flex-end;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+.btn-save:hover {
+    background: #3d8d42;
+}
+
+
+/*Detail knihy modal*/
+.edit-icon {
+    margin-left: 10px;
+    cursor: pointer;
+    color: #555;
+}
+
+.editable-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#editBookModal input:disabled,
+#editBookModal textarea:disabled {
+    background: #eee;
+    color: #666;
+}

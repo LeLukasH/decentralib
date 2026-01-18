@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Správy - Decentralizovaná knižnica</title>
+    <link rel="stylesheet" href="../assets/css/index.css">
+    <link rel="stylesheet" href="../assets/css/spravy.css">
+
+    <script type="module" src="../assets/js/spravy.js" defer></script>
+    <script type="module" src="../assets/js/header_footer.js" defer></script>
+</head>
+<body>
+    <my-header></my-header>
+
+    <div class="messages-page" id="messagesPage">
+        <aside class="chatrooms-sidebar">
+            <h3>Konverzácie</h3>
+            <ul id="chatroomsList"></ul>
+        </aside>
+
+        <section class="chatroom-main">
+            <div id="chatroomHeader">
+                <button id="backButton" aria-label="Späť">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                        <path d="M15 18l-6-6 6-6"
+                            stroke="#1f5fd1"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <span id="chatroomTitle"></span>
+            </div>
+
+            <div id="chatMessages" class="chat-messages"></div>
+
+            <form id="sendMessageForm">
+                <input type="text" id="messageInput" placeholder="Napíšte správu..." required>
+                <button id="sendMessageButton" disabled type="submit">Odoslať</button>
+            </form>
+        </section>
+    </div>
+
+    <my-footer></my-footer>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moje Výpožičky | Decentralizovaná knižnica</title>
+    
+    <link rel="stylesheet" href="../assets/css/index.css">
+    <link rel="stylesheet" href="../assets/css/book_detail_modal.css"> 
+    <link rel="stylesheet" href="../assets/css/vypozicky.css">
+    <script type="module" src="../assets/js/vypozicky.js" defer></script> 
+    <script type="module" src="../assets/js/header_footer.js"></script>
+    
+</head>
+
+<body>
+
+    <div>
+        <my-header></my-header>
+    </div>
+
+    <div class="obsah">
+        <div class="list-vypoziciek-sekcia">
+            
+            <h1 class="Nadpis">Moje výpožičky</h1>
+
+            <div class="prepinatele-vypoziciek">
+                <button id="btnSchvalene" class="prepinatele-tlacidlo active">Schválené výpožičky</button>
+                <button id="btnCakajuce" class="prepinatele-tlacidlo">Čakajúce na schválenie</button>
+            </div>
+            
+            <div id="schvaleneVypozicky" class="zoznam-vypoziciek">
+                <h3>📚 Aktuálne požičané knihy (Schválené)</h3>
+                
+                <div class="zoznam-kariet" id="zoznam-schvalenych">
+                    
+                </div>
+                
+                <div class="pagination-controls" id="pagination-schvalene">
+                    </div>
+            </div>
+
+            <div id="cakajuceVypozicky" class="zoznam-vypoziciek hidden">
+                <h3>⏳ Čakajúce požiadavky na schválenie</h3>
+                
+                <div class="zoznam-kariet" id="zoznam-cakajucich">
+                    
+                </div>
+
+                <div class="pagination-controls" id="pagination-cakajuce">
+                    </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <div id="bookDetailModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modal-title" class="modal-title">Názov knihy</h2>
+            </div>
+    </div>
+    
+    <my-footer></my-footer>
+</body>
+</html>
